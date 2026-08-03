@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HTTP | Spring Boot Handbook</title>
+    <meta name="description" content="브라우저, 앱, 서버가 요청과 응답을 주고받기 위해 사용하는 웹 통신 약속입니다." />
+    <meta property="og:title" content="HTTP | Spring Boot Handbook" />
+    <meta property="og:description" content="브라우저, 앱, 서버가 요청과 응답을 주고받기 위해 사용하는 웹 통신 약속입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">03 · Part 1. Spring 기초</p>
+          <h1>HTTP </h1>
+          <p>브라우저, 앱, 서버가 요청과 응답을 주고받기 위해 사용하는 웹 통신 약속입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>HTTP는 Spring Boot API의 입구입니다. URL은 어떤 자원을 다루는지, 메서드는 어떤 행동을 할지, 상태 코드는 결과가 어땠는지 알려줍니다.</p><p>처음에는 GET은 조회, POST는 생성, PUT/PATCH는 수정, DELETE는 삭제라는 식으로 익히면 됩니다. 요청 본문은 JSON으로 주고받는 경우가 많습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@GetMapping</strong>
+          <p>GET 요청을 메서드에 연결합니다.</p>
+        </article>
+        <article>
+          <strong>@PostMapping</strong>
+          <p>POST 요청을 메서드에 연결합니다.</p>
+        </article>
+        <article>
+          <strong>@RequestBody</strong>
+          <p>요청 본문의 JSON을 자바 객체로 변환합니다.</p>
+        </article>
+        <article>
+          <strong>@PathVariable</strong>
+          <p>URL 경로의 값을 메서드 파라미터로 받습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Controller</strong>
+          <p>HTTP 요청을 가장 먼저 받는 계층입니다.</p>
+        </article>
+        <article>
+          <strong>CORS</strong>
+          <p>프론트엔드 주소와 백엔드 주소가 다르면 브라우저 정책을 확인해야 합니다.</p>
+        </article>
+        <article>
+          <strong>Postman 또는 Swagger</strong>
+          <p>요청 메서드, URL, 헤더, 본문을 직접 확인합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>HTTP 요청과 Controller 매핑</h2>
+          <pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/students&quot;)
+class StudentController {
+    @GetMapping(&quot;/{id}&quot;)
+    StudentResponse find(@PathVariable Long id) {
+        return studentService.find(id);
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>404는 URL 매핑 문제, 400은 요청 값 문제, 500은 서버 내부 오류인 경우가 많습니다.</li><li>GET 요청에 중요한 변경 작업을 넣지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="spring-boot.html">이전 · Spring Boot</a>
+          <a href="rest-api.html">다음 · REST API</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

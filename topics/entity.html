@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Entity | Spring Boot Handbook</title>
+    <meta name="description" content="JPA가 데이터베이스 테이블과 매핑하는 도메인 객체입니다." />
+    <meta property="og:title" content="Entity | Spring Boot Handbook" />
+    <meta property="og:description" content="JPA가 데이터베이스 테이블과 매핑하는 도메인 객체입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">13 · Part 2. 핵심 구조</p>
+          <h1>Entity </h1>
+          <p>JPA가 데이터베이스 테이블과 매핑하는 도메인 객체입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Entity는 DB 테이블과 가까운 객체입니다. 식별자, 컬럼, 연관관계, 상태 변경 메서드를 가질 수 있습니다.</p><p>처음에는 Getter/Setter를 모두 열어두기 쉽지만, 실무에서는 상태 변경 메서드를 만들어 의미 있는 변경만 허용하는 방식이 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Entity</strong>
+          <p>JPA 관리 대상 클래스입니다.</p>
+        </article>
+        <article>
+          <strong>@Id</strong>
+          <p>기본 키 필드입니다.</p>
+        </article>
+        <article>
+          <strong>@GeneratedValue</strong>
+          <p>기본 키 생성 전략을 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@Column</strong>
+          <p>컬럼 제약과 이름을 설정합니다.</p>
+        </article>
+        <article>
+          <strong>@ManyToOne</strong>
+          <p>다대일 연관관계를 표현합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>기본 생성자</strong>
+          <p>JPA는 protected 이상의 기본 생성자를 필요로 합니다.</p>
+        </article>
+        <article>
+          <strong>DDL 설정</strong>
+          <p>spring.jpa.hibernate.ddl-auto 설정이 Entity와 DB 스키마 처리 방식에 영향을 줍니다.</p>
+        </article>
+        <article>
+          <strong>Lombok</strong>
+          <p>@NoArgsConstructor(access = PROTECTED), @Getter 정도를 신중히 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>학생 Entity</h2>
+          <pre><code class="language-java">@Entity
+class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    protected Student() { }
+
+    Student(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>@Data는 equals, hashCode, toString까지 만들어 연관관계에서 문제를 만들 수 있어 Entity에는 조심합니다.</li><li>Entity 필드를 public으로 열지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="dto.html">이전 · DTO</a>
+          <a href="jpa.html">다음 · JPA</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Repository | Spring Boot Handbook</title>
+    <meta name="description" content="데이터베이스와의 조회, 저장, 삭제 작업을 담당하는 데이터 접근 계층입니다." />
+    <meta property="og:title" content="Repository | Spring Boot Handbook" />
+    <meta property="og:description" content="데이터베이스와의 조회, 저장, 삭제 작업을 담당하는 데이터 접근 계층입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">11 · Part 2. 핵심 구조</p>
+          <h1>Repository </h1>
+          <p>데이터베이스와의 조회, 저장, 삭제 작업을 담당하는 데이터 접근 계층입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Repository는 애플리케이션이 DB와 직접 대화하는 통로입니다. Spring Data JPA를 사용하면 인터페이스만 작성해도 기본 CRUD 메서드가 제공됩니다.</p><p>메서드 이름으로 쿼리를 만들 수 있지만, 복잡한 조건이 늘어나면 @Query, QueryDSL, 명세 패턴 같은 방법을 검토합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Repository</strong>
+          <p>데이터 접근 계층 Bean을 나타냅니다.</p>
+        </article>
+        <article>
+          <strong>@Query</strong>
+          <p>직접 JPQL 또는 native SQL을 작성합니다.</p>
+        </article>
+        <article>
+          <strong>@Param</strong>
+          <p>@Query의 파라미터 이름을 연결합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Entity</strong>
+          <p>Repository는 보통 Entity 타입과 ID 타입을 기준으로 작성합니다.</p>
+        </article>
+        <article>
+          <strong>JPA</strong>
+          <p>JpaRepository를 상속하면 save, findById, delete 등이 제공됩니다.</p>
+        </article>
+        <article>
+          <strong>SQL 로그</strong>
+          <p>실행 SQL을 확인하려면 logging.level.org.hibernate.SQL 설정을 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>Spring Data JPA Repository</h2>
+          <pre><code class="language-java">public interface StudentRepository extends JpaRepository&lt;Student, Long&gt; {
+    boolean existsByEmail(String email);
+
+    @Query(&quot;select s from Student s where s.name like concat(:name, &#039;%&#039;)&quot;)
+    List&lt;Student&gt; findByNamePrefix(@Param(&quot;name&quot;) String name);
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>Repository에서 비즈니스 규칙을 처리하지 않습니다.</li><li>N+1 문제가 생기면 fetch join이나 EntityGraph를 검토합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="service.html">이전 · Service</a>
+          <a href="dto.html">다음 · DTO</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Docker | Spring Boot Handbook</title>
+    <meta name="description" content="애플리케이션과 실행 환경을 컨테이너 이미지로 묶어 어디서나 비슷하게 실행하게 해주는 도구입니다." />
+    <meta property="og:title" content="Docker | Spring Boot Handbook" />
+    <meta property="og:description" content="애플리케이션과 실행 환경을 컨테이너 이미지로 묶어 어디서나 비슷하게 실행하게 해주는 도구입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 5. 심화</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">34 · Part 5. 심화</p>
+          <h1>Docker </h1>
+          <p>애플리케이션과 실행 환경을 컨테이너 이미지로 묶어 어디서나 비슷하게 실행하게 해주는 도구입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Docker는 로컬에서는 잘 되는데 서버에서는 안 되는 문제를 줄여줍니다. Java 버전, 실행 명령, 포트, 환경 변수를 이미지와 컨테이너 설정으로 관리할 수 있습니다.</p><p>Spring Boot 프로젝트에서는 jar 파일을 빌드한 뒤 JRE 이미지 위에서 실행하는 Dockerfile을 많이 사용합니다. DB, Redis 같은 외부 서비스는 docker-compose로 함께 띄울 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Dockerfile</strong>
+          <p>이미지를 만드는 절차를 적는 파일입니다.</p>
+        </article>
+        <article>
+          <strong>docker-compose.yml</strong>
+          <p>여러 컨테이너를 함께 실행하는 설정 파일입니다.</p>
+        </article>
+        <article>
+          <strong>ENV</strong>
+          <p>컨테이너 환경 변수를 설정합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Gradle</strong>
+          <p>bootJar로 실행 가능한 jar를 만듭니다.</p>
+        </article>
+        <article>
+          <strong>application.yml</strong>
+          <p>DB 주소를 localhost가 아니라 서비스 이름으로 바꿔야 할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>CI/CD</strong>
+          <p>자동 빌드에서 Docker 이미지를 만들고 배포합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>Spring Boot Dockerfile</h2>
+          <pre><code class="language-dockerfile">FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>컨테이너 안에서 localhost는 호스트 PC가 아니라 컨테이너 자신입니다.</li><li>이미지에 비밀번호나 API key를 넣지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="redis.html">이전 · Redis</a>
+          <a href="ci-cd.html">다음 · CI/CD</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

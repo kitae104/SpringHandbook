@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IoC | Spring Boot Handbook</title>
+    <meta name="description" content="객체 생성과 연결의 제어권을 개발자 코드가 아니라 Spring 컨테이너가 갖는 구조입니다." />
+    <meta property="og:title" content="IoC | Spring Boot Handbook" />
+    <meta property="og:description" content="객체 생성과 연결의 제어권을 개발자 코드가 아니라 Spring 컨테이너가 갖는 구조입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">06 · Part 1. Spring 기초</p>
+          <h1>IoC </h1>
+          <p>객체 생성과 연결의 제어권을 개발자 코드가 아니라 Spring 컨테이너가 갖는 구조입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>IoC는 Inversion of Control의 줄임말입니다. 일반 자바 코드에서는 필요한 객체를 직접 new로 만들지만, Spring에서는 컨테이너가 객체를 만들고 필요한 곳에 넣어줍니다.</p><p>이 구조 덕분에 객체 교체, 테스트, 설정 변경이 쉬워집니다. 학생들은 IoC를 이해해야 DI, Bean, 테스트 코드가 왜 그렇게 작성되는지 연결해서 볼 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@ComponentScan</strong>
+          <p>특정 패키지 아래의 컴포넌트를 찾아 Bean으로 등록합니다.</p>
+        </article>
+        <article>
+          <strong>@SpringBootApplication</strong>
+          <p>기본 컴포넌트 스캔을 포함합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>패키지 위치</strong>
+          <p>메인 클래스 하위 패키지에 컴포넌트가 있는지 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Bean 충돌</strong>
+          <p>같은 타입 Bean이 여러 개라면 @Qualifier 또는 @Primary를 고려합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>직접 생성과 IoC 방식 비교</h2>
+          <pre><code class="language-java">// 직접 생성 방식
+StudentRepository repository = new MemoryStudentRepository();
+StudentService service = new StudentService(repository);
+
+// Spring 방식
+@Service
+class StudentService {
+    StudentService(StudentRepository repository) { }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>IoC는 객체를 없애는 개념이 아니라 객체 관리 위치를 바꾸는 개념입니다.</li><li>Bean 등록이 안 되면 의존성 주입도 실패합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="mvc.html">이전 · MVC</a>
+          <a href="di.html">다음 · DI</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

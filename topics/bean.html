@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bean | Spring Boot Handbook</title>
+    <meta name="description" content="Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다." />
+    <meta property="og:title" content="Bean | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">08 · Part 1. Spring 기초</p>
+          <h1>Bean </h1>
+          <p>Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Bean은 Spring이 관리하는 객체입니다. Controller, Service, Repository처럼 애플리케이션의 주요 구성 요소는 Bean으로 등록되어 서로 주입됩니다.</p><p>직접 만든 클래스는 stereotype 어노테이션으로 등록하고, 외부 라이브러리 객체는 @Configuration 클래스 안에서 @Bean 메서드로 등록하는 방식이 흔합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Component</strong>
+          <p>일반 Bean 등록에 사용합니다.</p>
+        </article>
+        <article>
+          <strong>@Service</strong>
+          <p>비즈니스 서비스 역할을 표현합니다.</p>
+        </article>
+        <article>
+          <strong>@Repository</strong>
+          <p>데이터 접근 계층이며 예외 변환 기능과도 관련됩니다.</p>
+        </article>
+        <article>
+          <strong>@Bean</strong>
+          <p>메서드 반환 객체를 Bean으로 등록합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>ApplicationContext</strong>
+          <p>Bean을 보관하고 찾아주는 Spring 컨테이너입니다.</p>
+        </article>
+        <article>
+          <strong>Bean 이름</strong>
+          <p>기본 이름은 클래스명의 첫 글자를 소문자로 바꾼 형태입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>외부 라이브러리 객체 Bean 등록</h2>
+          <pre><code class="language-java">@Configuration
+class SecurityConfig {
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>new로 직접 만든 객체는 Spring이 주입과 생명주기를 관리하지 않습니다.</li><li>같은 타입 Bean이 여러 개면 주입 대상이 모호해질 수 있습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="di.html">이전 · DI</a>
+          <a href="controller.html">다음 · Controller</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

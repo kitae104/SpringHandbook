@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exception | Spring Boot Handbook</title>
+    <meta name="description" content="실패 상황을 의미 있는 예외와 일관된 API 응답으로 바꾸는 처리입니다." />
+    <meta property="og:title" content="Exception | Spring Boot Handbook" />
+    <meta property="og:description" content="실패 상황을 의미 있는 예외와 일관된 API 응답으로 바꾸는 처리입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">17 · Part 2. 핵심 구조</p>
+          <h1>Exception </h1>
+          <p>실패 상황을 의미 있는 예외와 일관된 API 응답으로 바꾸는 처리입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>예외 처리는 서버 오류를 감추는 작업이 아니라 실패 이유를 클라이언트가 이해할 수 있게 정리하는 작업입니다. 없는 학생 ID, 중복 이메일, 권한 없음 같은 상황은 각각 다른 상태 코드와 메시지를 갖는 것이 좋습니다.</p><p>Controller마다 try-catch를 반복하면 코드가 지저분해집니다. @RestControllerAdvice를 사용하면 공통 예외 응답을 한 곳에서 관리할 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@RestControllerAdvice</strong>
+          <p>모든 REST Controller에 적용되는 공통 예외 처리 클래스입니다.</p>
+        </article>
+        <article>
+          <strong>@ExceptionHandler</strong>
+          <p>특정 예외 타입을 처리하는 메서드를 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@ResponseStatus</strong>
+          <p>예외나 핸들러의 HTTP 상태 코드를 지정합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>ErrorResponse DTO</strong>
+          <p>code, message, fieldErrors 같은 공통 응답 구조를 만듭니다.</p>
+        </article>
+        <article>
+          <strong>Validation</strong>
+          <p>검증 실패 예외를 보기 좋은 응답으로 변환합니다.</p>
+        </article>
+        <article>
+          <strong>Logging</strong>
+          <p>500 오류는 로그에 충분한 추적 정보를 남깁니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>공통 예외 처리</h2>
+          <pre><code class="language-java">@RestControllerAdvice
+class GlobalExceptionHandler {
+    @ExceptionHandler(StudentNotFoundException.class)
+    ResponseEntity&lt;ErrorResponse&gt; handleNotFound(StudentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ErrorResponse(&quot;STUDENT_NOT_FOUND&quot;, ex.getMessage()));
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>모든 예외를 500으로 보내면 클라이언트가 원인을 알기 어렵습니다.</li><li>사용자에게 보여줄 메시지와 서버 로그에 남길 상세 정보를 구분합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="validation.html">이전 · Validation</a>
+          <a href="transaction.html">다음 · Transaction</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

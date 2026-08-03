@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Filter와 Interceptor | Spring Boot Handbook</title>
+    <meta name="description" content="HTTP 요청 전후에 공통 처리를 넣는 구조로, 동작 위치와 책임이 다릅니다." />
+    <meta property="og:title" content="Filter와 Interceptor | Spring Boot Handbook" />
+    <meta property="og:description" content="HTTP 요청 전후에 공통 처리를 넣는 구조로, 동작 위치와 책임이 다릅니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 5. 심화</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">32 · Part 5. 심화</p>
+          <h1>Filter와 Interceptor </h1>
+          <p>HTTP 요청 전후에 공통 처리를 넣는 구조로, 동작 위치와 책임이 다릅니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Filter는 Servlet 컨테이너 레벨에서 동작하고, Interceptor는 Spring MVC의 HandlerMapping 이후에 동작합니다. 둘 다 요청 전후 공통 처리에 쓰지만 적용 위치가 다릅니다.</p><p>인코딩, 보안 필터, 요청 로그처럼 더 앞단에서 처리할 것은 Filter가 어울리고, Controller 실행 전 권한 확인이나 공통 모델 처리처럼 MVC와 가까운 일은 Interceptor가 어울립니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@WebFilter</strong>
+          <p>Servlet Filter를 등록할 때 사용할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>@Component</strong>
+          <p>Filter를 Spring Bean으로 등록할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>HandlerInterceptor</strong>
+          <p>preHandle, postHandle, afterCompletion을 구현합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>SecurityFilterChain</strong>
+          <p>Spring Security는 여러 Filter의 체인으로 동작합니다.</p>
+        </article>
+        <article>
+          <strong>WebMvcConfigurer</strong>
+          <p>Interceptor를 등록할 때 사용합니다.</p>
+        </article>
+        <article>
+          <strong>Logging</strong>
+          <p>요청 ID와 실행 시간을 남기는 데 자주 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>Interceptor 등록</h2>
+          <pre><code class="language-java">@Configuration
+class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginCheckInterceptor())
+            .addPathPatterns(&quot;/api/**&quot;);
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>Filter와 Interceptor의 실행 순서를 혼동하지 않습니다.</li><li>Security를 사용한다면 인증 처리는 Security 필터 체인과 충돌하지 않게 설계합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="aop.html">이전 · AOP</a>
+          <a href="redis.html">다음 · Redis</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

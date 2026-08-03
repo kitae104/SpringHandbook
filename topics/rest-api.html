@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>REST API | Spring Boot Handbook</title>
+    <meta name="description" content="자원을 URL로 표현하고 HTTP 메서드로 행동을 나타내는 API 설계 스타일입니다." />
+    <meta property="og:title" content="REST API | Spring Boot Handbook" />
+    <meta property="og:description" content="자원을 URL로 표현하고 HTTP 메서드로 행동을 나타내는 API 설계 스타일입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">04 · Part 1. Spring 기초</p>
+          <h1>REST API </h1>
+          <p>자원을 URL로 표현하고 HTTP 메서드로 행동을 나타내는 API 설계 스타일입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>REST API는 함수 이름을 URL에 쓰는 방식이 아니라, 학생, 게시글, 댓글 같은 자원을 중심으로 URL을 설계합니다. 예를 들어 학생 목록은 GET /students, 학생 생성은 POST /students처럼 표현합니다.</p><p>처음부터 완벽한 REST를 만들 필요는 없지만, URL 이름과 HTTP 메서드가 일관되면 프론트엔드와 협업하기 쉬워집니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@RestController</strong>
+          <p>응답을 View가 아니라 JSON 같은 데이터로 반환하는 Controller입니다.</p>
+        </article>
+        <article>
+          <strong>@RequestMapping</strong>
+          <p>공통 URL prefix를 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@ResponseStatus</strong>
+          <p>성공 응답 상태 코드를 명시할 때 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>DTO</strong>
+          <p>요청 DTO와 응답 DTO를 분리해 API 모양을 안정적으로 유지합니다.</p>
+        </article>
+        <article>
+          <strong>Swagger</strong>
+          <p>API 명세를 문서로 보여주고 직접 호출해 볼 수 있게 합니다.</p>
+        </article>
+        <article>
+          <strong>Exception</strong>
+          <p>실패 응답도 일관된 JSON 구조로 설계합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>학생 CRUD API URL 설계</h2>
+          <pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/students&quot;)
+class StudentController {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    StudentResponse create(@RequestBody StudentCreateRequest request) {
+        return studentService.create(request);
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>URL에 동사를 과하게 넣지 않습니다. /createStudent보다 POST /students가 읽기 좋습니다.</li><li>응답 상태 코드를 무조건 200으로만 보내지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="http.html">이전 · HTTP</a>
+          <a href="mvc.html">다음 · MVC</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

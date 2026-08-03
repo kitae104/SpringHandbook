@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CORS | Spring Boot Handbook</title>
+    <meta name="description" content="브라우저가 서로 다른 출처의 요청을 제한하는 보안 정책입니다." />
+    <meta property="og:title" content="CORS | Spring Boot Handbook" />
+    <meta property="og:description" content="브라우저가 서로 다른 출처의 요청을 제한하는 보안 정책입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 4. 실무 개발</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">30 · Part 4. 실무 개발</p>
+          <h1>CORS </h1>
+          <p>브라우저가 서로 다른 출처의 요청을 제한하는 보안 정책입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>CORS는 서버끼리의 문제가 아니라 브라우저 보안 정책입니다. 프론트엔드가 localhost:3000이고 백엔드가 localhost:8080이면 출처가 다르기 때문에 브라우저가 요청을 막을 수 있습니다.</p><p>Spring Boot에서는 Controller 단위 @CrossOrigin 또는 전역 WebMvcConfigurer, SecurityConfig의 cors 설정으로 처리합니다. Security를 사용 중이면 MVC CORS만 설정하고 끝나지 않을 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@CrossOrigin</strong>
+          <p>특정 Controller나 메서드에 CORS 허용을 지정합니다.</p>
+        </article>
+        <article>
+          <strong>CorsRegistry</strong>
+          <p>전역 CORS 정책을 등록합니다.</p>
+        </article>
+        <article>
+          <strong>CorsConfigurationSource</strong>
+          <p>Spring Security와 함께 사용할 CORS 설정 Bean입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>SecurityConfig</strong>
+          <p>Spring Security 사용 시 http.cors 설정을 확인합니다.</p>
+        </article>
+        <article>
+          <strong>프론트엔드 요청</strong>
+          <p>credentials 포함 여부와 Authorization 헤더 사용 여부를 확인합니다.</p>
+        </article>
+        <article>
+          <strong>배포 도메인</strong>
+          <p>운영 프론트엔드 도메인을 정확히 허용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>전역 CORS 설정</h2>
+          <pre><code class="language-java">@Configuration
+class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping(&quot;/api/**&quot;)
+            .allowedOrigins(&quot;http://localhost:3000&quot;)
+            .allowedMethods(&quot;GET&quot;, &quot;POST&quot;, &quot;PATCH&quot;, &quot;DELETE&quot;)
+            .allowedHeaders(&quot;*&quot;);
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>allowedOrigins(&quot;*&quot;)와 credentials 허용을 함께 쓰는 것은 제한됩니다.</li><li>운영 배포 시 localhost만 허용하면 실제 프론트엔드에서 호출이 실패합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="git.html">이전 · Git</a>
+          <a href="aop.html">다음 · AOP</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

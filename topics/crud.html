@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CRUD | Spring Boot Handbook</title>
+    <meta name="description" content="Create, Read, Update, Delete로 대부분의 데이터 중심 API가 출발하는 기본 작업입니다." />
+    <meta property="og:title" content="CRUD | Spring Boot Handbook" />
+    <meta property="og:description" content="Create, Read, Update, Delete로 대부분의 데이터 중심 API가 출발하는 기본 작업입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">15 · Part 2. 핵심 구조</p>
+          <h1>CRUD </h1>
+          <p>Create, Read, Update, Delete로 대부분의 데이터 중심 API가 출발하는 기본 작업입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>CRUD는 웹 애플리케이션의 가장 기본 기능입니다. 하지만 단순히 메서드 네 개를 만드는 것이 아니라 요청 DTO, 응답 DTO, 검증, 예외, 트랜잭션까지 함께 설계해야 합니다.</p><p>처음 프로젝트에서는 하나의 자원, 예를 들어 Student에 대해 CRUD를 완성해 보면 Spring Boot API 전체 흐름을 익히기 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@PostMapping</strong>
+          <p>생성 API에 사용합니다.</p>
+        </article>
+        <article>
+          <strong>@GetMapping</strong>
+          <p>조회 API에 사용합니다.</p>
+        </article>
+        <article>
+          <strong>@PatchMapping</strong>
+          <p>일부 수정 API에 사용합니다.</p>
+        </article>
+        <article>
+          <strong>@DeleteMapping</strong>
+          <p>삭제 API에 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Validation</strong>
+          <p>생성과 수정 요청에 필요한 값 검증을 적용합니다.</p>
+        </article>
+        <article>
+          <strong>Exception</strong>
+          <p>없는 ID 조회, 중복 데이터, 권한 없음 같은 상황을 처리합니다.</p>
+        </article>
+        <article>
+          <strong>Transaction</strong>
+          <p>생성, 수정, 삭제는 트랜잭션 경계를 확인합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>수정 API 예제</h2>
+          <pre><code class="language-java">@PatchMapping(&quot;/api/students/{id}&quot;)
+StudentResponse update(@PathVariable Long id,
+                       @Valid @RequestBody StudentUpdateRequest request) {
+    return studentService.update(id, request);
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>삭제 API는 실제 삭제인지 상태값 변경인지 먼저 정합니다.</li><li>수정 요청에서 null 값이 들어왔을 때 덮어쓸지 무시할지 규칙을 정합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="jpa.html">이전 · JPA</a>
+          <a href="validation.html">다음 · Validation</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

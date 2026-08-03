@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lombok | Spring Boot Handbook</title>
+    <meta name="description" content="Getter, 생성자, Builder 같은 반복 코드를 어노테이션으로 줄여주는 도구입니다." />
+    <meta property="og:title" content="Lombok | Spring Boot Handbook" />
+    <meta property="og:description" content="Getter, 생성자, Builder 같은 반복 코드를 어노테이션으로 줄여주는 도구입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 4. 실무 개발</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">24 · Part 4. 실무 개발</p>
+          <h1>Lombok </h1>
+          <p>Getter, 생성자, Builder 같은 반복 코드를 어노테이션으로 줄여주는 도구입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Lombok은 자바 코드의 반복을 줄여주지만, 생성되는 코드를 눈으로 직접 보지 않기 때문에 처음 배우는 학생에게는 오히려 흐름을 숨길 수 있습니다.</p><p>DTO에는 @Builder나 @Getter가 편리할 수 있고, Entity에는 @Data 사용을 피하고 필요한 어노테이션만 제한적으로 사용하는 것이 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Getter</strong>
+          <p>필드 getter를 생성합니다.</p>
+        </article>
+        <article>
+          <strong>@RequiredArgsConstructor</strong>
+          <p>final 필드를 받는 생성자를 생성합니다.</p>
+        </article>
+        <article>
+          <strong>@NoArgsConstructor</strong>
+          <p>기본 생성자를 생성합니다.</p>
+        </article>
+        <article>
+          <strong>@Builder</strong>
+          <p>Builder 패턴 코드를 생성합니다.</p>
+        </article>
+        <article>
+          <strong>@Data</strong>
+          <p>Getter, Setter, equals, hashCode, toString을 모두 생성합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>IDE 플러그인</strong>
+          <p>Lombok 어노테이션 처리가 IDE에서 활성화되어야 합니다.</p>
+        </article>
+        <article>
+          <strong>Entity</strong>
+          <p>@Data와 무분별한 @Setter는 Entity에서 조심합니다.</p>
+        </article>
+        <article>
+          <strong>DI</strong>
+          <p>@RequiredArgsConstructor로 생성자 주입 코드를 줄일 수 있습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>생성자 주입 코드 줄이기</h2>
+          <pre><code class="language-java">@Service
+@RequiredArgsConstructor
+class StudentService {
+    private final StudentRepository repository;
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>Lombok이 만든 코드를 이해하지 못하면 디버깅이 어려워집니다.</li><li>Entity의 toString이 연관 객체를 계속 호출하면 순환 참조 문제가 생길 수 있습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="application-yml.html">이전 · application.yml</a>
+          <a href="sql.html">다음 · SQL</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pagination | Spring Boot Handbook</title>
+    <meta name="description" content="많은 데이터를 한 번에 보내지 않고 페이지 단위로 나누어 조회하는 방식입니다." />
+    <meta property="og:title" content="Pagination | Spring Boot Handbook" />
+    <meta property="og:description" content="많은 데이터를 한 번에 보내지 않고 페이지 단위로 나누어 조회하는 방식입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 4. 실무 개발</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">26 · Part 4. 실무 개발</p>
+          <h1>Pagination </h1>
+          <p>많은 데이터를 한 번에 보내지 않고 페이지 단위로 나누어 조회하는 방식입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Pagination은 목록 API에서 매우 중요합니다. 데이터가 10개일 때는 전체 조회가 쉬워 보이지만, 10만 개가 되면 서버와 브라우저 모두 부담이 커집니다.</p><p>Spring Data JPA는 Pageable과 Page 타입을 제공해 page, size, sort 파라미터를 쉽게 처리합니다. 응답 DTO에서는 전체 페이지 수와 현재 페이지 정보를 함께 내려주는 것이 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Pageable</strong>
+          <p>페이지 번호, 크기, 정렬 정보를 담는 인터페이스입니다.</p>
+        </article>
+        <article>
+          <strong>Page&lt;T&gt;</strong>
+          <p>목록 데이터와 전체 개수, 페이지 정보를 함께 담습니다.</p>
+        </article>
+        <article>
+          <strong>@PageableDefault</strong>
+          <p>기본 페이지 크기와 정렬을 지정합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Repository</strong>
+          <p>findAll(Pageable pageable)을 사용할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>SQL</strong>
+          <p>LIMIT/OFFSET 또는 keyset pagination 개념과 연결됩니다.</p>
+        </article>
+        <article>
+          <strong>Swagger</strong>
+          <p>page, size, sort 파라미터를 문서화합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>페이지 목록 API</h2>
+          <pre><code class="language-java">@GetMapping(&quot;/api/students&quot;)
+Page&lt;StudentResponse&gt; findAll(
+    @PageableDefault(size = 20, sort = &quot;id&quot;, direction = Sort.Direction.DESC) Pageable pageable
+) {
+    return studentService.findAll(pageable);
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>page는 보통 0부터 시작합니다.</li><li>대량 데이터에서는 OFFSET 방식이 느려질 수 있어 keyset pagination을 검토합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="sql.html">이전 · SQL</a>
+          <a href="logging.html">다음 · Logging</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

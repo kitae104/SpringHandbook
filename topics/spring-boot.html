@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spring Boot | Spring Boot Handbook</title>
+    <meta name="description" content="Spring 프로젝트를 빠르게 시작하고 실행할 수 있도록 자동 설정, 내장 서버, starter 의존성을 제공하는 도구입니다." />
+    <meta property="og:title" content="Spring Boot | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring 프로젝트를 빠르게 시작하고 실행할 수 있도록 자동 설정, 내장 서버, starter 의존성을 제공하는 도구입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">02 · Part 1. Spring 기초</p>
+          <h1>Spring Boot </h1>
+          <p>Spring 프로젝트를 빠르게 시작하고 실행할 수 있도록 자동 설정, 내장 서버, starter 의존성을 제공하는 도구입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Spring Boot는 복잡한 설정을 줄여 학생들이 웹 API를 빠르게 실행해 볼 수 있게 합니다. 내장 Tomcat을 사용하기 때문에 별도 WAS 설치 없이 main 메서드 실행만으로 서버가 시작됩니다.</p><p>중요한 것은 Boot가 모든 것을 마법처럼 처리하는 것이 아니라, 클래스패스의 의존성과 설정 파일을 보고 적절한 Spring 설정을 자동으로 구성한다는 점입니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@SpringBootApplication</strong>
+          <p>@SpringBootConfiguration, @EnableAutoConfiguration, @ComponentScan을 합친 시작 어노테이션입니다.</p>
+        </article>
+        <article>
+          <strong>@SpringBootTest</strong>
+          <p>테스트에서 Spring Boot 애플리케이션 컨텍스트를 로딩합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>DemoApplication.java</strong>
+          <p>애플리케이션 시작 위치이며, 이 클래스의 패키지가 컴포넌트 스캔 기준이 됩니다.</p>
+        </article>
+        <article>
+          <strong>application.yml</strong>
+          <p>포트, DB, 로그, 프로필 설정을 관리합니다.</p>
+        </article>
+        <article>
+          <strong>build.gradle</strong>
+          <p>starter 의존성과 Java 버전을 확인합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>가장 작은 Spring Boot 애플리케이션</h2>
+          <pre><code class="language-java">@SpringBootApplication
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>메인 클래스가 너무 깊은 패키지에 있으면 일부 Bean이 스캔되지 않을 수 있습니다.</li><li>자동 설정이 예상과 다르면 의존성과 application.yml 값을 먼저 확인합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="spring-framework.html">이전 · Spring Framework</a>
+          <a href="http.html">다음 · HTTP</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

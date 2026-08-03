@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JPA | Spring Boot Handbook</title>
+    <meta name="description" content="자바 객체와 관계형 데이터베이스를 매핑하는 표준 ORM 기술입니다." />
+    <meta property="og:title" content="JPA | Spring Boot Handbook" />
+    <meta property="og:description" content="자바 객체와 관계형 데이터베이스를 매핑하는 표준 ORM 기술입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">14 · Part 2. 핵심 구조</p>
+          <h1>JPA </h1>
+          <p>자바 객체와 관계형 데이터베이스를 매핑하는 표준 ORM 기술입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>JPA는 SQL 중심이 아니라 객체 중심으로 데이터를 다루게 해 줍니다. 개발자는 Entity를 저장하고 조회하지만, 내부적으로는 SQL이 실행됩니다.</p><p>JPA를 잘 쓰려면 영속성 컨텍스트, 변경 감지, 지연 로딩, 트랜잭션을 함께 이해해야 합니다. 단순 CRUD는 쉽지만 연관관계와 성능 문제에서 차이가 크게 납니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Entity</strong>
+          <p>JPA가 관리할 객체입니다.</p>
+        </article>
+        <article>
+          <strong>@OneToMany</strong>
+          <p>일대다 연관관계입니다.</p>
+        </article>
+        <article>
+          <strong>@ManyToOne(fetch = LAZY)</strong>
+          <p>다대일 연관관계를 지연 로딩으로 설정합니다.</p>
+        </article>
+        <article>
+          <strong>@Transactional</strong>
+          <p>영속성 컨텍스트와 변경 감지가 동작하는 경계입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>application.yml</strong>
+          <p>datasource, jpa.hibernate.ddl-auto, show-sql 설정을 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Repository</strong>
+          <p>Spring Data JPA 인터페이스를 통해 JPA를 쉽게 사용합니다.</p>
+        </article>
+        <article>
+          <strong>SQL</strong>
+          <p>JPA가 만든 SQL을 읽을 수 있어야 성능 문제를 찾을 수 있습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>트랜잭션 안에서 변경 감지</h2>
+          <pre><code class="language-java">@Transactional
+public void changeEmail(Long studentId, String email) {
+    Student student = repository.findById(studentId)
+        .orElseThrow(StudentNotFoundException::new);
+    student.changeEmail(email);
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>JPA를 사용해도 SQL 기본기는 반드시 필요합니다.</li><li>연관관계 기본 FetchType을 그대로 믿지 말고 쿼리 수를 확인합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="entity.html">이전 · Entity</a>
+          <a href="crud.html">다음 · CRUD</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

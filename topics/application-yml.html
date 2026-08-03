@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>application.yml | Spring Boot Handbook</title>
+    <meta name="description" content="Spring Boot 애플리케이션의 포트, DB, 로그, 보안, 프로필 설정을 관리하는 파일입니다." />
+    <meta property="og:title" content="application.yml | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring Boot 애플리케이션의 포트, DB, 로그, 보안, 프로필 설정을 관리하는 파일입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 4. 실무 개발</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">23 · Part 4. 실무 개발</p>
+          <h1>application.yml </h1>
+          <p>Spring Boot 애플리케이션의 포트, DB, 로그, 보안, 프로필 설정을 관리하는 파일입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>application.yml은 코드 밖에서 실행 환경을 조정하는 파일입니다. 같은 코드라도 로컬, 테스트, 운영 환경에서 DB 주소나 로그 레벨이 달라질 수 있습니다.</p><p>민감한 값은 파일에 직접 쓰지 않고 환경 변수로 주입하는 방식이 좋습니다. 특히 JWT secret, DB 비밀번호, API key는 GitHub에 올리면 안 됩니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Value</strong>
+          <p>설정 값을 필드나 생성자 파라미터로 주입합니다.</p>
+        </article>
+        <article>
+          <strong>@ConfigurationProperties</strong>
+          <p>prefix 아래 설정을 타입 안전한 객체로 바인딩합니다.</p>
+        </article>
+        <article>
+          <strong>@Profile</strong>
+          <p>특정 프로필에서만 Bean을 활성화합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>application-local.yml</strong>
+          <p>로컬 전용 설정을 분리할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>환경 변수</strong>
+          <p>${DB_PASSWORD} 같은 형태로 외부 값을 참조합니다.</p>
+        </article>
+        <article>
+          <strong>Logging</strong>
+          <p>logging.level 패키지명으로 로그 레벨을 조정합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>DB와 JPA 기본 설정</h2>
+          <pre><code class="language-yaml">spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    org.hibernate.SQL: debug</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>운영 환경에서 ddl-auto: create를 사용하면 데이터가 사라질 수 있습니다.</li><li>들여쓰기가 틀리면 설정이 적용되지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="gradle.html">이전 · Gradle</a>
+          <a href="lombok.html">다음 · Lombok</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spring AI | Spring Boot Handbook</title>
+    <meta name="description" content="Spring 애플리케이션에서 LLM, 임베딩, 벡터 저장소 같은 AI 기능을 다루기 위한 프로젝트입니다." />
+    <meta property="og:title" content="Spring AI | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring 애플리케이션에서 LLM, 임베딩, 벡터 저장소 같은 AI 기능을 다루기 위한 프로젝트입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 5. 심화</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">36 · Part 5. 심화</p>
+          <h1>Spring AI </h1>
+          <p>Spring 애플리케이션에서 LLM, 임베딩, 벡터 저장소 같은 AI 기능을 다루기 위한 프로젝트입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Spring AI는 Spring 방식으로 AI 모델 호출, 프롬프트 작성, 임베딩, 벡터 검색을 다룰 수 있게 해줍니다. 기존 Controller, Service 구조 안에 AI 기능을 넣을 수 있다는 장점이 있습니다.</p><p>처음에는 ChatClient로 간단한 질문 응답 API를 만들고, 이후 문서 검색이 필요하면 EmbeddingModel과 VectorStore를 함께 학습하면 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>ChatClient</strong>
+          <p>대화형 AI 모델 호출을 단순화한 클라이언트입니다.</p>
+        </article>
+        <article>
+          <strong>EmbeddingModel</strong>
+          <p>문장을 벡터로 바꾸는 모델입니다.</p>
+        </article>
+        <article>
+          <strong>VectorStore</strong>
+          <p>벡터 검색을 위한 저장소 추상화입니다.</p>
+        </article>
+        <article>
+          <strong>@ConfigurationProperties</strong>
+          <p>API key와 모델 설정을 안전하게 바인딩할 때 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>build.gradle</strong>
+          <p>spring-ai starter와 BOM 버전을 확인합니다.</p>
+        </article>
+        <article>
+          <strong>application.yml</strong>
+          <p>모델 이름, API key, timeout 같은 설정을 관리합니다.</p>
+        </article>
+        <article>
+          <strong>Logging</strong>
+          <p>프롬프트와 응답 로그에는 개인정보가 남지 않도록 주의합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>간단한 Chat API</h2>
+          <pre><code class="language-java">@RestController
+class ChatController {
+    private final ChatClient chatClient;
+
+    @GetMapping(&quot;/api/ai/chat&quot;)
+    String chat(@RequestParam String message) {
+        return chatClient.prompt()
+            .user(message)
+            .call()
+            .content();
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>AI 응답은 항상 정답이 아닐 수 있으므로 중요한 로직을 전부 맡기지 않습니다.</li><li>API key는 코드나 GitHub에 직접 올리지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="ci-cd.html">이전 · CI/CD</a>
+          <span></span>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Validation | Spring Boot Handbook</title>
+    <meta name="description" content="잘못된 입력을 서비스 로직에 들어가기 전에 걸러내는 검증 처리입니다." />
+    <meta property="og:title" content="Validation | Spring Boot Handbook" />
+    <meta property="og:description" content="잘못된 입력을 서비스 로직에 들어가기 전에 걸러내는 검증 처리입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">16 · Part 2. 핵심 구조</p>
+          <h1>Validation </h1>
+          <p>잘못된 입력을 서비스 로직에 들어가기 전에 걸러내는 검증 처리입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Validation은 사용자가 보낸 값이 애플리케이션 규칙에 맞는지 확인하는 과정입니다. 이름이 비었는지, 이메일 형식인지, 숫자 범위가 맞는지 같은 기본 검증은 DTO에서 선언적으로 처리할 수 있습니다.</p><p>검증은 Controller에서 @Valid를 붙여야 실행됩니다. 검증 실패 응답은 GlobalExceptionHandler에서 공통 형식으로 정리하는 것이 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Valid</strong>
+          <p>DTO 검증을 실행합니다.</p>
+        </article>
+        <article>
+          <strong>@NotNull</strong>
+          <p>null을 허용하지 않습니다.</p>
+        </article>
+        <article>
+          <strong>@NotBlank</strong>
+          <p>빈 문자열과 공백 문자열을 허용하지 않습니다.</p>
+        </article>
+        <article>
+          <strong>@Size</strong>
+          <p>문자열, 컬렉션 길이를 제한합니다.</p>
+        </article>
+        <article>
+          <strong>@Min, @Max</strong>
+          <p>숫자 범위를 제한합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>build.gradle</strong>
+          <p>spring-boot-starter-validation 의존성이 필요할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>Exception</strong>
+          <p>MethodArgumentNotValidException을 공통 처리합니다.</p>
+        </article>
+        <article>
+          <strong>DTO</strong>
+          <p>검증 어노테이션은 보통 요청 DTO에 둡니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>검증 DTO와 Controller</h2>
+          <pre><code class="language-java">public record CourseCreateRequest(
+    @NotBlank String title,
+    @Min(1) int credit
+) { }
+
+@PostMapping(&quot;/api/courses&quot;)
+CourseResponse create(@Valid @RequestBody CourseCreateRequest request) {
+    return courseService.create(request);
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>@Valid를 빼면 DTO의 검증 어노테이션이 실행되지 않습니다.</li><li>비즈니스 규칙 검증과 단순 입력 형식 검증을 구분합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="crud.html">이전 · CRUD</a>
+          <a href="exception.html">다음 · Exception</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

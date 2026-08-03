@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gradle | Spring Boot Handbook</title>
+    <meta name="description" content="프로젝트 빌드, 테스트 실행, 라이브러리 의존성 관리를 담당하는 빌드 도구입니다." />
+    <meta property="og:title" content="Gradle | Spring Boot Handbook" />
+    <meta property="og:description" content="프로젝트 빌드, 테스트 실행, 라이브러리 의존성 관리를 담당하는 빌드 도구입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 4. 실무 개발</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">22 · Part 4. 실무 개발</p>
+          <h1>Gradle </h1>
+          <p>프로젝트 빌드, 테스트 실행, 라이브러리 의존성 관리를 담당하는 빌드 도구입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Gradle은 Spring Boot 프로젝트에서 필요한 라이브러리를 내려받고, 테스트를 실행하고, 실행 가능한 jar 파일을 만드는 역할을 합니다.</p><p>학생들은 build.gradle을 단순 설정 파일로만 보지 말고 프로젝트가 어떤 기술을 사용하고 있는지 보여주는 의존성 목록으로 읽는 습관을 들이면 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>plugins</strong>
+          <p>java, org.springframework.boot 같은 빌드 플러그인을 선언합니다.</p>
+        </article>
+        <article>
+          <strong>dependencies</strong>
+          <p>프로젝트가 사용하는 라이브러리를 선언합니다.</p>
+        </article>
+        <article>
+          <strong>implementation</strong>
+          <p>컴파일과 실행에 필요한 의존성입니다.</p>
+        </article>
+        <article>
+          <strong>testImplementation</strong>
+          <p>테스트에만 필요한 의존성입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Java 버전</strong>
+          <p>sourceCompatibility 또는 toolchain 설정을 확인합니다.</p>
+        </article>
+        <article>
+          <strong>starter</strong>
+          <p>spring-boot-starter-web처럼 관련 의존성을 묶은 패키지입니다.</p>
+        </article>
+        <article>
+          <strong>빌드 결과</strong>
+          <p>build/libs 아래 jar 파일이 생성됩니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>웹 API와 JPA 의존성</h2>
+          <pre><code class="language-gradle">dependencies {
+    implementation &#039;org.springframework.boot:spring-boot-starter-web&#039;
+    implementation &#039;org.springframework.boot:spring-boot-starter-data-jpa&#039;
+    runtimeOnly &#039;com.h2database:h2&#039;
+    testImplementation &#039;org.springframework.boot:spring-boot-starter-test&#039;
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>의존성을 추가한 뒤 IDE Gradle sync를 해야 인식됩니다.</li><li>버전 충돌이 생기면 Spring Boot BOM이 관리하는 버전을 우선 확인합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="session-vs-jwt.html">이전 · Session vs JWT</a>
+          <a href="application-yml.html">다음 · application.yml</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

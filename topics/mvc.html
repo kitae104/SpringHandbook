@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MVC | Spring Boot Handbook</title>
+    <meta name="description" content="Model, View, Controller로 책임을 나누는 구조이며 Spring MVC는 웹 요청 처리의 핵심 기반입니다." />
+    <meta property="og:title" content="MVC | Spring Boot Handbook" />
+    <meta property="og:description" content="Model, View, Controller로 책임을 나누는 구조이며 Spring MVC는 웹 요청 처리의 핵심 기반입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">05 · Part 1. Spring 기초</p>
+          <h1>MVC </h1>
+          <p>Model, View, Controller로 책임을 나누는 구조이며 Spring MVC는 웹 요청 처리의 핵심 기반입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>MVC는 요청 처리 코드를 한 클래스에 몰아넣지 않기 위한 기본 구조입니다. Controller는 요청을 해석하고, Model은 데이터를 담고, View는 화면을 담당합니다.</p><p>REST API 프로젝트에서는 View 템플릿 대신 JSON 응답을 반환하는 경우가 많습니다. 그래도 Spring MVC의 요청 매핑, 파라미터 바인딩, 검증, 예외 처리 흐름은 그대로 사용됩니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Controller</strong>
+          <p>View 이름을 반환하는 전통적인 MVC Controller입니다.</p>
+        </article>
+        <article>
+          <strong>@RestController</strong>
+          <p>@Controller와 @ResponseBody를 합친 API용 Controller입니다.</p>
+        </article>
+        <article>
+          <strong>@ModelAttribute</strong>
+          <p>쿼리 파라미터나 form 데이터를 객체로 바인딩합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>templates 디렉터리</strong>
+          <p>Thymeleaf 같은 서버 렌더링 화면을 사용할 때 확인합니다.</p>
+        </article>
+        <article>
+          <strong>static 디렉터리</strong>
+          <p>정적 CSS, JS, 이미지 파일을 둘 때 사용합니다.</p>
+        </article>
+        <article>
+          <strong>Controller 테스트</strong>
+          <p>@WebMvcTest로 MVC 계층만 가볍게 테스트할 수 있습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>API에서의 Spring MVC</h2>
+          <pre><code class="language-java">@RestController
+class CourseController {
+    @GetMapping(&quot;/api/courses&quot;)
+    List&lt;CourseResponse&gt; courses() {
+        return courseService.findAll();
+    }
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>Controller가 비즈니스 규칙을 직접 처리하기 시작하면 Service 분리를 검토합니다.</li><li>View 기반 MVC와 REST API MVC의 응답 방식 차이를 구분합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="rest-api.html">이전 · REST API</a>
+          <a href="ioc.html">다음 · IoC</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

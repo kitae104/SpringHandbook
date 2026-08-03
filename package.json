@@ -1,0 +1,9 @@
+{
+  "name": "springhandbook",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/generate-pages.js",
+    "start": "python -m http.server 4173 --bind 127.0.0.1"
+  }
+}

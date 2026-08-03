@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Transaction | Spring Boot Handbook</title>
+    <meta name="description" content="여러 데이터 변경 작업을 하나의 성공 또는 실패 단위로 묶는 처리입니다." />
+    <meta property="og:title" content="Transaction | Spring Boot Handbook" />
+    <meta property="og:description" content="여러 데이터 변경 작업을 하나의 성공 또는 실패 단위로 묶는 처리입니다." />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별 블로그형 수업 자료</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. 핵심 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">18 · Part 2. 핵심 구조</p>
+          <h1>Transaction </h1>
+          <p>여러 데이터 변경 작업을 하나의 성공 또는 실패 단위로 묶는 처리입니다.</p>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Transaction은 중간 실패로 데이터가 어중간하게 저장되는 것을 막습니다. 수강 신청에서 수강 인원 증가와 신청 내역 저장이 함께 일어난다면 둘 다 성공하거나 둘 다 실패해야 합니다.</p><p>Spring에서는 보통 Service 메서드에 @Transactional을 붙입니다. JPA의 변경 감지도 트랜잭션 안에서 자연스럽게 동작합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Transactional</strong>
+          <p>메서드 실행을 트랜잭션으로 감쌉니다.</p>
+        </article>
+        <article>
+          <strong>readOnly = true</strong>
+          <p>조회 전용 트랜잭션임을 나타냅니다.</p>
+        </article>
+        <article>
+          <strong>rollbackFor</strong>
+          <p>특정 예외에 대해 롤백하도록 지정합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인하거나 수정할 부분</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Service</strong>
+          <p>트랜잭션 경계는 보통 Service 계층에 둡니다.</p>
+        </article>
+        <article>
+          <strong>JPA</strong>
+          <p>변경 감지와 지연 로딩은 트랜잭션과 관련이 깊습니다.</p>
+        </article>
+        <article>
+          <strong>DB 제약 조건</strong>
+          <p>트랜잭션만 믿지 말고 unique, foreign key 같은 제약도 함께 둡니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>수강 신청 트랜잭션</h2>
+          <pre><code class="language-java">@Transactional
+public void enroll(Long studentId, Long courseId) {
+    Student student = studentRepository.findById(studentId).orElseThrow();
+    Course course = courseRepository.findById(courseId).orElseThrow();
+    course.enroll(student);
+    enrollmentRepository.save(new Enrollment(student, course));
+}</code></pre>
+        </section>
+
+        <section class="article-section">
+          <h2>처리할 때 주의할 점</h2>
+          <ul class="article-list"><li>private 메서드에 @Transactional을 붙여도 프록시 기반 AOP가 적용되지 않습니다.</li><li>외부 API 호출과 DB 트랜잭션을 한 덩어리로 묶을 때는 실패 보상 전략을 고민합니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="exception.html">이전 · Exception</a>
+          <a href="spring-security.html">다음 · Spring Security</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>
