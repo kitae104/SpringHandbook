@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CORS | Spring Boot Handbook</title>
-    <meta name="description" content="브라우저가 서로 다른 출처의 요청을 제한하는 보안 정책입니다." />
+    <meta name="description" content="브라우저가 다른 출처의 API를 호출할 때 서버가 허용 범위를 명시하도록 요구하는 보안 정책입니다." />
     <meta property="og:title" content="CORS | Spring Boot Handbook" />
-    <meta property="og:description" content="브라우저가 서로 다른 출처의 요청을 제한하는 보안 정책입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="브라우저가 다른 출처의 API를 호출할 때 서버가 허용 범위를 명시하도록 요구하는 보안 정책입니다." />
+    <meta name="theme-color" content="#8a5a18" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #8a5a18; --part-tint: #f6efe1; --part-deep: #6d4510;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -40,12 +40,34 @@
         <header class="article-hero">
           <p class="eyebrow">30 · Part 4. 실무 개발</p>
           <h1>CORS </h1>
-          <p>브라우저가 서로 다른 출처의 요청을 제한하는 보안 정책입니다.</p>
+          <p>브라우저가 다른 출처의 API를 호출할 때 서버가 허용 범위를 명시하도록 요구하는 보안 정책입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">실무</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>CORS는 서버끼리의 문제가 아니라 브라우저 보안 정책입니다. 프론트엔드가 localhost:3000이고 백엔드가 localhost:8080이면 출처가 다르기 때문에 브라우저가 요청을 막을 수 있습니다.</p><p>Spring Boot에서는 Controller 단위 @CrossOrigin 또는 전역 WebMvcConfigurer, SecurityConfig의 cors 설정으로 처리합니다. Security를 사용 중이면 MVC CORS만 설정하고 끝나지 않을 수 있습니다.</p>
+          <p>CORS는 서버 간 통신 문제가 아니라 브라우저 보안 정책입니다. 프론트엔드 주소와 백엔드 주소의 scheme, host, port 중 하나라도 다르면 다른 출처로 판단됩니다.</p><p>서버는 Access-Control-Allow-Origin, Allow-Methods, Allow-Headers 같은 응답 헤더로 어떤 출처와 메서드를 허용할지 알려 줍니다. 인증 쿠키를 쓴다면 credentials 설정도 함께 맞아야 합니다.</p><p>Spring Security를 사용하면 MVC CORS 설정과 Security CORS 설정의 적용 위치를 함께 확인해야 합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,52 +75,55 @@
           <div class="term-grid">
         <article>
           <strong>@CrossOrigin</strong>
-          <p>특정 Controller나 메서드에 CORS 허용을 지정합니다.</p>
+          <p>Controller 또는 메서드 단위 CORS 허용을 설정합니다.</p>
         </article>
         <article>
-          <strong>CorsRegistry</strong>
-          <p>전역 CORS 정책을 등록합니다.</p>
+          <strong>CorsConfiguration</strong>
+          <p>전역 CORS 정책을 코드로 구성합니다.</p>
         </article>
         <article>
-          <strong>CorsConfigurationSource</strong>
-          <p>Spring Security와 함께 사용할 CORS 설정 Bean입니다.</p>
+          <strong>OPTIONS</strong>
+          <p>브라우저가 실제 요청 전 preflight 요청으로 보낼 수 있습니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>SecurityConfig</strong>
-          <p>Spring Security 사용 시 http.cors 설정을 확인합니다.</p>
+          <strong>Spring Security</strong>
+          <p>보안 필터 체인에서 CORS 처리가 먼저 이뤄져야 할 수 있습니다.</p>
         </article>
         <article>
-          <strong>프론트엔드 요청</strong>
-          <p>credentials 포함 여부와 Authorization 헤더 사용 여부를 확인합니다.</p>
+          <strong>Frontend URL</strong>
+          <p>개발과 운영 origin이 다르므로 프로필별 설정이 필요합니다.</p>
         </article>
         <article>
-          <strong>배포 도메인</strong>
-          <p>운영 프론트엔드 도메인을 정확히 허용합니다.</p>
+          <strong>Credentials</strong>
+          <p>쿠키 인증 사용 시 allowCredentials와 origin 설정을 엄격히 맞춥니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
           <h2>전역 CORS 설정</h2>
-          <pre><code class="language-java">@Configuration
-class WebConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(&quot;/api/**&quot;)
-            .allowedOrigins(&quot;http://localhost:3000&quot;)
-            .allowedMethods(&quot;GET&quot;, &quot;POST&quot;, &quot;PATCH&quot;, &quot;DELETE&quot;)
-            .allowedHeaders(&quot;*&quot;);
-    }
+          <pre><code class="language-java">@Bean
+CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of(&quot;http://localhost:3000&quot;));
+    config.setAllowedMethods(List.of(&quot;GET&quot;, &quot;POST&quot;, &quot;PATCH&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;));
+    config.setAllowedHeaders(List.of(&quot;Authorization&quot;, &quot;Content-Type&quot;));
+    config.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration(&quot;/api/**&quot;, config);
+    return source;
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>allowedOrigins(&quot;*&quot;)와 credentials 허용을 함께 쓰는 것은 제한됩니다.</li><li>운영 배포 시 localhost만 허용하면 실제 프론트엔드에서 호출이 실패합니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>CORS 오류는 브라우저에서만 보이는 경우가 많아 서버 로그에 남지 않을 수 있습니다.</li><li>allowCredentials=true와 allowedOrigins=* 조합은 사용할 수 없습니다.</li><li>개발 편의로 넓게 연 CORS 설정을 운영에 그대로 가져가면 보안 위험이 커집니다.</li></ul>
         </section>
 
         <footer class="article-nav">

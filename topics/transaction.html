@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Transaction | Spring Boot Handbook</title>
-    <meta name="description" content="여러 데이터 변경 작업을 하나의 성공 또는 실패 단위로 묶는 처리입니다." />
+    <meta name="description" content="여러 DB 작업을 하나의 성공 또는 실패 단위로 묶어 데이터 일관성을 지키는 기능입니다." />
     <meta property="og:title" content="Transaction | Spring Boot Handbook" />
-    <meta property="og:description" content="여러 데이터 변경 작업을 하나의 성공 또는 실패 단위로 묶는 처리입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="여러 DB 작업을 하나의 성공 또는 실패 단위로 묶어 데이터 일관성을 지키는 기능입니다." />
+    <meta name="theme-color" content="#2867b2" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,18 +34,40 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 2. 핵심 구조</span>
+          <span>Part 2. API 계층 구조</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">18 · Part 2. 핵심 구조</p>
+          <p class="eyebrow">18 · Part 2. API 계층 구조</p>
           <h1>Transaction </h1>
-          <p>여러 데이터 변경 작업을 하나의 성공 또는 실패 단위로 묶는 처리입니다.</p>
+          <p>여러 DB 작업을 하나의 성공 또는 실패 단위로 묶어 데이터 일관성을 지키는 기능입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Transaction은 중간 실패로 데이터가 어중간하게 저장되는 것을 막습니다. 수강 신청에서 수강 인원 증가와 신청 내역 저장이 함께 일어난다면 둘 다 성공하거나 둘 다 실패해야 합니다.</p><p>Spring에서는 보통 Service 메서드에 @Transactional을 붙입니다. JPA의 변경 감지도 트랜잭션 안에서 자연스럽게 동작합니다.</p>
+          <p>트랜잭션은 여러 변경 작업이 모두 성공하거나 모두 실패하도록 묶습니다. 수강 신청에서 정원 감소와 신청 내역 저장이 따로 성공하면 데이터가 어긋날 수 있으므로 하나의 트랜잭션이 필요합니다.</p><p>Spring에서는 @Transactional을 주로 Service 메서드에 붙입니다. 프록시 기반으로 동작하므로 같은 클래스 내부 메서드 호출에서는 트랜잭션이 새로 적용되지 않는 점을 알아야 합니다.</p><p>읽기 전용 조회에는 readOnly 옵션을 주고, 쓰기 작업에는 예외 발생 시 롤백 정책을 명확히 이해해야 합니다. 기본적으로 RuntimeException 계열은 롤백 대상입니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,49 +75,54 @@
           <div class="term-grid">
         <article>
           <strong>@Transactional</strong>
-          <p>메서드 실행을 트랜잭션으로 감쌉니다.</p>
+          <p>메서드를 트랜잭션 범위로 실행합니다.</p>
         </article>
         <article>
-          <strong>readOnly = true</strong>
-          <p>조회 전용 트랜잭션임을 나타냅니다.</p>
+          <strong>readOnly</strong>
+          <p>조회 전용 트랜잭션 최적화 의도를 나타냅니다.</p>
         </article>
         <article>
-          <strong>rollbackFor</strong>
-          <p>특정 예외에 대해 롤백하도록 지정합니다.</p>
+          <strong>propagation</strong>
+          <p>기존 트랜잭션 참여 또는 새 트랜잭션 생성 방식을 정합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
           <strong>Service</strong>
-          <p>트랜잭션 경계는 보통 Service 계층에 둡니다.</p>
+          <p>유스케이스 단위 트랜잭션 경계를 두기 좋습니다.</p>
         </article>
         <article>
           <strong>JPA</strong>
-          <p>변경 감지와 지연 로딩은 트랜잭션과 관련이 깊습니다.</p>
+          <p>변경 감지와 lazy loading이 트랜잭션 범위에 영향을 받습니다.</p>
         </article>
         <article>
-          <strong>DB 제약 조건</strong>
-          <p>트랜잭션만 믿지 말고 unique, foreign key 같은 제약도 함께 둡니다.</p>
+          <strong>DB Lock</strong>
+          <p>동시 수정 문제는 트랜잭션과 락 전략을 함께 봐야 합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
           <h2>수강 신청 트랜잭션</h2>
-          <pre><code class="language-java">@Transactional
-public void enroll(Long studentId, Long courseId) {
-    Student student = studentRepository.findById(studentId).orElseThrow();
-    Course course = courseRepository.findById(courseId).orElseThrow();
-    course.enroll(student);
-    enrollmentRepository.save(new Enrollment(student, course));
+          <pre><code class="language-java">@Service
+class EnrollmentService {
+    @Transactional
+    public void enroll(Long courseId, Long studentId) {
+        Course course = courseRepository.findByIdForUpdate(courseId)
+            .orElseThrow();
+        Student student = studentRepository.getReferenceById(studentId);
+        course.enroll(student);
+        enrollmentRepository.save(new Enrollment(course, student));
+    }
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>private 메서드에 @Transactional을 붙여도 프록시 기반 AOP가 적용되지 않습니다.</li><li>외부 API 호출과 DB 트랜잭션을 한 덩어리로 묶을 때는 실패 보상 전략을 고민합니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>private 메서드나 같은 클래스 내부 호출에는 Spring 트랜잭션 프록시가 기대대로 적용되지 않습니다.</li><li>checked exception은 기본 롤백 대상이 아니므로 rollbackFor 설정이 필요할 수 있습니다.</li><li>트랜잭션을 너무 길게 잡으면 DB 연결과 락을 오래 점유해 처리량이 떨어집니다.</li></ul>
         </section>
 
         <footer class="article-nav">

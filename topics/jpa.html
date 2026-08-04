@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>JPA | Spring Boot Handbook</title>
-    <meta name="description" content="자바 객체와 관계형 데이터베이스를 매핑하는 표준 ORM 기술입니다." />
+    <meta name="description" content="자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다." />
     <meta property="og:title" content="JPA | Spring Boot Handbook" />
-    <meta property="og:description" content="자바 객체와 관계형 데이터베이스를 매핑하는 표준 ORM 기술입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다." />
+    <meta name="theme-color" content="#2867b2" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,71 +34,92 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 2. 핵심 구조</span>
+          <span>Part 2. API 계층 구조</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">14 · Part 2. 핵심 구조</p>
+          <p class="eyebrow">14 · Part 2. API 계층 구조</p>
           <h1>JPA </h1>
-          <p>자바 객체와 관계형 데이터베이스를 매핑하는 표준 ORM 기술입니다.</p>
+          <p>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>JPA는 SQL 중심이 아니라 객체 중심으로 데이터를 다루게 해 줍니다. 개발자는 Entity를 저장하고 조회하지만, 내부적으로는 SQL이 실행됩니다.</p><p>JPA를 잘 쓰려면 영속성 컨텍스트, 변경 감지, 지연 로딩, 트랜잭션을 함께 이해해야 합니다. 단순 CRUD는 쉽지만 연관관계와 성능 문제에서 차이가 크게 납니다.</p>
+          <p>JPA는 SQL을 완전히 숨기는 기술이 아니라 객체 중심으로 DB 접근 코드를 작성하게 돕는 표준입니다. Hibernate는 JPA 구현체로 많이 사용됩니다.</p><p>핵심은 영속성 컨텍스트입니다. 같은 트랜잭션 안에서 조회한 Entity는 관리 상태가 되고, 필드 변경은 커밋 시점에 update SQL로 반영될 수 있습니다.</p><p>JPA를 제대로 쓰려면 Entity 설계와 실제 SQL을 함께 봐야 합니다. 연관관계 fetch 전략, cascade, orphanRemoval, batch size는 성능과 데이터 무결성에 직접 영향을 줍니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
-          <strong>@Entity</strong>
-          <p>JPA가 관리할 객체입니다.</p>
+          <strong>@ManyToOne</strong>
+          <p>다대일 연관관계를 매핑합니다.</p>
         </article>
         <article>
           <strong>@OneToMany</strong>
-          <p>일대다 연관관계입니다.</p>
-        </article>
-        <article>
-          <strong>@ManyToOne(fetch = LAZY)</strong>
-          <p>다대일 연관관계를 지연 로딩으로 설정합니다.</p>
+          <p>일대다 연관관계를 매핑합니다.</p>
         </article>
         <article>
           <strong>@Transactional</strong>
-          <p>영속성 컨텍스트와 변경 감지가 동작하는 경계입니다.</p>
+          <p>영속성 컨텍스트와 DB 트랜잭션 범위를 엮습니다.</p>
+        </article>
+        <article>
+          <strong>@Modifying</strong>
+          <p>벌크 update/delete 쿼리에 사용합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>application.yml</strong>
-          <p>datasource, jpa.hibernate.ddl-auto, show-sql 설정을 확인합니다.</p>
+          <strong>EntityManager</strong>
+          <p>JPA의 핵심 API이며 영속성 컨텍스트를 다룹니다.</p>
         </article>
         <article>
-          <strong>Repository</strong>
-          <p>Spring Data JPA 인터페이스를 통해 JPA를 쉽게 사용합니다.</p>
+          <strong>SQL 로그</strong>
+          <p>JPQL이 어떤 SQL로 바뀌는지 확인합니다.</p>
         </article>
         <article>
-          <strong>SQL</strong>
-          <p>JPA가 만든 SQL을 읽을 수 있어야 성능 문제를 찾을 수 있습니다.</p>
+          <strong>Migration</strong>
+          <p>Entity 변경이 실제 DB 스키마와 맞는지 관리합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>트랜잭션 안에서 변경 감지</h2>
-          <pre><code class="language-java">@Transactional
-public void changeEmail(Long studentId, String email) {
-    Student student = repository.findById(studentId)
-        .orElseThrow(StudentNotFoundException::new);
-    student.changeEmail(email);
+          <h2>지연 로딩을 고려한 조회</h2>
+          <pre><code class="language-java">public interface EnrollmentRepository extends JpaRepository&lt;Enrollment, Long&gt; {
+    @EntityGraph(attributePaths = {&quot;student&quot;, &quot;course&quot;})
+    List&lt;Enrollment&gt; findByCourseId(Long courseId);
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>JPA를 사용해도 SQL 기본기는 반드시 필요합니다.</li><li>연관관계 기본 FetchType을 그대로 믿지 말고 쿼리 수를 확인합니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>JPA는 SQL을 몰라도 되는 기술이 아닙니다. SQL을 더 의식적으로 보게 만드는 기술입니다.</li><li>LAZY 로딩은 기본 선택으로 좋지만 조회 시점과 트랜잭션 범위를 이해해야 합니다.</li><li>벌크 쿼리는 영속성 컨텍스트의 Entity 상태와 DB 상태를 어긋나게 만들 수 있습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Spring Security | Spring Boot Handbook</title>
-    <meta name="description" content="Spring 애플리케이션의 인증과 인가를 담당하는 강력한 보안 프레임워크입니다." />
+    <meta name="description" content="인증, 인가, 보안 필터 체인, CSRF, 세션 정책을 제공하는 Spring의 보안 프레임워크입니다." />
     <meta property="og:title" content="Spring Security | Spring Boot Handbook" />
-    <meta property="og:description" content="Spring 애플리케이션의 인증과 인가를 담당하는 강력한 보안 프레임워크입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="인증, 인가, 보안 필터 체인, CSRF, 세션 정책을 제공하는 Spring의 보안 프레임워크입니다." />
+    <meta name="theme-color" content="#b4472b" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #b4472b; --part-tint: #faece7; --part-deep: #8c321d;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,82 +34,111 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 3. 보안</span>
+          <span>Part 3. 인증과 보안</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">19 · Part 3. 보안</p>
-          <h1>Spring Security <span class="topic-badge">★★★</span></h1>
-          <p>Spring 애플리케이션의 인증과 인가를 담당하는 강력한 보안 프레임워크입니다.</p>
+          <p class="eyebrow">19 · Part 3. 인증과 보안</p>
+          <h1>Spring Security </h1>
+          <p>인증, 인가, 보안 필터 체인, CSRF, 세션 정책을 제공하는 Spring의 보안 프레임워크입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">보안</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Spring Security는 누가 로그인했는지 확인하는 인증과, 그 사용자가 어떤 기능을 사용할 수 있는지 판단하는 인가를 처리합니다. API 서버에서는 세션 방식 또는 JWT 방식과 함께 사용합니다.</p><p>처음에는 SecurityFilterChain, PasswordEncoder, UserDetailsService 또는 커스텀 인증 필터의 역할을 나누어 이해하면 좋습니다.</p>
+          <p>Spring Security는 요청이 Controller에 도달하기 전에 필터 체인에서 인증과 권한을 확인합니다. 사용자가 누구인지 확인하는 인증과, 어떤 기능을 사용할 수 있는지 판단하는 인가를 분리해서 생각해야 합니다.</p><p>REST API에서는 form login과 서버 세션을 끄고 JWT 같은 토큰 기반 인증을 붙이는 경우가 많습니다. 이때도 핵심은 SecurityContext에 인증된 사용자 정보를 넣고 권한 규칙을 적용하는 것입니다.</p><p>보안 설정은 동작하지 않을 때 디버깅이 어렵기 때문에 URL 매칭 순서, 필터 위치, 인증 실패와 권한 실패 응답을 명확히 관리해야 합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
-          <strong>@EnableWebSecurity</strong>
-          <p>직접 보안 설정을 구성할 때 사용합니다. Boot에서는 자동 설정과 함께 동작합니다.</p>
+          <strong>SecurityFilterChain</strong>
+          <p>요청 보안 정책을 구성하는 핵심 Bean입니다.</p>
         </article>
         <article>
           <strong>@PreAuthorize</strong>
           <p>메서드 실행 전 권한 표현식을 검사합니다.</p>
         </article>
         <article>
-          <strong>@AuthenticationPrincipal</strong>
-          <p>현재 인증된 사용자 정보를 Controller에서 받습니다.</p>
+          <strong>Authentication</strong>
+          <p>인증된 사용자와 권한 정보를 담습니다.</p>
         </article>
         <article>
-          <strong>@Bean SecurityFilterChain</strong>
-          <p>HTTP 보안 정책을 Bean으로 등록합니다.</p>
+          <strong>SecurityContextHolder</strong>
+          <p>현재 요청의 보안 컨텍스트를 조회합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>build.gradle</strong>
-          <p>spring-boot-starter-security 의존성을 추가합니다.</p>
+          <strong>JWT Filter</strong>
+          <p>토큰을 읽고 검증한 뒤 Authentication을 등록합니다.</p>
         </article>
         <article>
-          <strong>SecurityConfig</strong>
-          <p>CSRF, CORS, URL별 권한, 세션 정책을 설정합니다.</p>
+          <strong>ExceptionHandling</strong>
+          <p>401 인증 실패와 403 권한 실패 응답을 분리합니다.</p>
         </article>
         <article>
-          <strong>PasswordEncoder</strong>
-          <p>비밀번호는 반드시 해시로 저장합니다.</p>
-        </article>
-        <article>
-          <strong>Exception 처리</strong>
-          <p>401과 403 응답을 구분합니다.</p>
+          <strong>CORS/CSRF</strong>
+          <p>브라우저 기반 요청 정책과 함께 설정해야 합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>기본 API 보안 설정</h2>
-          <pre><code class="language-java">@Configuration
-class SecurityConfig {
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -&gt; auth
-                .requestMatchers(&quot;/api/auth/**&quot;).permitAll()
-                .requestMatchers(&quot;/api/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
-                .anyRequest().authenticated())
-            .build();
-    }
+          <h2>REST API 보안 설정</h2>
+          <pre><code class="language-java">@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
+    return http
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -&gt; auth
+            .requestMatchers(&quot;/api/auth/**&quot;, &quot;/swagger-ui/**&quot;).permitAll()
+            .anyRequest().authenticated())
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
 }</code></pre>
+          
+          <div class="lambda-example">
+            <h3>람다 표현식으로도 작성 가능</h3>
+            <p>Spring Security 설정 메서드는 함수형 인터페이스를 받으므로, 설정 객체를 람다 매개변수로 받아 필요한 정책만 이어서 지정할 수 있습니다.</p>
+            <pre><code class="language-java">// 세션 정책 설정을 람다로 작성
+http.sessionManagement(session -&gt;
+    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+// 인가 규칙 설정을 람다로 작성
+http.authorizeHttpRequests(auth -&gt; auth
+    .requestMatchers(&quot;/api/auth/**&quot;, &quot;/swagger-ui/**&quot;).permitAll()
+    .anyRequest().authenticated());</code></pre>
+          </div>
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>Security를 추가하면 기본적으로 많은 요청이 막힐 수 있으므로 공개 API와 보호 API를 구분합니다.</li><li>비밀번호 평문 저장은 절대 하지 않습니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>401은 인증이 안 된 상태, 403은 인증은 됐지만 권한이 부족한 상태로 구분해야 합니다.</li><li>URL 매칭 순서가 넓은 규칙부터 나오면 뒤의 세부 규칙이 적용되지 않을 수 있습니다.</li><li>비밀번호 저장에는 반드시 단방향 해시를 사용하고 평문 로그를 남기면 안 됩니다.</li></ul>
         </section>
 
         <footer class="article-nav">

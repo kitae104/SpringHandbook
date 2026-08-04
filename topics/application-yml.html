@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>application.yml | Spring Boot Handbook</title>
-    <meta name="description" content="Spring Boot 애플리케이션의 포트, DB, 로그, 보안, 프로필 설정을 관리하는 파일입니다." />
+    <meta name="description" content="서버 포트, DB 연결, 로그 레벨, 외부 API 키, 프로필별 값을 관리하는 Spring Boot 설정 파일입니다." />
     <meta property="og:title" content="application.yml | Spring Boot Handbook" />
-    <meta property="og:description" content="Spring Boot 애플리케이션의 포트, DB, 로그, 보안, 프로필 설정을 관리하는 파일입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="서버 포트, DB 연결, 로그 레벨, 외부 API 키, 프로필별 값을 관리하는 Spring Boot 설정 파일입니다." />
+    <meta name="theme-color" content="#8a5a18" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #8a5a18; --part-tint: #f6efe1; --part-deep: #6d4510;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -40,68 +40,93 @@
         <header class="article-hero">
           <p class="eyebrow">23 · Part 4. 실무 개발</p>
           <h1>application.yml </h1>
-          <p>Spring Boot 애플리케이션의 포트, DB, 로그, 보안, 프로필 설정을 관리하는 파일입니다.</p>
+          <p>서버 포트, DB 연결, 로그 레벨, 외부 API 키, 프로필별 값을 관리하는 Spring Boot 설정 파일입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">실무</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>application.yml은 코드 밖에서 실행 환경을 조정하는 파일입니다. 같은 코드라도 로컬, 테스트, 운영 환경에서 DB 주소나 로그 레벨이 달라질 수 있습니다.</p><p>민감한 값은 파일에 직접 쓰지 않고 환경 변수로 주입하는 방식이 좋습니다. 특히 JWT secret, DB 비밀번호, API key는 GitHub에 올리면 안 됩니다.</p>
+          <p>application.yml은 코드에 박아 넣기 어려운 실행 환경 값을 관리합니다. 같은 코드라도 local, test, prod 프로필에 따라 DB 주소, 로그 레벨, 외부 API endpoint가 달라질 수 있습니다.</p><p>설정 값은 @Value로 바로 읽을 수도 있지만 관련 값이 많다면 @ConfigurationProperties로 묶는 편이 유지보수에 좋습니다. 타입 변환과 검증도 더 명확해집니다.</p><p>민감한 값은 yml에 직접 커밋하지 말고 환경 변수나 secret 관리 도구로 주입해야 합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
+          <strong>spring.profiles.active</strong>
+          <p>현재 활성화할 프로필을 지정합니다.</p>
+        </article>
+        <article>
           <strong>@Value</strong>
-          <p>설정 값을 필드나 생성자 파라미터로 주입합니다.</p>
+          <p>단일 설정 값을 주입받습니다.</p>
         </article>
         <article>
           <strong>@ConfigurationProperties</strong>
-          <p>prefix 아래 설정을 타입 안전한 객체로 바인딩합니다.</p>
-        </article>
-        <article>
-          <strong>@Profile</strong>
-          <p>특정 프로필에서만 Bean을 활성화합니다.</p>
+          <p>prefix 기준으로 설정 값을 객체에 바인딩합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>application-local.yml</strong>
-          <p>로컬 전용 설정을 분리할 수 있습니다.</p>
-        </article>
-        <article>
           <strong>환경 변수</strong>
-          <p>${DB_PASSWORD} 같은 형태로 외부 값을 참조합니다.</p>
+          <p>운영 secret과 배포 환경별 값을 주입합니다.</p>
         </article>
         <article>
           <strong>Logging</strong>
-          <p>logging.level 패키지명으로 로그 레벨을 조정합니다.</p>
+          <p>패키지별 로그 레벨을 설정합니다.</p>
+        </article>
+        <article>
+          <strong>DataSource</strong>
+          <p>DB 연결 URL, 사용자, 비밀번호를 설정합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>DB와 JPA 기본 설정</h2>
+          <h2>프로필별 설정 예제</h2>
           <pre><code class="language-yaml">spring:
+  profiles:
+    active: local
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:handbook
     username: sa
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+    password:
+
 logging:
   level:
-    org.hibernate.SQL: debug</code></pre>
+    org.hibernate.SQL: debug
+
+handbook:
+  upload:
+    max-size: 10MB</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>운영 환경에서 ddl-auto: create를 사용하면 데이터가 사라질 수 있습니다.</li><li>들여쓰기가 틀리면 설정이 적용되지 않습니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>들여쓰기가 틀리면 설정이 전혀 다른 위치에 들어갈 수 있습니다.</li><li>운영 DB 비밀번호와 API key를 Git에 커밋하면 안 됩니다.</li><li>프로필 우선순위를 모르면 로컬에서 본 값과 배포 환경의 값이 달라질 수 있습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

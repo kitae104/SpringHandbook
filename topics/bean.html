@@ -7,14 +7,14 @@
     <meta name="description" content="Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다." />
     <meta property="og:title" content="Bean | Spring Boot Handbook" />
     <meta property="og:description" content="Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#1f7a5f" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #1f7a5f; --part-tint: #e8f4ef; --part-deep: #155f49;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -41,11 +41,33 @@
           <p class="eyebrow">08 · Part 1. Spring 기초</p>
           <h1>Bean </h1>
           <p>Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">기초</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Bean은 Spring이 관리하는 객체입니다. Controller, Service, Repository처럼 애플리케이션의 주요 구성 요소는 Bean으로 등록되어 서로 주입됩니다.</p><p>직접 만든 클래스는 stereotype 어노테이션으로 등록하고, 외부 라이브러리 객체는 @Configuration 클래스 안에서 @Bean 메서드로 등록하는 방식이 흔합니다.</p>
+          <p>Bean은 Spring이 관리하는 객체입니다. Controller, Service, Repository 같은 주요 구성 요소는 Bean으로 등록되어 서로 주입되고 요청 처리에 참여합니다.</p><p>직접 작성한 클래스는 @Component 계열 어노테이션으로 등록하고, 외부 라이브러리 객체는 @Configuration 클래스의 @Bean 메서드로 등록하는 방식이 일반적입니다.</p><p>Bean의 범위, 이름, 생성 시점, 초기화와 종료 콜백을 이해하면 설정 문제를 더 정확하게 추적할 수 있습니다. 대부분의 웹 애플리케이션 Bean은 singleton scope로 하나만 만들어져 공유됩니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -61,7 +83,7 @@
         </article>
         <article>
           <strong>@Repository</strong>
-          <p>데이터 접근 계층이며 예외 변환 기능과도 관련됩니다.</p>
+          <p>데이터 접근 계층을 표현하고 예외 변환과도 관련됩니다.</p>
         </article>
         <article>
           <strong>@Bean</strong>
@@ -70,15 +92,19 @@
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
           <strong>ApplicationContext</strong>
-          <p>Bean을 보관하고 찾아주는 Spring 컨테이너입니다.</p>
+          <p>Bean을 보관하고 찾아 주는 컨테이너입니다.</p>
         </article>
         <article>
           <strong>Bean 이름</strong>
           <p>기본 이름은 클래스명의 첫 글자를 소문자로 바꾼 형태입니다.</p>
+        </article>
+        <article>
+          <strong>Scope</strong>
+          <p>singleton, prototype, request 등 Bean 생성 범위를 결정합니다.</p>
         </article></div>
         </section>
 
@@ -91,11 +117,12 @@ class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>new로 직접 만든 객체는 Spring이 주입과 생명주기를 관리하지 않습니다.</li><li>같은 타입 Bean이 여러 개면 주입 대상이 모호해질 수 있습니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>new로 직접 만든 객체는 Spring Bean이 아니므로 DI와 생명주기 관리를 받지 않습니다.</li><li>singleton Bean에 요청별 상태를 필드로 저장하면 동시성 문제가 생길 수 있습니다.</li><li>같은 타입 Bean이 여러 개면 주입 대상이 모호해져 애플리케이션 시작이 실패할 수 있습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

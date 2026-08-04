@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Logging | Spring Boot Handbook</title>
-    <meta name="description" content="애플리케이션의 실행 상태, 오류, 주요 이벤트를 기록하는 작업입니다." />
+    <meta name="description" content="애플리케이션 실행 중 발생한 이벤트와 오류를 기록해 디버깅과 운영 장애 분석을 가능하게 합니다." />
     <meta property="og:title" content="Logging | Spring Boot Handbook" />
-    <meta property="og:description" content="애플리케이션의 실행 상태, 오류, 주요 이벤트를 기록하는 작업입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="애플리케이션 실행 중 발생한 이벤트와 오류를 기록해 디버깅과 운영 장애 분석을 가능하게 합니다." />
+    <meta name="theme-color" content="#8a5a18" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #8a5a18; --part-tint: #f6efe1; --part-deep: #6d4510;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -40,59 +40,105 @@
         <header class="article-hero">
           <p class="eyebrow">27 · Part 4. 실무 개발</p>
           <h1>Logging </h1>
-          <p>애플리케이션의 실행 상태, 오류, 주요 이벤트를 기록하는 작업입니다.</p>
+          <p>애플리케이션 실행 중 발생한 이벤트와 오류를 기록해 디버깅과 운영 장애 분석을 가능하게 합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">실무</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Logging은 문제를 찾기 위한 기록입니다. System.out.println은 간단하지만 레벨, 출력 형식, 파일 저장, 운영 환경 제어가 어렵습니다.</p><p>Spring Boot는 기본적으로 SLF4J와 Logback 조합을 사용합니다. info, warn, error 레벨을 구분하고, 민감 정보가 로그에 남지 않도록 주의해야 합니다.</p>
+          <p>로그는 println 대체물이 아니라 운영 중 시스템을 관찰하는 기본 수단입니다. 요청 id, 사용자 id, 핵심 파라미터, 처리 시간, 예외 원인을 적절히 남기면 장애 분석 시간이 크게 줄어듭니다.</p><p>로그 레벨은 목적에 맞게 써야 합니다. debug는 개발 중 상세 정보, info는 정상 흐름의 주요 이벤트, warn은 복구 가능한 이상 징후, error는 즉시 확인해야 하는 실패에 사용합니다.</p><p>민감 정보는 로그에 남기면 안 됩니다. 비밀번호, 토큰, 주민등록번호, 결제 정보는 마스킹하거나 기록하지 않는 정책이 필요합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
-          <strong>@Slf4j</strong>
-          <p>Lombok이 Logger 필드를 만들어 줍니다.</p>
+          <strong>LoggerFactory</strong>
+          <p>클래스별 logger를 생성합니다.</p>
         </article>
         <article>
-          <strong>@ControllerAdvice</strong>
-          <p>예외 로그를 공통으로 남길 때 함께 사용됩니다.</p>
+          <strong>Slf4j</strong>
+          <p>로그 API 추상화로 다양한 구현체와 연결됩니다.</p>
+        </article>
+        <article>
+          <strong>MDC</strong>
+          <p>요청 id 같은 컨텍스트 값을 로그 라인에 함께 남깁니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
           <strong>application.yml</strong>
-          <p>logging.level 패키지명으로 로그 레벨을 조정합니다.</p>
+          <p>패키지별 로그 레벨을 설정합니다.</p>
         </article>
         <article>
           <strong>Exception</strong>
-          <p>예외 응답과 서버 로그를 함께 설계합니다.</p>
+          <p>전역 예외 처리에서 오류 로그를 남깁니다.</p>
         </article>
         <article>
-          <strong>AOP</strong>
-          <p>실행 시간 측정 같은 반복 로그를 분리할 수 있습니다.</p>
+          <strong>Filter</strong>
+          <p>요청 시작과 종료 로그를 공통으로 기록할 수 있습니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>의미 있는 로그 남기기</h2>
-          <pre><code class="language-java">@Slf4j
-@Service
-class StudentService {
-    void delete(Long id) {
-        log.info(&quot;delete student request. id={}&quot;, id);
-        repository.deleteById(id);
-    }
+          <h2>Service 로그와 예외 로그</h2>
+          <pre><code class="language-java">private static final Logger log = LoggerFactory.getLogger(CourseService.class);
+
+public CourseResponse publish(Long courseId) {
+    log.info(&quot;course publish requested. courseId={}&quot;, courseId);
+    Course course = courseRepository.findById(courseId)
+        .orElseThrow(() -&gt; new CourseNotFoundException(courseId));
+    course.publish();
+    return CourseResponse.from(course);
 }</code></pre>
+          
+          <div class="lambda-example">
+            <h3>람다 표현식으로도 작성 가능</h3>
+            <p>예외 로그를 남기기 전에 조회 실패 예외를 준비하는 Supplier도 람다 표현식으로 표현할 수 있습니다.</p>
+            <pre><code class="language-java">import java.util.function.Supplier;
+
+// 익명 클래스로 작성한 경우
+Course course = courseRepository.findById(courseId)
+    .orElseThrow(new Supplier&lt;CourseNotFoundException&gt;() {
+        @Override
+        public CourseNotFoundException get() {
+            return new CourseNotFoundException(courseId);
+        }
+    });
+
+// 람다 표현식으로 변경
+Course course = courseRepository.findById(courseId)
+    .orElseThrow(() -&gt; new CourseNotFoundException(courseId));</code></pre>
+          </div>
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>비밀번호, access token, 주민번호 같은 민감 정보를 로그에 남기지 않습니다.</li><li>error 로그만 남기면 정상 흐름 분석이 어렵고, info를 과하게 남기면 운영 로그가 시끄러워집니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>문자열 결합으로 로그를 만들면 해당 로그 레벨이 꺼져 있어도 비용이 발생할 수 있습니다.</li><li>토큰, 비밀번호, 개인정보를 로그에 남기면 보안 사고가 됩니다.</li><li>error 로그를 너무 많이 남기면 실제 장애 신호가 묻힐 수 있습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

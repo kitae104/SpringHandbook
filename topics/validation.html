@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Validation | Spring Boot Handbook</title>
-    <meta name="description" content="잘못된 입력을 서비스 로직에 들어가기 전에 걸러내는 검증 처리입니다." />
+    <meta name="description" content="클라이언트가 보낸 값이 API 규칙에 맞는지 확인하고 잘못된 입력을 일관된 오류 응답으로 바꾸는 과정입니다." />
     <meta property="og:title" content="Validation | Spring Boot Handbook" />
-    <meta property="og:description" content="잘못된 입력을 서비스 로직에 들어가기 전에 걸러내는 검증 처리입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="클라이언트가 보낸 값이 API 규칙에 맞는지 확인하고 잘못된 입력을 일관된 오류 응답으로 바꾸는 과정입니다." />
+    <meta name="theme-color" content="#2867b2" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,18 +34,40 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 2. 핵심 구조</span>
+          <span>Part 2. API 계층 구조</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">16 · Part 2. 핵심 구조</p>
+          <p class="eyebrow">16 · Part 2. API 계층 구조</p>
           <h1>Validation </h1>
-          <p>잘못된 입력을 서비스 로직에 들어가기 전에 걸러내는 검증 처리입니다.</p>
+          <p>클라이언트가 보낸 값이 API 규칙에 맞는지 확인하고 잘못된 입력을 일관된 오류 응답으로 바꾸는 과정입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Validation은 사용자가 보낸 값이 애플리케이션 규칙에 맞는지 확인하는 과정입니다. 이름이 비었는지, 이메일 형식인지, 숫자 범위가 맞는지 같은 기본 검증은 DTO에서 선언적으로 처리할 수 있습니다.</p><p>검증은 Controller에서 @Valid를 붙여야 실행됩니다. 검증 실패 응답은 GlobalExceptionHandler에서 공통 형식으로 정리하는 것이 좋습니다.</p>
+          <p>Validation은 잘못된 값이 Service와 DB까지 들어가기 전에 차단하는 방어선입니다. 빈 문자열, 잘못된 이메일, 범위를 벗어난 숫자 같은 형식 오류는 요청 DTO에서 검증하는 것이 자연스럽습니다.</p><p>비즈니스 규칙과 단순 입력 검증은 구분해야 합니다. 예를 들어 제목 길이는 DTO 검증으로 처리할 수 있지만, 이미 마감된 강좌에 등록할 수 없다는 규칙은 Service나 도메인 모델에서 판단하는 편이 낫습니다.</p><p>검증 실패 응답은 프론트엔드가 필드별 메시지를 표시할 수 있도록 구조화하는 것이 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,59 +75,53 @@
           <div class="term-grid">
         <article>
           <strong>@Valid</strong>
-          <p>DTO 검증을 실행합니다.</p>
-        </article>
-        <article>
-          <strong>@NotNull</strong>
-          <p>null을 허용하지 않습니다.</p>
+          <p>요청 DTO의 Bean Validation을 실행합니다.</p>
         </article>
         <article>
           <strong>@NotBlank</strong>
-          <p>빈 문자열과 공백 문자열을 허용하지 않습니다.</p>
+          <p>null, 빈 문자열, 공백만 있는 문자열을 막습니다.</p>
         </article>
         <article>
           <strong>@Size</strong>
-          <p>문자열, 컬렉션 길이를 제한합니다.</p>
+          <p>문자열, 컬렉션 길이 범위를 제한합니다.</p>
         </article>
         <article>
-          <strong>@Min, @Max</strong>
-          <p>숫자 범위를 제한합니다.</p>
+          <strong>@Pattern</strong>
+          <p>정규식 기반 형식을 검증합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>build.gradle</strong>
-          <p>spring-boot-starter-validation 의존성이 필요할 수 있습니다.</p>
+          <strong>DTO</strong>
+          <p>검증 어노테이션은 주로 요청 DTO에 둡니다.</p>
         </article>
         <article>
           <strong>Exception</strong>
-          <p>MethodArgumentNotValidException을 공통 처리합니다.</p>
+          <p>MethodArgumentNotValidException을 공통 오류 응답으로 바꿉니다.</p>
         </article>
         <article>
-          <strong>DTO</strong>
-          <p>검증 어노테이션은 보통 요청 DTO에 둡니다.</p>
+          <strong>Swagger</strong>
+          <p>검증 규칙을 API 문서에 반영합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>검증 DTO와 Controller</h2>
-          <pre><code class="language-java">public record CourseCreateRequest(
-    @NotBlank String title,
-    @Min(1) int credit
-) { }
-
-@PostMapping(&quot;/api/courses&quot;)
-CourseResponse create(@Valid @RequestBody CourseCreateRequest request) {
-    return courseService.create(request);
+          <h2>요청 DTO 검증</h2>
+          <pre><code class="language-java">public record MemberSignupRequest(
+    @Email String email,
+    @NotBlank @Size(min = 8, max = 64) String password,
+    @NotBlank @Size(max = 30) String nickname
+) {
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>@Valid를 빼면 DTO의 검증 어노테이션이 실행되지 않습니다.</li><li>비즈니스 규칙 검증과 단순 입력 형식 검증을 구분합니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>검증 어노테이션만으로 모든 비즈니스 규칙을 처리하려고 하면 코드가 어색해집니다.</li><li>검증 실패 응답이 필드명과 메시지를 포함하지 않으면 프론트엔드에서 사용자에게 설명하기 어렵습니다.</li><li>중첩 DTO나 List 내부 요소 검증에는 @Valid 위치를 신경 써야 합니다.</li></ul>
         </section>
 
         <footer class="article-nav">

@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CRUD | Spring Boot Handbook</title>
-    <meta name="description" content="Create, Read, Update, Delete로 대부분의 데이터 중심 API가 출발하는 기본 작업입니다." />
+    <meta name="description" content="Create, Read, Update, Delete의 기본 데이터 조작 흐름으로 대부분의 API 기능을 구성하는 출발점입니다." />
     <meta property="og:title" content="CRUD | Spring Boot Handbook" />
-    <meta property="og:description" content="Create, Read, Update, Delete로 대부분의 데이터 중심 API가 출발하는 기본 작업입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="Create, Read, Update, Delete의 기본 데이터 조작 흐름으로 대부분의 API 기능을 구성하는 출발점입니다." />
+    <meta name="theme-color" content="#2867b2" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,18 +34,40 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 2. 핵심 구조</span>
+          <span>Part 2. API 계층 구조</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">15 · Part 2. 핵심 구조</p>
+          <p class="eyebrow">15 · Part 2. API 계층 구조</p>
           <h1>CRUD </h1>
-          <p>Create, Read, Update, Delete로 대부분의 데이터 중심 API가 출발하는 기본 작업입니다.</p>
+          <p>Create, Read, Update, Delete의 기본 데이터 조작 흐름으로 대부분의 API 기능을 구성하는 출발점입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>CRUD는 웹 애플리케이션의 가장 기본 기능입니다. 하지만 단순히 메서드 네 개를 만드는 것이 아니라 요청 DTO, 응답 DTO, 검증, 예외, 트랜잭션까지 함께 설계해야 합니다.</p><p>처음 프로젝트에서는 하나의 자원, 예를 들어 Student에 대해 CRUD를 완성해 보면 Spring Boot API 전체 흐름을 익히기 좋습니다.</p>
+          <p>CRUD는 단순해 보이지만 백엔드 구조를 익히기 가장 좋은 흐름입니다. 요청 DTO, 검증, Entity 생성, Repository 저장, 응답 DTO 변환이 한 번에 연결됩니다.</p><p>조회는 페이징과 정렬, 생성은 중복 검증, 수정은 권한과 부분 업데이트, 삭제는 물리 삭제와 논리 삭제 여부를 고민해야 합니다.</p><p>단순 예제에서 끝내지 말고 상태 코드, 오류 응답, 트랜잭션, 테스트까지 붙이면 실제 프로젝트에서 반복되는 패턴을 잡을 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,51 +75,72 @@
           <div class="term-grid">
         <article>
           <strong>@PostMapping</strong>
-          <p>생성 API에 사용합니다.</p>
+          <p>생성 요청을 처리합니다.</p>
         </article>
         <article>
           <strong>@GetMapping</strong>
-          <p>조회 API에 사용합니다.</p>
+          <p>조회 요청을 처리합니다.</p>
         </article>
         <article>
           <strong>@PatchMapping</strong>
-          <p>일부 수정 API에 사용합니다.</p>
+          <p>부분 수정 요청을 처리합니다.</p>
         </article>
         <article>
           <strong>@DeleteMapping</strong>
-          <p>삭제 API에 사용합니다.</p>
+          <p>삭제 요청을 처리합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>Validation</strong>
-          <p>생성과 수정 요청에 필요한 값 검증을 적용합니다.</p>
+          <strong>DTO</strong>
+          <p>요청과 응답 구조를 분리합니다.</p>
         </article>
         <article>
-          <strong>Exception</strong>
-          <p>없는 ID 조회, 중복 데이터, 권한 없음 같은 상황을 처리합니다.</p>
+          <strong>Validation</strong>
+          <p>생성 및 수정 입력을 검증합니다.</p>
         </article>
         <article>
           <strong>Transaction</strong>
-          <p>생성, 수정, 삭제는 트랜잭션 경계를 확인합니다.</p>
+          <p>수정과 삭제의 일관성을 보장합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>수정 API 예제</h2>
-          <pre><code class="language-java">@PatchMapping(&quot;/api/students/{id}&quot;)
-StudentResponse update(@PathVariable Long id,
-                       @Valid @RequestBody StudentUpdateRequest request) {
-    return studentService.update(id, request);
+          <h2>게시글 제목 수정 흐름</h2>
+          <pre><code class="language-java">@Transactional
+public PostResponse updateTitle(Long postId, String title) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -&gt; new PostNotFoundException(postId));
+    post.changeTitle(title);
+    return PostResponse.from(post);
 }</code></pre>
+          
+          <div class="lambda-example">
+            <h3>람다 표현식으로도 작성 가능</h3>
+            <p>Repository 조회 실패 시 예외를 만드는 Supplier는 람다 표현식으로 간결하게 작성할 수 있습니다.</p>
+            <pre><code class="language-java">import java.util.function.Supplier;
+
+// 익명 클래스로 작성한 경우
+Post post = postRepository.findById(postId)
+    .orElseThrow(new Supplier&lt;PostNotFoundException&gt;() {
+        @Override
+        public PostNotFoundException get() {
+            return new PostNotFoundException(postId);
+        }
+    });
+
+// 람다 표현식으로 변경
+Post post = postRepository.findById(postId)
+    .orElseThrow(() -&gt; new PostNotFoundException(postId));</code></pre>
+          </div>
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>삭제 API는 실제 삭제인지 상태값 변경인지 먼저 정합니다.</li><li>수정 요청에서 null 값이 들어왔을 때 덮어쓸지 무시할지 규칙을 정합니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>수정 API에서 Entity를 새로 만들어 save하면 기존 연관관계나 영속 상태를 잃을 수 있습니다.</li><li>삭제는 실제 delete와 deleted 플래그를 두는 논리 삭제 중 요구사항에 맞게 선택해야 합니다.</li><li>목록 조회는 처음부터 페이징을 고려하지 않으면 데이터가 많아질 때 성능 문제가 생깁니다.</li></ul>
         </section>
 
         <footer class="article-nav">

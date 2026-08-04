@@ -14,8 +14,8 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function partTitle(id) {
-  return TOPIC_PARTS.find((part) => part.id === id)?.title ?? id;
+function partOf(id) {
+  return TOPIC_PARTS.find((part) => part.id === id);
 }
 
 function renderList(items, className = "article-list") {
@@ -34,6 +34,39 @@ function renderPairs(items) {
     .join("")}</div>`;
 }
 
+function renderInsights(items) {
+  return `<div class="insight-grid">${items
+    .map(
+      ([title, description]) => `
+        <article>
+          <strong>${escapeHtml(title)}</strong>
+          <p>${escapeHtml(description)}</p>
+        </article>`,
+    )
+    .join("")}</div>`;
+}
+
+function renderLambdaExample(topic) {
+  if (!topic.lambdaExample) {
+    return "";
+  }
+
+  return `
+          <div class="lambda-example">
+            <h3>람다 표현식으로도 작성 가능</h3>
+            ${
+              topic.lambdaDescription
+                ? `<p>${escapeHtml(topic.lambdaDescription)}</p>`
+                : ""
+            }
+            <pre><code class="language-${escapeHtml(topic.lambdaLanguage || topic.language)}">${escapeHtml(topic.lambdaExample)}</code></pre>
+          </div>`;
+}
+
+function styleVars(part) {
+  return `--part-color: ${part.color}; --part-tint: ${part.tint}; --part-deep: ${part.deep};`;
+}
+
 function renderHeader(relativePrefix = "") {
   return `
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
@@ -42,7 +75,7 @@ function renderHeader(relativePrefix = "") {
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -55,6 +88,7 @@ function renderHeader(relativePrefix = "") {
 function renderTopicPage(topic, index) {
   const previous = SPRING_TOPICS[index - 1];
   const next = SPRING_TOPICS[index + 1];
+  const part = partOf(topic.part);
   const badge = topic.badge ? `<span class="topic-badge">${escapeHtml(topic.badge)}</span>` : "";
 
   return `<!doctype html>
@@ -66,26 +100,31 @@ function renderTopicPage(topic, index) {
     <meta name="description" content="${escapeHtml(topic.summary)}" />
     <meta property="og:title" content="${escapeHtml(topic.title)} | Spring Boot Handbook" />
     <meta property="og:description" content="${escapeHtml(topic.summary)}" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="${escapeHtml(part.color)}" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="${styleVars(part)}">
     ${renderHeader("../")}
     <main id="content" class="article-shell">
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>${escapeHtml(partTitle(topic.part))}</span>
+          <span>${escapeHtml(part.title)}</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">${escapeHtml(topic.number)} · ${escapeHtml(partTitle(topic.part))}</p>
+          <p class="eyebrow">${escapeHtml(topic.number)} · ${escapeHtml(part.title)}</p>
           <h1>${escapeHtml(topic.title)} ${badge}</h1>
           <p>${escapeHtml(topic.summary)}</p>
+          <div class="article-meta">
+            <span class="topic-badge">${escapeHtml(part.shortTitle)}</span>
+            <span class="topic-badge">${escapeHtml(topic.level)}</span>
+            <span class="topic-badge">${escapeHtml(topic.readingTime)}</span>
+          </div>
         </header>
 
         <section class="article-section">
@@ -94,22 +133,28 @@ function renderTopicPage(topic, index) {
         </section>
 
         <section class="article-section">
+          <h2>동작 흐름</h2>
+          ${renderInsights(topic.flow)}
+        </section>
+
+        <section class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           ${renderPairs(topic.annotations)}
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           ${renderPairs(topic.related)}
         </section>
 
         <section class="article-section">
           <h2>${escapeHtml(topic.exampleTitle)}</h2>
           <pre><code class="language-${escapeHtml(topic.language)}">${escapeHtml(topic.code)}</code></pre>
+          ${renderLambdaExample(topic)}
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           ${renderList(topic.watch)}
         </section>
 

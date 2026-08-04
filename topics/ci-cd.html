@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CI/CD | Spring Boot Handbook</title>
-    <meta name="description" content="코드 변경 후 테스트, 빌드, 배포를 자동화하는 개발 흐름입니다." />
+    <meta name="description" content="코드 변경 후 테스트, 빌드, 배포를 자동화해 변경 품질과 배포 속도를 높이는 개발 흐름입니다." />
     <meta property="og:title" content="CI/CD | Spring Boot Handbook" />
-    <meta property="og:description" content="코드 변경 후 테스트, 빌드, 배포를 자동화하는 개발 흐름입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="코드 변경 후 테스트, 빌드, 배포를 자동화해 변경 품질과 배포 속도를 높이는 개발 흐름입니다." />
+    <meta name="theme-color" content="#6f4aa8" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #6f4aa8; --part-tint: #f0ecf8; --part-deep: #553782;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,18 +34,40 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 5. 심화</span>
+          <span>Part 5. 확장과 운영</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">35 · Part 5. 심화</p>
+          <p class="eyebrow">35 · Part 5. 확장과 운영</p>
           <h1>CI/CD </h1>
-          <p>코드 변경 후 테스트, 빌드, 배포를 자동화하는 개발 흐름입니다.</p>
+          <p>코드 변경 후 테스트, 빌드, 배포를 자동화해 변경 품질과 배포 속도를 높이는 개발 흐름입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">확장</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>CI는 Continuous Integration으로, 코드가 올라올 때 자동으로 테스트와 빌드를 실행해 문제를 빨리 찾는 과정입니다. CD는 Continuous Delivery 또는 Deployment로, 검증된 코드를 배포 가능한 상태로 만들거나 실제 배포까지 자동화합니다.</p><p>학생 프로젝트에서도 GitHub Actions로 테스트를 자동 실행하면 협업 품질이 크게 좋아집니다. 배포 단계에서는 환경 변수와 secret 관리가 특히 중요합니다.</p>
+          <p>CI는 Continuous Integration으로, 코드가 push될 때 자동으로 테스트와 빌드를 실행해 문제를 빨리 찾는 과정입니다. CD는 검증된 산출물을 배포 가능한 상태로 만들거나 실제 배포까지 자동화합니다.</p><p>학생 프로젝트에서도 GitHub Actions로 테스트를 자동 실행하면 main 브랜치 품질을 유지하기 쉬워집니다. 테스트 실패, 빌드 실패, 포맷 오류를 PR 단계에서 확인할 수 있습니다.</p><p>배포 자동화에서는 secret 관리, 환경 변수, 롤백 전략이 중요합니다. 단순히 배포 명령을 자동으로 실행하는 것만으로는 안정적인 CD가 되지 않습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,7 +75,7 @@
           <div class="term-grid">
         <article>
           <strong>GitHub Actions</strong>
-          <p>GitHub 저장소 이벤트를 기준으로 자동 작업을 실행합니다.</p>
+          <p>GitHub 저장소 이벤트를 기준으로 workflow를 실행합니다.</p>
         </article>
         <article>
           <strong>workflow</strong>
@@ -62,11 +84,15 @@
         <article>
           <strong>secrets</strong>
           <p>토큰, 비밀번호 같은 민감 값을 안전하게 저장합니다.</p>
+        </article>
+        <article>
+          <strong>artifact</strong>
+          <p>빌드 결과물을 다음 단계에서 사용할 수 있게 보관합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
           <strong>Gradle</strong>
@@ -77,13 +103,13 @@
           <p>이미지 빌드와 push를 자동화할 수 있습니다.</p>
         </article>
         <article>
-          <strong>Vercel 또는 서버 배포</strong>
-          <p>프론트엔드/문서 사이트는 push 기반 자동 배포와 잘 맞습니다.</p>
+          <strong>Git</strong>
+          <p>pull request와 branch 보호 규칙으로 검증을 강제합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>Gradle 테스트 워크플로</h2>
+          <h2>Gradle 테스트 workflow</h2>
           <pre><code class="language-yaml">name: Java CI
 on: [push, pull_request]
 jobs:
@@ -96,11 +122,12 @@ jobs:
           distribution: temurin
           java-version: &#039;21&#039;
       - run: ./gradlew test</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>CI가 실패했는데 무시하고 merge하면 main 브랜치 품질이 떨어집니다.</li><li>secret 값을 로그에 출력하지 않습니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>CI 실패를 무시하고 병합하면 main 브랜치가 불안정해집니다.</li><li>secret 값을 로그에 출력하면 보안 사고로 이어질 수 있습니다.</li><li>배포 자동화에는 실패 시 알림과 롤백 방법도 포함되어야 합니다.</li></ul>
         </section>
 
         <footer class="article-nav">

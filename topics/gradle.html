@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gradle | Spring Boot Handbook</title>
-    <meta name="description" content="프로젝트 빌드, 테스트 실행, 라이브러리 의존성 관리를 담당하는 빌드 도구입니다." />
+    <meta name="description" content="의존성 관리, 빌드, 테스트, 패키징을 자동화하는 JVM 프로젝트 빌드 도구입니다." />
     <meta property="og:title" content="Gradle | Spring Boot Handbook" />
-    <meta property="og:description" content="프로젝트 빌드, 테스트 실행, 라이브러리 의존성 관리를 담당하는 빌드 도구입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="의존성 관리, 빌드, 테스트, 패키징을 자동화하는 JVM 프로젝트 빌드 도구입니다." />
+    <meta name="theme-color" content="#8a5a18" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #8a5a18; --part-tint: #f6efe1; --part-deep: #6d4510;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -40,12 +40,34 @@
         <header class="article-hero">
           <p class="eyebrow">22 · Part 4. 실무 개발</p>
           <h1>Gradle </h1>
-          <p>프로젝트 빌드, 테스트 실행, 라이브러리 의존성 관리를 담당하는 빌드 도구입니다.</p>
+          <p>의존성 관리, 빌드, 테스트, 패키징을 자동화하는 JVM 프로젝트 빌드 도구입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">실무</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Gradle은 Spring Boot 프로젝트에서 필요한 라이브러리를 내려받고, 테스트를 실행하고, 실행 가능한 jar 파일을 만드는 역할을 합니다.</p><p>학생들은 build.gradle을 단순 설정 파일로만 보지 말고 프로젝트가 어떤 기술을 사용하고 있는지 보여주는 의존성 목록으로 읽는 습관을 들이면 좋습니다.</p>
+          <p>Gradle은 Spring Boot 프로젝트의 의존성, 플러그인, 테스트, jar 생성 과정을 관리합니다. starter를 추가하면 관련 라이브러리 묶음과 자동 설정 후보가 함께 들어옵니다.</p><p>빌드 파일을 읽을 수 있어야 프로젝트가 어떤 기능을 사용하는지 빠르게 파악할 수 있습니다. web, validation, data-jpa, security, redis 같은 의존성은 코드 구조와 실행 동작에 직접 연결됩니다.</p><p>팀 프로젝트에서는 로컬 IDE 실행뿐 아니라 CI에서 ./gradlew test 또는 ./gradlew build가 안정적으로 돌아가는지 확인하는 것이 중요합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,52 +75,55 @@
           <div class="term-grid">
         <article>
           <strong>plugins</strong>
-          <p>java, org.springframework.boot 같은 빌드 플러그인을 선언합니다.</p>
+          <p>Java, Spring Boot, dependency-management 같은 빌드 기능을 켭니다.</p>
         </article>
         <article>
           <strong>dependencies</strong>
-          <p>프로젝트가 사용하는 라이브러리를 선언합니다.</p>
+          <p>컴파일, 런타임, 테스트 의존성을 선언합니다.</p>
         </article>
         <article>
-          <strong>implementation</strong>
-          <p>컴파일과 실행에 필요한 의존성입니다.</p>
-        </article>
-        <article>
-          <strong>testImplementation</strong>
-          <p>테스트에만 필요한 의존성입니다.</p>
+          <strong>tasks</strong>
+          <p>test, bootJar 같은 빌드 작업을 설정합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>Java 버전</strong>
-          <p>sourceCompatibility 또는 toolchain 설정을 확인합니다.</p>
+          <strong>build.gradle</strong>
+          <p>프로젝트 의존성과 플러그인 설정의 중심 파일입니다.</p>
         </article>
         <article>
-          <strong>starter</strong>
-          <p>spring-boot-starter-web처럼 관련 의존성을 묶은 패키지입니다.</p>
+          <strong>gradle wrapper</strong>
+          <p>팀원이 같은 Gradle 버전으로 빌드하게 합니다.</p>
         </article>
         <article>
-          <strong>빌드 결과</strong>
-          <p>build/libs 아래 jar 파일이 생성됩니다.</p>
+          <strong>CI/CD</strong>
+          <p>자동 테스트와 빌드 명령으로 사용됩니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>웹 API와 JPA 의존성</h2>
-          <pre><code class="language-gradle">dependencies {
+          <h2>Spring Boot Gradle 의존성</h2>
+          <pre><code class="language-groovy">plugins {
+    id &#039;java&#039;
+    id &#039;org.springframework.boot&#039; version &#039;3.3.0&#039;
+    id &#039;io.spring.dependency-management&#039; version &#039;1.1.5&#039;
+}
+
+dependencies {
     implementation &#039;org.springframework.boot:spring-boot-starter-web&#039;
+    implementation &#039;org.springframework.boot:spring-boot-starter-validation&#039;
     implementation &#039;org.springframework.boot:spring-boot-starter-data-jpa&#039;
-    runtimeOnly &#039;com.h2database:h2&#039;
     testImplementation &#039;org.springframework.boot:spring-boot-starter-test&#039;
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>의존성을 추가한 뒤 IDE Gradle sync를 해야 인식됩니다.</li><li>버전 충돌이 생기면 Spring Boot BOM이 관리하는 버전을 우선 확인합니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>의존성 버전을 개별로 섞으면 Spring Boot BOM과 충돌할 수 있습니다.</li><li>로컬 IDE 실행만 확인하고 Gradle build를 확인하지 않으면 CI에서 실패할 수 있습니다.</li><li>testImplementation과 implementation 범위를 구분해야 불필요한 라이브러리가 운영 코드에 들어가지 않습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

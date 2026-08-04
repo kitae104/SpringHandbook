@@ -4,6 +4,8 @@ const searchInput = document.querySelector("#topicSearch");
 const readProgress = document.querySelector("#readProgress");
 const partNav = document.querySelector("#partNav");
 const topicGroups = document.querySelector("#topicGroups");
+const categoryLegend = document.querySelector("#categoryLegend");
+const topicCount = document.querySelector("#topicCount");
 
 const savedTheme = localStorage.getItem("spring-handbook-theme");
 if (savedTheme) {
@@ -27,14 +29,31 @@ function topicHref(topic) {
   return `topics/${topic.slug}.html`;
 }
 
+function applyPartColor(element, part) {
+  element.style.setProperty("--part-color", part.color);
+  element.style.setProperty("--part-tint", part.tint);
+  element.style.setProperty("--part-deep", part.deep);
+}
+
 function renderHome() {
   if (!partNav || !topicGroups || !window.TOPIC_PARTS || !window.SPRING_TOPICS) return;
 
+  if (topicCount) topicCount.textContent = window.SPRING_TOPICS.length;
+
   window.TOPIC_PARTS.forEach((part) => {
+    const count = window.SPRING_TOPICS.filter((topic) => topic.part === part.id).length;
     const link = document.createElement("a");
     link.href = `#${part.id}`;
-    link.textContent = part.title;
+    link.innerHTML = `<span>${part.title}</span><small>${count}</small>`;
+    applyPartColor(link, part);
     partNav.append(link);
+
+    if (categoryLegend) {
+      const item = createElement("span", "legend-item");
+      applyPartColor(item, part);
+      item.innerHTML = `<i aria-hidden="true"></i>${part.shortTitle}`;
+      categoryLegend.append(item);
+    }
   });
 
   window.TOPIC_PARTS.forEach((part) => {
@@ -42,9 +61,15 @@ function renderHome() {
     const section = createElement("section", "topic-part");
     section.id = part.id;
     section.dataset.part = part.title;
+    applyPartColor(section, part);
 
     const heading = createElement("div", "topic-part-heading");
-    heading.innerHTML = `<div><p class="eyebrow">${part.title}</p><h3>${part.description}</h3></div><span>${partTopics.length}개 주제</span>`;
+    heading.innerHTML = `
+      <div>
+        <p class="eyebrow">${part.title}</p>
+        <h3>${part.description}</h3>
+      </div>
+      <span>${partTopics.length}개 주제</span>`;
     section.append(heading);
 
     const grid = createElement("div", "topic-grid topic-link-grid");
@@ -52,17 +77,28 @@ function renderHome() {
       const card = document.createElement("a");
       card.className = "topic-card topic-link-card";
       card.href = topicHref(topic);
-      card.dataset.topic = `${topic.title} ${topic.summary} ${topic.annotations.map(([name]) => name).join(" ")}`;
+      card.dataset.topic = [
+        topic.title,
+        topic.summary,
+        topic.level,
+        topic.body?.join(" "),
+        topic.annotations?.map(([name]) => name).join(" "),
+      ].join(" ");
+      applyPartColor(card, part);
       card.innerHTML = `
-        <div class="topic-title">
+        <div class="topic-meta">
           <span>${topic.number}</span>
+          <strong>${part.shortTitle}</strong>
+          <small>${topic.level}</small>
+        </div>
+        <div class="topic-title">
           <h3>${topic.title} ${topic.badge ? `<em>${topic.badge}</em>` : ""}</h3>
         </div>
         <p>${topic.summary}</p>
         <div class="topic-tags">
           ${topic.annotations.slice(0, 3).map(([name]) => `<span>${name}</span>`).join("")}
         </div>
-        <strong class="read-more">자세히 보기</strong>
+        <strong class="read-more">자세히 읽기</strong>
       `;
       grid.append(card);
     });
@@ -73,7 +109,7 @@ function renderHome() {
 }
 
 function filterTopics() {
-  if (!searchInput) return;
+  if (!searchInput || !topicGroups) return;
   const query = searchInput.value.trim().toLowerCase();
   const cards = Array.from(document.querySelectorAll(".topic-link-card"));
   let visibleCount = 0;
@@ -94,7 +130,7 @@ function filterTopics() {
   });
 
   if (query && visibleCount === 0) {
-    const message = createElement("p", "no-results", "검색 결과가 없습니다. 다른 키워드로 다시 검색해 보세요.");
+    const message = createElement("p", "no-results", "검색 결과가 없습니다. 어노테이션, 파일명, 기능 이름으로 다시 검색해 보세요.");
     topicGroups.after(message);
   }
 }

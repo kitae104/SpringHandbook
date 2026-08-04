@@ -6,14 +6,14 @@
     <title>Spring Boot Handbook</title>
     <meta
       name="description"
-      content="자바를 배운 학생이 스프링부트 핵심 개념을 예제와 함께 익히는 HTML 핸드북"
+      content="Spring Boot를 주제별로 검색하고, 개념부터 실무 예제까지 블로그형 글로 읽을 수 있는 학습 자료입니다."
     />
     <meta property="og:title" content="Spring Boot Handbook" />
     <meta
       property="og:description"
-      content="Spring 기초부터 보안, 실무 개발, 심화 주제까지 상세 설명과 예제로 정리한 학생용 핸드북"
+      content="Spring 기초, API 구조, 보안, 실무 개발, 확장 주제를 색상별로 구분해 찾아보는 기술 핸드북입니다."
     />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#1f7a5f" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
@@ -28,7 +28,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>개념, 어노테이션, 설정, 예제를 함께 보는 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions">
@@ -48,58 +48,58 @@
           <div class="progress-track"><div id="readProgress" class="progress-bar"></div></div>
         </div>
         <div class="guide-card">
-          <strong>추가 구조</strong>
-          <p>새 주제는 <code>topics-data.js</code>의 <code>SPRING_TOPICS</code> 배열에 객체 하나를 추가하면 화면에 자동 반영됩니다.</p>
+          <strong>색상 구분</strong>
+          <div id="categoryLegend" class="category-legend"></div>
         </div>
       </aside>
 
       <main id="content">
-        <section class="hero">
+        <section class="hero resource-hero">
           <div class="hero-copy">
-            <p class="eyebrow">Java 다음 단계</p>
-            <h1>스프링부트를 “어디에 쓰는지”까지 이해하는 핸드북</h1>
+            <p class="eyebrow">Spring Boot Knowledge Base</p>
+            <h1>필요한 개념을 빠르게 찾고, 구현 맥락까지 이어서 읽습니다.</h1>
             <p>
-              각 주제를 선택하면 자세한 설명, 대표 어노테이션, 함께 봐야 할 설정 파일,
-              실습 예제, 흔한 실수까지 블로그형 개별 페이지에서 확인할 수 있습니다.
+              이 화면은 홍보용 랜딩이 아니라 수업과 복습에 바로 쓰는 자료 탐색 화면입니다.
+              주제는 종류별 색상으로 묶었고, 각 상세 페이지는 개념, 동작 흐름, 코드 예제,
+              실무 체크 포인트를 블로그 글처럼 읽을 수 있게 구성했습니다.
             </p>
-            <div class="hero-actions">
-              <a class="primary-button" href="#topics">주제 선택하기</a>
-              <a class="secondary-button" href="#learning-flow">학습 흐름 보기</a>
-            </div>
           </div>
-          <div class="request-visual" aria-label="브라우저 요청이 Spring Boot 애플리케이션을 거쳐 데이터베이스로 흐르는 과정">
-            <div class="node browser">Browser</div>
-            <div class="flow-line line-one"></div>
-            <div class="node controller">Controller</div>
-            <div class="flow-line line-two"></div>
-            <div class="node service">Service</div>
-            <div class="flow-line line-three"></div>
-            <div class="node repository">Repository</div>
-            <div class="node database">DB</div>
+          <div class="hero-panel" aria-label="자료 구성 요약">
+            <div class="stat-row">
+              <strong id="topicCount">36</strong>
+              <span>학습 주제</span>
+            </div>
+            <div class="quick-links">
+              <a href="#part-1">기초 개념</a>
+              <a href="#part-2">API 계층</a>
+              <a href="#part-3">인증과 보안</a>
+              <a href="#part-4">실무 도구</a>
+              <a href="#part-5">확장 주제</a>
+            </div>
           </div>
         </section>
 
         <section id="learning-flow" class="section">
           <div class="section-heading">
             <p class="eyebrow">Learning Flow</p>
-            <h2>먼저 잡아야 할 흐름</h2>
+            <h2>처음부터 읽을 때의 흐름</h2>
           </div>
           <div class="map-grid">
             <article>
-              <strong>1. 요청을 받는다</strong>
-              <p>HTTP 요청은 Controller로 들어오고, URL과 메서드로 어떤 기능인지 구분합니다.</p>
+              <strong>1. 요청을 이해한다</strong>
+              <p>HTTP, REST API, MVC를 먼저 보면 URL, 메서드, 요청 본문, 응답 상태 코드가 어떻게 연결되는지 잡힙니다.</p>
             </article>
             <article>
-              <strong>2. 규칙을 처리한다</strong>
-              <p>Service는 가입 조건, 수정 가능 여부, 결제 정책 같은 애플리케이션 규칙을 담당합니다.</p>
+              <strong>2. 계층을 나눈다</strong>
+              <p>Controller, Service, Repository, DTO, Entity를 분리하면 API 코드가 커져도 책임이 섞이지 않습니다.</p>
             </article>
             <article>
-              <strong>3. 데이터를 저장한다</strong>
-              <p>Repository와 JPA는 Entity를 기준으로 DB와 데이터를 주고받습니다.</p>
+              <strong>3. 상태와 실패를 다룬다</strong>
+              <p>JPA, Transaction, Validation, Exception을 함께 보면 저장, 검증, 롤백, 오류 응답을 한 흐름으로 이해할 수 있습니다.</p>
             </article>
             <article>
-              <strong>4. 운영 가능하게 만든다</strong>
-              <p>보안, 검증, 예외, 로그, 문서화, 배포 설정이 있어야 수업 프로젝트가 실무형 프로젝트로 확장됩니다.</p>
+              <strong>4. 운영 가능한 코드로 만든다</strong>
+              <p>Security, Logging, Swagger, Docker, CI/CD를 붙이면 개발용 예제가 실제 서비스에 가까운 구조로 확장됩니다.</p>
             </article>
           </div>
         </section>
@@ -107,7 +107,7 @@
         <section id="topics" class="section topic-browser">
           <div class="section-heading">
             <p class="eyebrow">Topic Browser</p>
-            <h2>주제별 페이지로 이동하기</h2>
+            <h2>주제별 자료 찾기</h2>
           </div>
           <div id="topicGroups" class="topic-groups"></div>
         </section>
@@ -115,22 +115,22 @@
         <section class="section checklist">
           <div class="section-heading">
             <p class="eyebrow">Classroom Checklist</p>
-            <h2>학생들이 스스로 점검할 질문</h2>
+            <h2>글을 읽은 뒤 확인할 질문</h2>
           </div>
           <div class="checklist-grid">
-            <label><input type="checkbox" /> Controller, Service, Repository의 책임을 구분할 수 있다.</label>
-            <label><input type="checkbox" /> DTO와 Entity를 왜 분리하는지 설명할 수 있다.</label>
-            <label><input type="checkbox" /> API 하나를 만들 때 필요한 어노테이션과 설정 파일을 찾을 수 있다.</label>
-            <label><input type="checkbox" /> Spring Security와 JWT가 해결하려는 문제를 말할 수 있다.</label>
-            <label><input type="checkbox" /> 오류가 났을 때 로그, 예외 응답, 설정 파일을 함께 확인할 수 있다.</label>
-            <label><input type="checkbox" /> 새 주제가 생기면 기존 구조를 유지하며 자료를 확장할 수 있다.</label>
+            <label><input type="checkbox" /> 요청 하나가 Controller, Service, Repository를 어떤 순서로 통과하는지 설명할 수 있다.</label>
+            <label><input type="checkbox" /> DTO와 Entity를 분리해야 하는 이유를 API 변경과 DB 변경 관점에서 말할 수 있다.</label>
+            <label><input type="checkbox" /> 예외가 발생했을 때 HTTP 상태 코드, 응답 JSON, 로그가 어디서 결정되는지 찾을 수 있다.</label>
+            <label><input type="checkbox" /> 인증 필터, SecurityContext, JWT 검증 위치를 요청 흐름 안에서 설명할 수 있다.</label>
+            <label><input type="checkbox" /> application.yml, build.gradle, Swagger, Docker 설정을 프로젝트 목적에 맞게 조정할 수 있다.</label>
+            <label><input type="checkbox" /> 새 주제가 생기면 기존 색상 분류와 글 구조를 유지하며 자료를 확장할 수 있다.</label>
           </div>
         </section>
       </main>
     </div>
 
     <footer class="site-footer">
-      <p>Spring Boot Handbook · 컴퓨터관련 학과 학생을 위한 수업 보조 자료</p>
+      <p>Spring Boot Handbook · 수업과 복습을 위한 기술 자료실</p>
       <a href="#content">맨 위로</a>
     </footer>
 

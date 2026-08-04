@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Entity | Spring Boot Handbook</title>
-    <meta name="description" content="JPA가 데이터베이스 테이블과 매핑하는 도메인 객체입니다." />
+    <meta name="description" content="DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다." />
     <meta property="og:title" content="Entity | Spring Boot Handbook" />
-    <meta property="og:description" content="JPA가 데이터베이스 테이블과 매핑하는 도메인 객체입니다." />
-    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:description" content="DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다." />
+    <meta name="theme-color" content="#2867b2" />
     <link
       rel="icon"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
     />
     <link rel="stylesheet" href="../styles.css" />
   </head>
-  <body class="article-page">
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
     
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
     <header class="site-header">
@@ -22,7 +22,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>
           <strong>Spring Boot Handbook</strong>
-          <small>주제별 블로그형 수업 자료</small>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
         </span>
       </a>
       <div class="header-actions article-actions">
@@ -34,18 +34,40 @@
       <article class="article">
         <nav class="breadcrumb" aria-label="현재 위치">
           <a href="../index.html">홈</a>
-          <span>Part 2. 핵심 구조</span>
+          <span>Part 2. API 계층 구조</span>
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">13 · Part 2. 핵심 구조</p>
+          <p class="eyebrow">13 · Part 2. API 계층 구조</p>
           <h1>Entity </h1>
-          <p>JPA가 데이터베이스 테이블과 매핑하는 도메인 객체입니다.</p>
+          <p>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
         </header>
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Entity는 DB 테이블과 가까운 객체입니다. 식별자, 컬럼, 연관관계, 상태 변경 메서드를 가질 수 있습니다.</p><p>처음에는 Getter/Setter를 모두 열어두기 쉽지만, 실무에서는 상태 변경 메서드를 만들어 의미 있는 변경만 허용하는 방식이 좋습니다.</p>
+          <p>Entity는 단순한 테이블 모양 클래스가 아닙니다. JPA가 식별자와 필드 상태를 추적하고, 트랜잭션 커밋 시점에 변경 내용을 DB에 반영합니다.</p><p>좋은 Entity는 상태 변경 규칙을 메서드로 표현합니다. 외부에서 setter로 아무 값이나 바꾸는 구조보다 enroll, publish, changeTitle 같은 의미 있는 메서드가 안정적입니다.</p><p>연관관계, 지연 로딩, equals와 hashCode, 기본 생성자 같은 JPA 제약을 이해해야 예상하지 못한 쿼리와 상태 변경 문제를 줄일 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </article>
+        <article>
+          <strong>검증 포인트</strong>
+          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </article></div>
         </section>
 
         <section class="article-section">
@@ -53,69 +75,67 @@
           <div class="term-grid">
         <article>
           <strong>@Entity</strong>
-          <p>JPA 관리 대상 클래스입니다.</p>
+          <p>JPA가 관리하는 영속 객체로 등록합니다.</p>
         </article>
         <article>
           <strong>@Id</strong>
-          <p>기본 키 필드입니다.</p>
+          <p>Entity 식별자를 지정합니다.</p>
         </article>
         <article>
           <strong>@GeneratedValue</strong>
-          <p>기본 키 생성 전략을 지정합니다.</p>
+          <p>식별자 생성 전략을 지정합니다.</p>
         </article>
         <article>
           <strong>@Column</strong>
-          <p>컬럼 제약과 이름을 설정합니다.</p>
-        </article>
-        <article>
-          <strong>@ManyToOne</strong>
-          <p>다대일 연관관계를 표현합니다.</p>
+          <p>컬럼 제약과 이름을 지정합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>함께 확인하거나 수정할 부분</h2>
+          <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
-          <strong>기본 생성자</strong>
-          <p>JPA는 protected 이상의 기본 생성자를 필요로 합니다.</p>
+          <strong>Repository</strong>
+          <p>Entity를 조회하고 저장합니다.</p>
         </article>
         <article>
-          <strong>DDL 설정</strong>
-          <p>spring.jpa.hibernate.ddl-auto 설정이 Entity와 DB 스키마 처리 방식에 영향을 줍니다.</p>
+          <strong>Transaction</strong>
+          <p>변경 감지와 lazy loading은 트랜잭션 범위와 관련됩니다.</p>
         </article>
         <article>
-          <strong>Lombok</strong>
-          <p>@NoArgsConstructor(access = PROTECTED), @Getter 정도를 신중히 사용합니다.</p>
+          <strong>DDL</strong>
+          <p>컬럼 길이, null 허용 여부, 인덱스를 DB 관점에서 확인합니다.</p>
         </article></div>
         </section>
 
         <section class="article-section">
-          <h2>학생 Entity</h2>
+          <h2>규칙을 가진 Entity</h2>
           <pre><code class="language-java">@Entity
-class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Course {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String name;
+    @Column(nullable = false, length = 120)
+    private String title;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    private boolean published;
 
-    protected Student() { }
+    protected Course() {
+    }
 
-    Student(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public void publish() {
+        if (title == null || title.isBlank()) {
+            throw new IllegalStateException(&quot;제목 없이 공개할 수 없습니다.&quot;);
+        }
+        this.published = true;
     }
 }</code></pre>
+          
         </section>
 
         <section class="article-section">
-          <h2>처리할 때 주의할 점</h2>
-          <ul class="article-list"><li>@Data는 equals, hashCode, toString까지 만들어 연관관계에서 문제를 만들 수 있어 Entity에는 조심합니다.</li><li>Entity 필드를 public으로 열지 않습니다.</li></ul>
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>무분별한 setter는 도메인 규칙을 우회하게 만듭니다.</li><li>양방향 연관관계는 편리하지만 주인 개념과 동기화 메서드를 모르면 버그가 생기기 쉽습니다.</li><li>Entity를 JSON으로 직접 반환하면 지연 로딩과 순환 참조 문제가 발생할 수 있습니다.</li></ul>
         </section>
 
         <footer class="article-nav">
