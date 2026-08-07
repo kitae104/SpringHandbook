@@ -51,6 +51,7 @@ function topic(data) {
     level: "핵심",
     readingTime: "약 8분",
     badge: "",
+    keywords: [],
     flow: [
       ["문제 인식", "이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다."],
       ["Spring 연결점", "어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다."],
@@ -733,21 +734,31 @@ Post post = postRepository.findById(postId)
     number: "16",
     title: "Validation",
     summary: "클라이언트가 보낸 값이 API 규칙에 맞는지 확인하고 잘못된 입력을 일관된 오류 응답으로 바꾸는 과정입니다.",
+    keywords: ["Validation", "Bean Validation", "@Valid", "@Validated", "DTO 검증", "입력 검증", "필드 오류"],
     body: [
       "Validation은 잘못된 값이 Service와 DB까지 들어가기 전에 차단하는 방어선입니다. 빈 문자열, 잘못된 이메일, 범위를 벗어난 숫자 같은 형식 오류는 요청 DTO에서 검증하는 것이 자연스럽습니다.",
       "비즈니스 규칙과 단순 입력 검증은 구분해야 합니다. 예를 들어 제목 길이는 DTO 검증으로 처리할 수 있지만, 이미 마감된 강좌에 등록할 수 없다는 규칙은 Service나 도메인 모델에서 판단하는 편이 낫습니다.",
-      "검증 실패 응답은 프론트엔드가 필드별 메시지를 표시할 수 있도록 구조화하는 것이 좋습니다.",
+      "검증 실패 응답은 프론트엔드가 필드별 메시지를 표시할 수 있도록 구조화하는 것이 좋습니다. field, code, message를 분리하면 화면별 문구 처리와 다국어 대응도 쉬워집니다.",
+      "Controller 요청 검증에는 @Valid를, Service 메서드 파라미터 검증에는 @Validated를 사용할 수 있습니다. 다만 Service 검증은 프록시 기반으로 동작하므로 같은 클래스 내부 호출에서는 기대한 검증이 실행되지 않을 수 있습니다.",
+    ],
+    flow: [
+      ["DTO 바인딩", "JSON 요청 본문이 요청 DTO로 변환됩니다."],
+      ["Bean Validation 실행", "@Valid 또는 @Validated가 붙은 지점에서 제약 조건을 검사합니다."],
+      ["오류 응답 변환", "BindingResult나 MethodArgumentNotValidException을 필드별 오류 JSON으로 바꿉니다."],
     ],
     annotations: [
       ["@Valid", "요청 DTO의 Bean Validation을 실행합니다."],
+      ["@Validated", "Spring의 메서드 파라미터 검증과 validation group 적용에 사용합니다."],
       ["@NotBlank", "null, 빈 문자열, 공백만 있는 문자열을 막습니다."],
       ["@Size", "문자열, 컬렉션 길이 범위를 제한합니다."],
+      ["@Email", "이메일 주소 형식인지 검증합니다."],
       ["@Pattern", "정규식 기반 형식을 검증합니다."],
     ],
     related: [
       ["DTO", "검증 어노테이션은 주로 요청 DTO에 둡니다."],
       ["Exception", "MethodArgumentNotValidException을 공통 오류 응답으로 바꿉니다."],
       ["Swagger", "검증 규칙을 API 문서에 반영합니다."],
+      ["Testing", "MockMvc 테스트로 잘못된 요청이 400과 필드 오류를 반환하는지 확인합니다."],
     ],
     exampleTitle: "요청 DTO 검증",
     language: "java",
@@ -756,11 +767,23 @@ Post post = postRepository.findById(postId)
     @NotBlank @Size(min = 8, max = 64) String password,
     @NotBlank @Size(max = 30) String nickname
 ) {
+}
+
+@RestControllerAdvice
+class ValidationExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        List<FieldErrorResponse> fields = ex.getFieldErrors().stream()
+            .map(error -> new FieldErrorResponse(error.getField(), error.getDefaultMessage()))
+            .toList();
+        return ResponseEntity.badRequest().body(new ErrorResponse("INVALID_REQUEST", fields));
+    }
 }`,
     watch: [
       "검증 어노테이션만으로 모든 비즈니스 규칙을 처리하려고 하면 코드가 어색해집니다.",
       "검증 실패 응답이 필드명과 메시지를 포함하지 않으면 프론트엔드에서 사용자에게 설명하기 어렵습니다.",
       "중첩 DTO나 List 내부 요소 검증에는 @Valid 위치를 신경 써야 합니다.",
+      "정규식 검증은 복잡해질수록 읽기 어렵기 때문에 별도 Validator나 도메인 값 객체로 분리할지 검토합니다.",
     ],
   }),
   topic({
@@ -1341,9 +1364,64 @@ CorsConfigurationSource corsConfigurationSource() {
     ],
   }),
   topic({
+    slug: "testing",
+    part: "part-4",
+    number: "31",
+    title: "Testing",
+    summary: "단위 테스트, 슬라이스 테스트, 통합 테스트로 Spring Boot 코드의 동작을 자동으로 검증하는 방법입니다.",
+    keywords: ["Testing", "테스팅", "JUnit", "Mockito", "@SpringBootTest", "@WebMvcTest", "@DataJpaTest", "MockMvc", "테스트 코드"],
+    body: [
+      "테스팅은 코드가 지금 의도대로 동작하는지 확인하는 안전망입니다. 수동으로 Postman을 눌러 보는 것만으로는 변경이 누적될 때 기존 기능이 깨졌는지 빠르게 알기 어렵습니다.",
+      "Spring Boot 테스트는 목적에 따라 무게를 나눠야 합니다. 순수 자바 로직은 단위 테스트로 빠르게 확인하고, Controller는 @WebMvcTest와 MockMvc로 요청과 응답을 검증하며, Repository는 @DataJpaTest로 쿼리와 매핑을 확인합니다.",
+      "@SpringBootTest는 실제 애플리케이션 컨텍스트를 넓게 로딩하므로 가장 강력하지만 느립니다. 모든 테스트를 통합 테스트로 만들기보다 실패 원인을 좁게 찾을 수 있는 테스트 피라미드를 유지하는 편이 좋습니다.",
+    ],
+    flow: [
+      ["테스트 대상 선택", "Service 로직, Controller 계약, Repository 쿼리 중 무엇을 검증할지 먼저 정합니다."],
+      ["격리 범위 결정", "mock, slice test, full context 중 가장 작은 범위로 시작합니다."],
+      ["회귀 방지", "버그 수정이나 요구사항 변경마다 실패를 재현하는 테스트를 남깁니다."],
+    ],
+    annotations: [
+      ["@SpringBootTest", "애플리케이션 컨텍스트를 넓게 로딩하는 통합 테스트에 사용합니다."],
+      ["@WebMvcTest", "MVC 계층만 로딩해 Controller 요청과 응답을 검증합니다."],
+      ["@DataJpaTest", "JPA Repository, Entity 매핑, 쿼리를 검증합니다."],
+      ["@MockBean", "Spring 컨텍스트 안의 Bean을 테스트용 mock으로 교체합니다."],
+      ["MockMvc", "HTTP 요청을 실제 서버 없이 Controller에 보내 검증합니다."],
+    ],
+    related: [
+      ["JUnit 5", "테스트 실행, assertion, lifecycle을 담당합니다."],
+      ["Mockito", "외부 의존성을 mock으로 대체하고 호출을 검증합니다."],
+      ["Validation", "잘못된 요청이 400과 필드 오류를 반환하는지 테스트합니다."],
+      ["CI/CD", "push와 pull request마다 테스트를 자동 실행합니다."],
+    ],
+    exampleTitle: "Controller Validation 테스트",
+    language: "java",
+    code: `@WebMvcTest(MemberController.class)
+class MemberControllerTest {
+    @Autowired MockMvc mockMvc;
+    @MockBean MemberService memberService;
+
+    @Test
+    void signup_rejectsInvalidEmail() throws Exception {
+        mockMvc.perform(post("/api/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"email":"wrong","password":"12345678","nickname":"kim"}
+                    """))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("INVALID_REQUEST"));
+    }
+}`,
+    watch: [
+      "테스트가 구현 세부 사항에 너무 묶이면 리팩터링할 때 실제 동작은 그대로인데 테스트만 대량으로 깨집니다.",
+      "@SpringBootTest를 남발하면 테스트 시간이 길어져 CI에서 자주 실행하기 어려워집니다.",
+      "mock이 지나치게 많으면 실제 Bean 조립, JPA 매핑, 트랜잭션 문제를 놓칠 수 있습니다.",
+      "테스트 데이터는 각 테스트가 독립적으로 만들고 정리해야 실행 순서에 의존하지 않습니다.",
+    ],
+  }),
+  topic({
     slug: "aop",
     part: "part-5",
-    number: "31",
+    number: "32",
     title: "AOP",
     summary: "로깅, 트랜잭션, 권한 검사처럼 여러 곳에 반복되는 관심사를 핵심 로직과 분리하는 프로그래밍 방식입니다.",
     body: [
@@ -1385,9 +1463,73 @@ class PerformanceAspect {
     ],
   }),
   topic({
+    slug: "audit",
+    part: "part-5",
+    number: "33",
+    title: "Audit",
+    summary: "누가, 언제, 어떤 데이터를 변경했는지 추적해 운영 분석과 보안 대응에 활용하는 기록 체계입니다.",
+    keywords: ["Audit", "감사 로그", "Auditing", "@CreatedDate", "@LastModifiedDate", "@CreatedBy", "@LastModifiedBy", "변경 이력"],
+    body: [
+      "Audit은 단순 로그보다 목적이 명확한 기록입니다. 사용자가 글을 수정했는지, 관리자가 권한을 바꿨는지, 결제 상태가 언제 변경됐는지처럼 나중에 설명해야 하는 변경 사실을 남깁니다.",
+      "Spring Data JPA는 @CreatedDate, @LastModifiedDate, @CreatedBy, @LastModifiedBy 같은 auditing 어노테이션을 제공합니다. 공통 BaseEntity에 생성일과 수정일을 두면 대부분의 테이블에서 반복 코드를 줄일 수 있습니다.",
+      "감사 로그에는 개인정보와 민감 정보가 섞이기 쉽습니다. 무엇을 남길지, 얼마나 보관할지, 누가 조회할 수 있는지 정책으로 정해야 운영과 보안 요구를 동시에 만족할 수 있습니다.",
+    ],
+    flow: [
+      ["변경 지점 식별", "생성, 수정, 삭제, 권한 변경처럼 추적해야 할 업무 이벤트를 정합니다."],
+      ["자동 필드 기록", "Entity 생성일, 수정일, 작성자, 수정자를 공통으로 채웁니다."],
+      ["이벤트 로그 보관", "중요 업무 변경은 별도 audit table이나 event log로 상세 이력을 남깁니다."],
+    ],
+    annotations: [
+      ["@EnableJpaAuditing", "Spring Data JPA auditing 기능을 활성화합니다."],
+      ["@CreatedDate", "Entity 생성 시각을 자동으로 채웁니다."],
+      ["@LastModifiedDate", "Entity 마지막 수정 시각을 자동으로 갱신합니다."],
+      ["@CreatedBy", "생성한 사용자 식별자를 기록합니다."],
+      ["AuditorAware", "현재 로그인한 사용자 정보를 auditing에 연결합니다."],
+    ],
+    related: [
+      ["Entity", "BaseEntity로 공통 감사 필드를 상속할 수 있습니다."],
+      ["Spring Security", "현재 인증 사용자 id를 AuditorAware에서 가져옵니다."],
+      ["AOP", "중요 Service 메서드 실행 전후로 별도 감사 이벤트를 남길 수 있습니다."],
+      ["Logging", "운영 로그와 감사 로그의 목적과 보관 정책을 구분합니다."],
+    ],
+    exampleTitle: "JPA Auditing 기본 구성",
+    language: "java",
+    code: `@EnableJpaAuditing
+@SpringBootApplication
+class HandbookApplication {
+}
+
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+abstract class BaseEntity {
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+}
+
+@Component
+class LoginUserAuditorAware implements AuditorAware<Long> {
+    public Optional<Long> getCurrentAuditor() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return Optional.empty();
+        }
+        return Optional.of(((LoginUser) authentication.getPrincipal()).id());
+    }
+}`,
+    watch: [
+      "수정일만 있으면 어떤 필드가 어떻게 바뀌었는지는 알 수 없습니다. 중요한 변경은 별도 이력 테이블을 둡니다.",
+      "비밀번호, 토큰, 주민번호 같은 민감 값은 감사 로그에도 원문으로 남기면 안 됩니다.",
+      "물리 삭제를 하면 감사 추적이 끊길 수 있으므로 요구사항에 따라 논리 삭제와 보관 정책을 함께 검토합니다.",
+      "서버 시간이 여러 대에서 다르면 기록 순서가 흔들릴 수 있어 DB 시간 또는 시간 동기화 정책을 확인합니다.",
+    ],
+  }),
+  topic({
     slug: "filter-interceptor",
     part: "part-5",
-    number: "32",
+    number: "34",
     title: "Filter와 Interceptor",
     summary: "요청이 Controller에 도달하기 전후에 공통 처리를 넣는 웹 계층 확장 지점입니다.",
     body: [
@@ -1431,7 +1573,7 @@ class RequestLogFilter extends OncePerRequestFilter {
   topic({
     slug: "redis",
     part: "part-5",
-    number: "33",
+    number: "35",
     title: "Redis",
     summary: "메모리 기반 데이터 저장소로 캐시, 세션, refresh token, 분산 락 등에 자주 사용됩니다.",
     body: [
@@ -1473,7 +1615,7 @@ class VerificationCodeStore {
   topic({
     slug: "docker",
     part: "part-5",
-    number: "34",
+    number: "36",
     title: "Docker",
     summary: "애플리케이션과 실행 환경을 이미지로 묶어 어디서나 비슷하게 실행할 수 있게 하는 컨테이너 도구입니다.",
     body: [
@@ -1515,7 +1657,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`,
   topic({
     slug: "ci-cd",
     part: "part-5",
-    number: "35",
+    number: "37",
     title: "CI/CD",
     summary: "코드 변경 후 테스트, 빌드, 배포를 자동화해 변경 품질과 배포 속도를 높이는 개발 흐름입니다.",
     body: [
@@ -1557,7 +1699,7 @@ jobs:
   topic({
     slug: "spring-ai",
     part: "part-5",
-    number: "36",
+    number: "38",
     title: "Spring AI",
     summary: "Spring 애플리케이션 안에서 LLM 호출, 프롬프트 구성, 임베딩, 벡터 검색 같은 AI 기능을 다루기 위한 프로젝트입니다.",
     body: [

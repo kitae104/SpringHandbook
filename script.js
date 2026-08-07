@@ -74,6 +74,9 @@ function renderHome() {
 
     const grid = createElement("div", "topic-grid topic-link-grid");
     partTopics.forEach((topic) => {
+      const tagNames = topic.keywords?.length
+        ? topic.keywords.slice(0, 4)
+        : topic.annotations.slice(0, 3).map(([name]) => name);
       const card = document.createElement("a");
       card.className = "topic-card topic-link-card";
       card.href = topicHref(topic);
@@ -81,8 +84,10 @@ function renderHome() {
         topic.title,
         topic.summary,
         topic.level,
+        topic.keywords?.join(" "),
         topic.body?.join(" "),
-        topic.annotations?.map(([name]) => name).join(" "),
+        topic.annotations?.map(([name, description]) => `${name} ${description}`).join(" "),
+        topic.related?.map(([name, description]) => `${name} ${description}`).join(" "),
       ].join(" ");
       applyPartColor(card, part);
       card.innerHTML = `
@@ -96,7 +101,7 @@ function renderHome() {
         </div>
         <p>${topic.summary}</p>
         <div class="topic-tags">
-          ${topic.annotations.slice(0, 3).map(([name]) => `<span>${name}</span>`).join("")}
+          ${tagNames.map((name) => `<span>${name}</span>`).join("")}
         </div>
         <strong class="read-more">자세히 읽기</strong>
       `;

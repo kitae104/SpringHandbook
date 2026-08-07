@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Testing | Spring Boot Handbook</title>
+    <meta name="description" content="단위 테스트, 슬라이스 테스트, 통합 테스트로 Spring Boot 코드의 동작을 자동으로 검증하는 방법입니다." />
+    <meta property="og:title" content="Testing | Spring Boot Handbook" />
+    <meta property="og:description" content="단위 테스트, 슬라이스 테스트, 통합 테스트로 Spring Boot 코드의 동작을 자동으로 검증하는 방법입니다." />
+    <meta name="theme-color" content="#8a5a18" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #8a5a18; --part-tint: #f6efe1; --part-deep: #6d4510;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 4. 실무 개발</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">31 · Part 4. 실무 개발</p>
+          <h1>Testing </h1>
+          <p>단위 테스트, 슬라이스 테스트, 통합 테스트로 Spring Boot 코드의 동작을 자동으로 검증하는 방법입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">실무</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>테스팅은 코드가 지금 의도대로 동작하는지 확인하는 안전망입니다. 수동으로 Postman을 눌러 보는 것만으로는 변경이 누적될 때 기존 기능이 깨졌는지 빠르게 알기 어렵습니다.</p><p>Spring Boot 테스트는 목적에 따라 무게를 나눠야 합니다. 순수 자바 로직은 단위 테스트로 빠르게 확인하고, Controller는 @WebMvcTest와 MockMvc로 요청과 응답을 검증하며, Repository는 @DataJpaTest로 쿼리와 매핑을 확인합니다.</p><p>@SpringBootTest는 실제 애플리케이션 컨텍스트를 넓게 로딩하므로 가장 강력하지만 느립니다. 모든 테스트를 통합 테스트로 만들기보다 실패 원인을 좁게 찾을 수 있는 테스트 피라미드를 유지하는 편이 좋습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>테스트 대상 선택</strong>
+          <p>Service 로직, Controller 계약, Repository 쿼리 중 무엇을 검증할지 먼저 정합니다.</p>
+        </article>
+        <article>
+          <strong>격리 범위 결정</strong>
+          <p>mock, slice test, full context 중 가장 작은 범위로 시작합니다.</p>
+        </article>
+        <article>
+          <strong>회귀 방지</strong>
+          <p>버그 수정이나 요구사항 변경마다 실패를 재현하는 테스트를 남깁니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@SpringBootTest</strong>
+          <p>애플리케이션 컨텍스트를 넓게 로딩하는 통합 테스트에 사용합니다.</p>
+        </article>
+        <article>
+          <strong>@WebMvcTest</strong>
+          <p>MVC 계층만 로딩해 Controller 요청과 응답을 검증합니다.</p>
+        </article>
+        <article>
+          <strong>@DataJpaTest</strong>
+          <p>JPA Repository, Entity 매핑, 쿼리를 검증합니다.</p>
+        </article>
+        <article>
+          <strong>@MockBean</strong>
+          <p>Spring 컨텍스트 안의 Bean을 테스트용 mock으로 교체합니다.</p>
+        </article>
+        <article>
+          <strong>MockMvc</strong>
+          <p>HTTP 요청을 실제 서버 없이 Controller에 보내 검증합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>JUnit 5</strong>
+          <p>테스트 실행, assertion, lifecycle을 담당합니다.</p>
+        </article>
+        <article>
+          <strong>Mockito</strong>
+          <p>외부 의존성을 mock으로 대체하고 호출을 검증합니다.</p>
+        </article>
+        <article>
+          <strong>Validation</strong>
+          <p>잘못된 요청이 400과 필드 오류를 반환하는지 테스트합니다.</p>
+        </article>
+        <article>
+          <strong>CI/CD</strong>
+          <p>push와 pull request마다 테스트를 자동 실행합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>Controller Validation 테스트</h2>
+          <pre><code class="language-java">@WebMvcTest(MemberController.class)
+class MemberControllerTest {
+    @Autowired MockMvc mockMvc;
+    @MockBean MemberService memberService;
+
+    @Test
+    void signup_rejectsInvalidEmail() throws Exception {
+        mockMvc.perform(post(&quot;/api/members&quot;)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(&quot;&quot;&quot;
+                    {&quot;email&quot;:&quot;wrong&quot;,&quot;password&quot;:&quot;12345678&quot;,&quot;nickname&quot;:&quot;kim&quot;}
+                    &quot;&quot;&quot;))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath(&quot;$.code&quot;).value(&quot;INVALID_REQUEST&quot;));
+    }
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>테스트가 구현 세부 사항에 너무 묶이면 리팩터링할 때 실제 동작은 그대로인데 테스트만 대량으로 깨집니다.</li><li>@SpringBootTest를 남발하면 테스트 시간이 길어져 CI에서 자주 실행하기 어려워집니다.</li><li>mock이 지나치게 많으면 실제 Bean 조립, JPA 매핑, 트랜잭션 문제를 놓칠 수 있습니다.</li><li>테스트 데이터는 각 테스트가 독립적으로 만들고 정리해야 실행 순서에 의존하지 않습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="cors.html">이전 · CORS</a>
+          <a href="aop.html">다음 · AOP</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>
