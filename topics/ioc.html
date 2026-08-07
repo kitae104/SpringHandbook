@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>IoC는 Inversion of Control의 줄임말입니다. 일반 자바 코드에서는 필요한 객체를 new로 직접 만들지만, Spring에서는 컨테이너가 객체를 만들고 필요한 곳에 전달합니다.</p><p>이 구조 덕분에 구현체 교체, 테스트 대역 사용, 설정 변경이 쉬워집니다. Service는 어떤 Repository 구현체가 들어오는지 몰라도 인터페이스에 의존해 동작할 수 있습니다.</p><p>IoC를 이해해야 DI, Bean, 테스트 코드가 왜 그렇게 작성되는지 연결해서 볼 수 있습니다. 단순히 어노테이션을 붙이는 법보다 제어 흐름이 어디로 이동했는지 보는 것이 핵심입니다.</p>
+          <p>IoC는 Inversion of Control의 줄임말입니다. 일반 자바 코드에서는 필요한 객체를 new로 직접 만들지만, Spring에서는 컨테이너가 객체를 만들고 필요한 곳에 전달합니다.</p><p>이 구조 덕분에 구현체 교체, <strong class="inline-korean">테스트</strong> 대역 사용, 설정 변경이 쉬워집니다. <strong class="inline-term">Service</strong>는 어떤 <strong class="inline-term">Repository</strong> 구현체가 들어오는지 몰라도 인터페이스에 의존해 동작할 수 있습니다.</p><p>IoC를 이해해야 DI, <strong class="inline-term">Bean</strong>, <strong class="inline-korean">테스트</strong> 코드가 왜 그렇게 작성되는지 연결해서 볼 수 있습니다. 단순히 어노테이션을 붙이는 법보다 제어 흐름이 어디로 이동했는지 보는 것이 핵심입니다.</p>
         </section>
 
         <section class="article-section">
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>검증 포인트</strong>
-          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
         </article></div>
         </section>
 
@@ -75,7 +75,7 @@
           <div class="term-grid">
         <article>
           <strong>@ComponentScan</strong>
-          <p>지정 패키지 아래의 컴포넌트를 찾아 Bean으로 등록합니다.</p>
+          <p>지정 패키지 아래의 컴포넌트를 찾아 <strong class="inline-term">Bean</strong>으로 등록합니다.</p>
         </article>
         <article>
           <strong>@SpringBootApplication</strong>
@@ -96,11 +96,11 @@
         </article>
         <article>
           <strong>Bean 충돌</strong>
-          <p>같은 타입 Bean이 여러 개면 @Qualifier 또는 @Primary가 필요할 수 있습니다.</p>
+          <p>같은 타입 <strong class="inline-term">Bean</strong>이 여러 개면 <strong class="inline-token">@Qualifier</strong> 또는 <strong class="inline-token">@Primary</strong>가 필요할 수 있습니다.</p>
         </article>
         <article>
           <strong>테스트 설정</strong>
-          <p>테스트에서 가짜 구현체를 주입해 제어 흐름을 바꿀 수 있습니다.</p>
+          <p><strong class="inline-korean">테스트</strong>에서 가짜 구현체를 주입해 제어 흐름을 바꿀 수 있습니다.</p>
         </article></div>
         </section>
 

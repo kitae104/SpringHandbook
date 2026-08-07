@@ -40,7 +40,7 @@
         <header class="article-hero">
           <p class="eyebrow">28 · Part 4. 실무 개발</p>
           <h1>Swagger </h1>
-          <p>API 명세를 웹 문서로 보여 주고 요청 예시와 응답 구조를 직접 확인할 수 있게 하는 문서화 도구입니다.</p>
+          <p>API 명세를 웹 문서로 보여 주고 <strong class="inline-korean">요청</strong> 예시와 <strong class="inline-korean">응답</strong> 구조를 직접 확인할 수 있게 하는 문서화 도구입니다.</p>
           <div class="article-meta">
             <span class="topic-badge">실무</span>
             <span class="topic-badge">핵심</span>
@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Swagger는 백엔드와 프론트엔드가 같은 API 계약을 보게 해 줍니다. URL, 메서드, 파라미터, 요청 JSON, 응답 JSON, 상태 코드를 한 화면에서 확인할 수 있습니다.</p><p>Spring Boot에서는 springdoc-openapi를 많이 사용합니다. Controller와 DTO 어노테이션을 기반으로 문서가 자동 생성되지만, 설명과 예시를 직접 보강해야 실제 협업에 도움이 됩니다.</p><p>문서는 코드와 함께 최신 상태를 유지해야 합니다. Swagger에 나온 응답과 실제 응답이 다르면 오히려 혼란이 커집니다.</p>
+          <p><strong class="inline-term">Swagger</strong>는 백엔드와 프론트엔드가 같은 API 계약을 보게 해 줍니다. URL, 메서드, 파라미터, <strong class="inline-korean">요청</strong> JSON, <strong class="inline-korean">응답</strong> JSON, 상태 코드를 한 화면에서 확인할 수 있습니다.</p><p><strong class="inline-term">Spring Boot</strong>에서는 springdoc-openapi를 많이 사용합니다. <strong class="inline-term">Controller</strong>와 <strong class="inline-term">DTO</strong> 어노테이션을 기반으로 문서가 자동 생성되지만, 설명과 예시를 직접 보강해야 실제 협업에 도움이 됩니다.</p><p>문서는 코드와 함께 최신 상태를 유지해야 합니다. <strong class="inline-term">Swagger</strong>에 나온 <strong class="inline-korean">응답</strong>과 실제 <strong class="inline-korean">응답</strong>이 다르면 오히려 혼란이 커집니다.</p>
         </section>
 
         <section class="article-section">
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>검증 포인트</strong>
-          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
         </article></div>
         </section>
 
@@ -83,11 +83,11 @@
         </article>
         <article>
           <strong>@Schema</strong>
-          <p>DTO 필드 설명, 예시, 제약을 문서화합니다.</p>
+          <p><strong class="inline-term">DTO</strong> <strong class="inline-korean">필드</strong> 설명, 예시, 제약을 문서화합니다.</p>
         </article>
         <article>
           <strong>@ApiResponse</strong>
-          <p>상태 코드별 응답을 설명합니다.</p>
+          <p>상태 코드별 <strong class="inline-korean">응답</strong>을 설명합니다.</p>
         </article></div>
         </section>
 
@@ -100,11 +100,11 @@
         </article>
         <article>
           <strong>DTO</strong>
-          <p>요청과 응답 스키마를 보여 줍니다.</p>
+          <p><strong class="inline-korean">요청</strong>과 <strong class="inline-korean">응답</strong> 스키마를 보여 줍니다.</p>
         </article>
         <article>
           <strong>Security</strong>
-          <p>인증 헤더를 Swagger UI에서 입력할 수 있게 설정합니다.</p>
+          <p><strong class="inline-korean">인증</strong> 헤더를 <strong class="inline-term">Swagger</strong> UI에서 입력할 수 있게 설정합니다.</p>
         </article></div>
         </section>
 
@@ -123,7 +123,7 @@ CourseResponse findCourse(
 
         <section class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
-          <ul class="article-list"><li>자동 생성만 믿으면 필드 의미와 오류 응답 설명이 부족한 문서가 됩니다.</li><li>운영 환경에서 Swagger UI를 공개할지 여부는 보안 정책에 맞게 결정해야 합니다.</li><li>인증이 필요한 API는 Swagger에서도 인증 헤더 설정 방법을 제공해야 테스트가 쉽습니다.</li></ul>
+          <ul class="article-list"><li>자동 생성만 믿으면 <strong class="inline-korean">필드</strong> 의미와 <u class="inline-underline">오류 응답</u> 설명이 부족한 문서가 됩니다.</li><li>운영 환경에서 <strong class="inline-term">Swagger</strong> UI를 공개할지 여부는 <strong class="inline-korean">보안</strong> 정책에 맞게 결<em class="inline-guidance">정해야 합니다</em>.</li><li><strong class="inline-korean">인증</strong>이 필요한 API는 <strong class="inline-term">Swagger</strong>에서도 <strong class="inline-korean">인증</strong> 헤더 설정 방법을 제공해야 <strong class="inline-korean">테스트</strong>가 쉽습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

@@ -84,10 +84,11 @@
                         </h1>
                         <p>
                             이 화면은 홍보용 랜딩이 아니라 수업과 복습에 바로
-                            쓰는 자료 탐색 화면입니다. 주제는 종류별 색상으로
-                            묶었고, 각 상세 페이지는 개념, 동작 흐름, 코드 예제,
-                            실무 체크 포인트를 블로그 글처럼 읽을 수 있게
-                            구성했습니다.
+                            쓰는 <strong class="inline-term">자료 탐색 화면</strong>입니다.
+                            주제는 종류별 색상으로 묶었고, 각 상세 페이지는
+                            <u class="inline-underline">개념, 동작 흐름, 코드 예제</u>,
+                            <mark class="inline-risk">실무 체크 포인트</mark>를
+                            블로그 글처럼 읽을 수 있게 구성했습니다.
                         </p>
                     </div>
                     <div class="hero-panel" aria-label="자료 구성 요약">
@@ -114,33 +115,46 @@
                         <article>
                             <strong>1. 요청을 이해한다</strong>
                             <p>
-                                HTTP, REST API, MVC를 먼저 보면 URL, 메서드,
-                                요청 본문, 응답 상태 코드가 어떻게 연결되는지
-                                잡힙니다.
+                                <strong class="inline-term">HTTP</strong>,
+                                <strong class="inline-term">REST API</strong>,
+                                <strong class="inline-term">MVC</strong>를 먼저 보면
+                                URL, 메서드, 요청 본문, 응답 상태 코드가 어떻게
+                                연결되는지 잡힙니다.
                             </p>
                         </article>
                         <article>
                             <strong>2. 계층을 나눈다</strong>
                             <p>
-                                Controller, Service, Repository, DTO, Entity를
-                                분리하면 API 코드가 커져도 책임이 섞이지
-                                않습니다.
+                                <strong class="inline-term">Controller</strong>,
+                                <strong class="inline-term">Service</strong>,
+                                <strong class="inline-term">Repository</strong>,
+                                <strong class="inline-term">DTO</strong>,
+                                <strong class="inline-term">Entity</strong>를 분리하면
+                                API 코드가 커져도 <em class="inline-guidance">책임이 섞이지 않습니다</em>.
                             </p>
                         </article>
                         <article>
                             <strong>3. 상태와 실패를 다룬다</strong>
                             <p>
-                                JPA, Transaction, Validation, Exception을 함께
-                                보면 저장, 검증, 롤백, 오류 응답을 한 흐름으로
+                                <strong class="inline-term">JPA</strong>,
+                                <strong class="inline-term">Transaction</strong>,
+                                <strong class="inline-term">Validation</strong>,
+                                <strong class="inline-term">Exception</strong>을 함께
+                                보면 저장, <strong class="inline-korean">검증</strong>,
+                                <mark class="inline-risk">롤백</mark>,
+                                <u class="inline-underline">오류 응답</u>을 한 흐름으로
                                 이해할 수 있습니다.
                             </p>
                         </article>
                         <article>
                             <strong>4. 운영 가능한 코드로 만든다</strong>
                             <p>
-                                Security, Logging, Swagger, Docker, CI/CD를
-                                붙이면 개발용 예제가 실제 서비스에 가까운 구조로
-                                확장됩니다.
+                                <strong class="inline-term">Spring Security</strong>,
+                                <strong class="inline-term">Logging</strong>,
+                                <strong class="inline-term">Swagger</strong>,
+                                <strong class="inline-term">Docker</strong>,
+                                <strong class="inline-term">CI/CD</strong>를 붙이면
+                                개발용 예제가 실제 서비스에 가까운 구조로 확장됩니다.
                             </p>
                         </article>
                     </div>
@@ -162,23 +176,23 @@
                     <div class="checklist-grid">
                         <label
                             ><input type="checkbox" /> 요청 하나가 Controller,
-                            Service, Repository를 어떤 순서로 통과하는지 설명할
-                            수 있다.</label
+                            Service, Repository를 <u class="inline-underline">어떤 순서</u>로 통과하는지
+                            설명할 수 있다.</label
                         >
                         <label
                             ><input type="checkbox" /> DTO와 Entity를 분리해야
-                            하는 이유를 API 변경과 DB 변경 관점에서 말할 수
-                            있다.</label
+                            하는 이유를 <strong class="inline-term">API 변경</strong>과
+                            <strong class="inline-term">DB 변경</strong> 관점에서 말할 수 있다.</label
                         >
                         <label
                             ><input type="checkbox" /> 예외가 발생했을 때 HTTP
-                            상태 코드, 응답 JSON, 로그가 어디서 결정되는지 찾을
-                            수 있다.</label
+                            상태 코드, 응답 JSON, 로그가 <em class="inline-guidance">어디서 결정되는지</em>
+                            찾을 수 있다.</label
                         >
                         <label
                             ><input type="checkbox" /> 인증 필터,
-                            SecurityContext, JWT 검증 위치를 요청 흐름 안에서
-                            설명할 수 있다.</label
+                            SecurityContext, JWT <strong class="inline-korean">검증</strong> 위치를
+                            요청 흐름 안에서 설명할 수 있다.</label
                         >
                         <label
                             ><input type="checkbox" /> application.yml,

@@ -40,7 +40,7 @@
         <header class="article-hero">
           <p class="eyebrow">30 · Part 4. 실무 개발</p>
           <h1>CORS </h1>
-          <p>브라우저가 다른 출처의 API를 호출할 때 서버가 허용 범위를 명시하도록 요구하는 보안 정책입니다.</p>
+          <p>브라우저가 다른 출처의 API를 호출할 때 서버가 허용 범위를 명시하도록 요구하는 <strong class="inline-korean">보안</strong> 정책입니다.</p>
           <div class="article-meta">
             <span class="topic-badge">실무</span>
             <span class="topic-badge">핵심</span>
@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>CORS는 서버 간 통신 문제가 아니라 브라우저 보안 정책입니다. 프론트엔드 주소와 백엔드 주소의 scheme, host, port 중 하나라도 다르면 다른 출처로 판단됩니다.</p><p>서버는 Access-Control-Allow-Origin, Allow-Methods, Allow-Headers 같은 응답 헤더로 어떤 출처와 메서드를 허용할지 알려 줍니다. 인증 쿠키를 쓴다면 credentials 설정도 함께 맞아야 합니다.</p><p>Spring Security를 사용하면 MVC CORS 설정과 Security CORS 설정의 적용 위치를 함께 확인해야 합니다.</p>
+          <p><strong class="inline-term">CORS</strong>는 서버 간 통신 문제가 아니라 브라우저 <strong class="inline-korean">보안</strong> 정책입니다. 프론트엔드 주소와 백엔드 주소의 scheme, host, port 중 하나라도 다르면 다른 출처로 판단됩니다.</p><p>서버는 Access-Control-Allow-Origin, Allow-Methods, Allow-Headers 같은 <strong class="inline-korean">응답</strong> 헤더로 어떤 출처와 메서드를 허용할지 알려 줍니다. <strong class="inline-korean">인증</strong> 쿠키를 쓴다면 credentials 설정도 함께 맞아야 합니다.</p><p><strong class="inline-term">Spring Security</strong>를 사용하면 <strong class="inline-term">MVC</strong> <strong class="inline-term">CORS</strong> 설정과 Security <strong class="inline-term">CORS</strong> 설정의 적용 위치를 함께 <em class="inline-guidance">확인해야 합니다</em>.</p>
         </section>
 
         <section class="article-section">
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>검증 포인트</strong>
-          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
         </article></div>
         </section>
 
@@ -75,15 +75,15 @@
           <div class="term-grid">
         <article>
           <strong>@CrossOrigin</strong>
-          <p>Controller 또는 메서드 단위 CORS 허용을 설정합니다.</p>
+          <p><strong class="inline-term">Controller</strong> 또는 메서드 단위 <strong class="inline-term">CORS</strong> 허용을 설정합니다.</p>
         </article>
         <article>
           <strong>CorsConfiguration</strong>
-          <p>전역 CORS 정책을 코드로 구성합니다.</p>
+          <p>전역 <strong class="inline-term">CORS</strong> 정책을 코드로 구성합니다.</p>
         </article>
         <article>
           <strong>OPTIONS</strong>
-          <p>브라우저가 실제 요청 전 preflight 요청으로 보낼 수 있습니다.</p>
+          <p>브라우저가 실제 <strong class="inline-korean">요청</strong> 전 preflight <strong class="inline-korean">요청</strong>으로 보낼 수 있습니다.</p>
         </article></div>
         </section>
 
@@ -92,7 +92,7 @@
           <div class="term-grid">
         <article>
           <strong>Spring Security</strong>
-          <p>보안 필터 체인에서 CORS 처리가 먼저 이뤄져야 할 수 있습니다.</p>
+          <p><strong class="inline-korean">보안</strong> 필터 체인에서 <strong class="inline-term">CORS</strong> 처리가 먼저 이뤄져야 할 수 있습니다.</p>
         </article>
         <article>
           <strong>Frontend URL</strong>
@@ -100,7 +100,7 @@
         </article>
         <article>
           <strong>Credentials</strong>
-          <p>쿠키 인증 사용 시 allowCredentials와 origin 설정을 엄격히 맞춥니다.</p>
+          <p>쿠키 <strong class="inline-korean">인증</strong> 사용 시 allowCredentials와 origin 설정을 엄격히 맞춥니다.</p>
         </article></div>
         </section>
 
@@ -123,7 +123,7 @@ CorsConfigurationSource corsConfigurationSource() {
 
         <section class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
-          <ul class="article-list"><li>CORS 오류는 브라우저에서만 보이는 경우가 많아 서버 로그에 남지 않을 수 있습니다.</li><li>allowCredentials=true와 allowedOrigins=* 조합은 사용할 수 없습니다.</li><li>개발 편의로 넓게 연 CORS 설정을 운영에 그대로 가져가면 보안 위험이 커집니다.</li></ul>
+          <ul class="article-list"><li><strong class="inline-term">CORS</strong> 오류는 브라우저에서만 보이는 경우가 많아 서버 로그에 남지 않을 수 있습니다.</li><li>allowCredentials=true와 allowedOrigins=* 조합은 사용할 수 없습니다.</li><li>개발 편의로 넓게 연 <strong class="inline-term">CORS</strong> 설정을 운영에 그대로 가져가면 <strong class="inline-korean">보안</strong> <mark class="inline-risk">위험</mark>이 커집니다.</li></ul>
         </section>
 
         <footer class="article-nav">

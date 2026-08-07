@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
 :root {
     color-scheme: light;
     --bg: #f5f7f4;
@@ -10,19 +12,21 @@
     --primary-dark: #155f49;
     --accent: #8a5a18;
     --warning: #b4472b;
+    --highlight-bg: #fff1b8;
+    --highlight-text: #7a2f1d;
+    --token-bg: #e7f2ff;
+    --token-text: #1f4f88;
+    --underline: #2867b2;
     --code-bg: #111827;
     --code-text: #e7edf3;
     --shadow: 0 16px 42px rgba(25, 36, 31, 0.08);
     --radius: 8px;
-    font-family:
-        "Pretendard",
-        "Apple SD Gothic Neo",
-        "Noto Sans KR",
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
+    --font-sans: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo",
+        "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
+    --font-mono: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+    font-family:
+        var(--font-sans);
 }
 
 [data-theme="dark"] {
@@ -37,6 +41,11 @@
     --primary-dark: #99e3cc;
     --accent: #e3b96c;
     --warning: #ff9b7e;
+    --highlight-bg: #4a3424;
+    --highlight-text: #ffd0b8;
+    --token-bg: #183044;
+    --token-text: #9bd2ff;
+    --underline: #8ab8ff;
     --code-bg: #050806;
     --code-text: #dceee6;
     --shadow: 0 16px 42px rgba(0, 0, 0, 0.36);
@@ -66,6 +75,12 @@ body {
     background-size: 56px 56px;
     color: var(--text);
     line-height: 1.65;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-variation-settings: "wght" 450;
+    letter-spacing: 0;
+    text-rendering: optimizeLegibility;
+    word-break: keep-all;
 }
 
 a {
@@ -327,8 +342,9 @@ h1 {
 .hero-copy > p:not(.eyebrow) {
     max-width: 58rem;
     margin: 1rem 0 0;
-    color: var(--muted);
-    font-size: 1.03rem;
+    color: color-mix(in srgb, var(--text) 72%, var(--muted));
+    font-size: 1.05rem;
+    line-height: 1.82;
 }
 
 .hero-panel {
@@ -458,8 +474,9 @@ h1 {
 .term-grid p,
 .insight-grid p {
     margin: 0;
-    color: var(--muted);
-    font-size: 0.94rem;
+    color: color-mix(in srgb, var(--text) 70%, var(--muted));
+    font-size: 0.96rem;
+    line-height: 1.72;
 }
 
 .topic-grid {
@@ -576,7 +593,8 @@ h1 {
 
 .topic-card p {
     margin: 0.65rem 0 0.9rem;
-    color: var(--muted);
+    color: color-mix(in srgb, var(--text) 70%, var(--muted));
+    line-height: 1.68;
 }
 
 .topic-tags {
@@ -701,8 +719,9 @@ h1 {
 .article-hero > p:not(.eyebrow) {
     max-width: 62rem;
     margin: 1rem 0 0;
-    color: var(--muted);
-    font-size: 1.08rem;
+    color: color-mix(in srgb, var(--text) 74%, var(--muted));
+    font-size: 1.1rem;
+    line-height: 1.78;
 }
 
 .article-meta {
@@ -725,6 +744,56 @@ h1 {
 .article-section p {
     margin: 0.65rem 0 0;
     color: color-mix(in srgb, var(--text) 84%, var(--muted));
+    font-size: 1.02rem;
+    line-height: 1.82;
+}
+
+.inline-term,
+.inline-korean,
+.inline-token {
+    font-weight: 900;
+}
+
+.inline-term {
+    color: var(--part-deep, var(--primary-dark));
+}
+
+.inline-korean {
+    color: var(--primary-dark);
+}
+
+.inline-token {
+    display: inline;
+    padding: 0.04em 0.24em;
+    border-radius: 5px;
+    background: var(--token-bg);
+    color: var(--token-text);
+    font-family: var(--font-mono);
+    font-size: 0.91em;
+    white-space: nowrap;
+}
+
+.inline-risk {
+    padding: 0.04em 0.24em;
+    border-radius: 5px;
+    background: var(--highlight-bg);
+    color: var(--highlight-text);
+    font-weight: 900;
+}
+
+.inline-guidance {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 850;
+}
+
+.inline-underline {
+    color: color-mix(in srgb, var(--text) 88%, var(--underline));
+    font-weight: 850;
+    text-decoration-line: underline;
+    text-decoration-color: var(--underline);
+    text-decoration-thickness: 0.12em;
+    text-underline-offset: 0.22em;
 }
 
 .term-grid {
@@ -744,6 +813,9 @@ h1 {
 
 .article-list li {
     padding-left: 0.2rem;
+    color: color-mix(in srgb, var(--text) 86%, var(--muted));
+    font-size: 1.01rem;
+    line-height: 1.76;
 }
 
 pre {
@@ -760,7 +832,7 @@ code {
     min-width: min-content;
     padding: 1rem;
     color: var(--code-text);
-    font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.82rem;
     line-height: 1.55;
     tab-size: 2;

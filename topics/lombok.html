@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Lombok은 자바에서 반복적으로 작성하는 getter, 생성자, toString, builder 코드를 줄여 줍니다. Spring 프로젝트에서는 @RequiredArgsConstructor를 사용해 final 의존성 생성자 코드를 줄이는 경우가 많습니다.</p><p>편리하지만 무분별하게 쓰면 코드가 실제로 어떻게 생성되는지 보이지 않아 학습과 디버깅이 어려울 수 있습니다. 특히 Entity에 @Data를 붙이면 setter, equals, toString이 한꺼번에 생겨 예상하지 못한 문제가 생길 수 있습니다.</p><p>DTO에는 record를 우선 고려하고, Entity에는 필요한 Lombok 어노테이션만 제한적으로 쓰는 편이 안전합니다.</p>
+          <p>Lombok은 자바에서 반복적으로 작성하는 getter, 생성자, toString, builder 코드를 줄여 줍니다. Spring 프로젝트에서는 <strong class="inline-token">@RequiredArgsConstructor</strong>를 사용해 final 의존성 생성자 코드를 줄이는 경우가 많습니다.</p><p>편리하지만 무분별하게 쓰면 코드가 실제로 어떻게 생성되는지 보이지 않아 학습과 디버깅이 어려울 수 있습니다. 특히 <strong class="inline-term">Entity</strong>에 <strong class="inline-token">@Data</strong>를 붙이면 setter, equals, toString이 한꺼번에 생겨 예상하지 못한 문제가 생길 수 있습니다.</p><p><strong class="inline-term">DTO</strong>에는 record를 우선 고려하고, <strong class="inline-term">Entity</strong>에는 필요한 Lombok 어노테이션만 제한적으로 쓰는 편이 안전합니다.</p>
         </section>
 
         <section class="article-section">
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>검증 포인트</strong>
-          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
         </article></div>
         </section>
 
@@ -75,11 +75,11 @@
           <div class="term-grid">
         <article>
           <strong>@Getter</strong>
-          <p>필드 getter를 생성합니다.</p>
+          <p><strong class="inline-korean">필드</strong> getter를 생성합니다.</p>
         </article>
         <article>
           <strong>@RequiredArgsConstructor</strong>
-          <p>final 필드와 @NonNull 필드 생성자를 생성합니다.</p>
+          <p>final <strong class="inline-korean">필드</strong>와 <strong class="inline-token">@NonNull</strong> <strong class="inline-korean">필드</strong> 생성자를 생성합니다.</p>
         </article>
         <article>
           <strong>@Builder</strong>
@@ -100,7 +100,7 @@
         </article>
         <article>
           <strong>Entity</strong>
-          <p>JPA Entity에는 Lombok 사용을 보수적으로 적용합니다.</p>
+          <p><strong class="inline-term">JPA</strong> <strong class="inline-term">Entity</strong>에는 Lombok 사용을 보수적으로 적용합니다.</p>
         </article>
         <article>
           <strong>DI</strong>
@@ -121,7 +121,7 @@ public class CourseService {
 
         <section class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
-          <ul class="article-list"><li>@Data는 getter, setter, equals, hashCode, toString을 모두 만들기 때문에 Entity에는 위험할 수 있습니다.</li><li>toString이 양방향 연관관계를 따라가면 순환 호출 문제가 생길 수 있습니다.</li><li>Lombok이 생성하는 코드를 이해하지 못하면 컴파일 오류 원인을 찾기 어렵습니다.</li></ul>
+          <ul class="article-list"><li><strong class="inline-token">@Data</strong>는 getter, setter, equals, hashCode, toString을 모두 만들기 때문에 <strong class="inline-term">Entity</strong>에는 <mark class="inline-risk">위험</mark>할 수 있습니다.</li><li>toString이 양방향 연관관계를 따라가면 순환 호출 문제가 생길 수 있습니다.</li><li>Lombok이 생성하는 코드를 이해하지 못하면 컴파일 오류 원인을 찾기 어렵습니다.</li></ul>
         </section>
 
         <footer class="article-nav">

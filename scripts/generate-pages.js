@@ -14,12 +14,79 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+const inlinePatterns = [
+  {
+    pattern: /(@[A-Za-z][A-Za-z0-9_]*(?:\([^)]+\))?)/g,
+    render: (value) => `<strong class="inline-token">${escapeHtml(value)}</strong>`,
+  },
+  {
+    pattern:
+      /(같은 클래스 내부 호출|필드별 메시지|논리 삭제|branch 보호 규칙|테스트 피라미드|전역 예외 처리|보관 정책|오류 응답|감사 로그)/g,
+    render: (value) => `<u class="inline-underline">${escapeHtml(value)}</u>`,
+  },
+  {
+    pattern:
+      /(안 됩니다|주의해야 합니다|위험|실패|깨질 수 있습니다|노출|민감|보안 문제|롤백|장애|느립니다)/g,
+    render: (value) => `<mark class="inline-risk">${escapeHtml(value)}</mark>`,
+  },
+  {
+    pattern:
+      /\b(Spring Boot|Spring Security|Spring Data JPA|Bean Validation|MockMvc|JUnit 5|Mockito|AuditorAware|AOP|JPA|JWT|DTO|Entity|Controller|Service|Repository|Transaction|Validation|Testing|Audit|Exception|Swagger|Docker|Redis|CI\/CD|CORS|HTTP|REST API|MVC|Bean)\b/g,
+    render: (value) => `<strong class="inline-term">${escapeHtml(value)}</strong>`,
+  },
+  {
+    pattern: /(트랜잭션|검증|예외|테스트|보안|인증|권한|필드|응답|요청|변경 이력)/g,
+    render: (value) => `<strong class="inline-korean">${escapeHtml(value)}</strong>`,
+  },
+  {
+    pattern: /(권장합니다|좋습니다|중요합니다|명확히|일관된|구분해야 합니다|정해야 합니다|확인해야 합니다|유지하는 편이 좋습니다)/g,
+    render: (value) => `<em class="inline-guidance">${escapeHtml(value)}</em>`,
+  },
+];
+
+function renderInline(value) {
+  const text = String(value);
+  let cursor = 0;
+  let html = "";
+
+  while (cursor < text.length) {
+    let next = null;
+
+    inlinePatterns.forEach((entry, order) => {
+      entry.pattern.lastIndex = cursor;
+      const match = entry.pattern.exec(text);
+      if (!match) return;
+      if (
+        !next ||
+        match.index < next.index ||
+        (match.index === next.index && order < next.order)
+      ) {
+        next = { entry, index: match.index, value: match[0], order };
+      }
+    });
+
+    if (!next) {
+      html += escapeHtml(text.slice(cursor));
+      break;
+    }
+
+    if (next.index > cursor) {
+      html += escapeHtml(text.slice(cursor, next.index));
+    }
+
+    html += next.entry.render(next.value);
+    cursor = next.index + next.value.length;
+  }
+
+  return html;
+}
+
 function partOf(id) {
   return TOPIC_PARTS.find((part) => part.id === id);
 }
 
 function renderList(items, className = "article-list") {
-  return `<ul class="${className}">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+  return `<ul class="${className}">${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ul>`;
 }
 
 function renderPairs(items) {
@@ -28,7 +95,7 @@ function renderPairs(items) {
       ([name, description]) => `
         <article>
           <strong>${escapeHtml(name)}</strong>
-          <p>${escapeHtml(description)}</p>
+          <p>${renderInline(description)}</p>
         </article>`,
     )
     .join("")}</div>`;
@@ -40,7 +107,7 @@ function renderInsights(items) {
       ([title, description]) => `
         <article>
           <strong>${escapeHtml(title)}</strong>
-          <p>${escapeHtml(description)}</p>
+          <p>${renderInline(description)}</p>
         </article>`,
     )
     .join("")}</div>`;
@@ -56,7 +123,7 @@ function renderLambdaExample(topic) {
             <h3>람다 표현식으로도 작성 가능</h3>
             ${
               topic.lambdaDescription
-                ? `<p>${escapeHtml(topic.lambdaDescription)}</p>`
+                ? `<p>${renderInline(topic.lambdaDescription)}</p>`
                 : ""
             }
             <pre><code class="language-${escapeHtml(topic.lambdaLanguage || topic.language)}">${escapeHtml(topic.lambdaExample)}</code></pre>
@@ -119,7 +186,7 @@ function renderTopicPage(topic, index) {
         <header class="article-hero">
           <p class="eyebrow">${escapeHtml(topic.number)} · ${escapeHtml(part.title)}</p>
           <h1>${escapeHtml(topic.title)} ${badge}</h1>
-          <p>${escapeHtml(topic.summary)}</p>
+          <p>${renderInline(topic.summary)}</p>
           <div class="article-meta">
             <span class="topic-badge">${escapeHtml(part.shortTitle)}</span>
             <span class="topic-badge">${escapeHtml(topic.level)}</span>
@@ -129,7 +196,7 @@ function renderTopicPage(topic, index) {
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          ${topic.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
+          ${topic.body.map((paragraph) => `<p>${renderInline(paragraph)}</p>`).join("")}
         </section>
 
         <section class="article-section">

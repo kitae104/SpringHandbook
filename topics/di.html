@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>DI는 Dependency Injection의 줄임말입니다. Service가 Repository 구현체를 직접 만들지 않고 생성자를 통해 받으면 실제 DB Repository와 테스트용 Fake Repository를 쉽게 바꿀 수 있습니다.</p><p>Spring Boot에서는 생성자 주입을 기본으로 권장합니다. 필수 의존성이 명확하고, final 필드로 불변성을 표현할 수 있으며, 테스트에서도 객체를 직접 조립하기 쉽습니다.</p><p>DI는 단순히 @Autowired를 쓰는 기술이 아니라 의존 방향을 정리하는 설계 방법입니다. 고수준 정책은 구체 구현보다 인터페이스와 역할에 의존해야 변경에 강합니다.</p>
+          <p>DI는 Dependency Injection의 줄임말입니다. <strong class="inline-term">Service</strong>가 <strong class="inline-term">Repository</strong> 구현체를 직접 만들지 않고 생성자를 통해 받으면 실제 DB <strong class="inline-term">Repository</strong>와 <strong class="inline-korean">테스트</strong>용 Fake <strong class="inline-term">Repository</strong>를 쉽게 바꿀 수 있습니다.</p><p><strong class="inline-term">Spring Boot</strong>에서는 생성자 주입을 기본으로 <em class="inline-guidance">권장합니다</em>. 필수 의존성이 명확하고, final <strong class="inline-korean">필드</strong>로 불변성을 표현할 수 있으며, <strong class="inline-korean">테스트</strong>에서도 객체를 직접 조립하기 쉽습니다.</p><p>DI는 단순히 <strong class="inline-token">@Autowired</strong>를 쓰는 기술이 아니라 의존 방향을 정리하는 설계 방법입니다. 고수준 정책은 구체 구현보다 인터페이스와 역할에 의존해야 변경에 강합니다.</p>
         </section>
 
         <section class="article-section">
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>검증 포인트</strong>
-          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
         </article></div>
         </section>
 
@@ -79,11 +79,11 @@
         </article>
         <article>
           <strong>@Qualifier</strong>
-          <p>같은 타입 Bean이 여러 개일 때 이름으로 선택합니다.</p>
+          <p>같은 타입 <strong class="inline-term">Bean</strong>이 여러 개일 때 이름으로 선택합니다.</p>
         </article>
         <article>
           <strong>@Primary</strong>
-          <p>같은 타입 Bean 중 기본으로 사용할 Bean을 지정합니다.</p>
+          <p>같은 타입 <strong class="inline-term">Bean</strong> 중 기본으로 사용할 <strong class="inline-term">Bean</strong>을 지정합니다.</p>
         </article></div>
         </section>
 
@@ -92,11 +92,11 @@
           <div class="term-grid">
         <article>
           <strong>Lombok</strong>
-          <p>@RequiredArgsConstructor로 final 필드 생성자를 줄일 수 있습니다.</p>
+          <p><strong class="inline-token">@RequiredArgsConstructor</strong>로 final <strong class="inline-korean">필드</strong> 생성자를 줄일 수 있습니다.</p>
         </article>
         <article>
           <strong>테스트</strong>
-          <p>Mock 또는 Fake 구현체를 생성자로 넣어 단위 테스트를 작성합니다.</p>
+          <p>Mock 또는 Fake 구현체를 생성자로 넣어 단위 <strong class="inline-korean">테스트</strong>를 작성합니다.</p>
         </article>
         <article>
           <strong>순환 참조</strong>
@@ -123,7 +123,7 @@ class StudentService {
 
         <section class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
-          <ul class="article-list"><li>필드 주입은 테스트와 불변성 측면에서 불리합니다.</li><li>순환 참조가 생기면 DI 설정으로 억지 해결하기보다 설계 책임을 다시 나누는 편이 좋습니다.</li><li>인터페이스를 남용하면 구조가 복잡해질 수 있으므로 실제 교체 가능성이 있는 의존성에 우선 적용합니다.</li></ul>
+          <ul class="article-list"><li><strong class="inline-korean">필드</strong> 주입은 <strong class="inline-korean">테스트</strong>와 불변성 측면에서 불리합니다.</li><li>순환 참조가 생기면 DI 설정으로 억지 해결하기보다 설계 책임을 다시 나누는 편이 <em class="inline-guidance">좋습니다</em>.</li><li>인터페이스를 남용하면 구조가 복잡해질 수 있으므로 실제 교체 가능성이 있는 의존성에 우선 적용합니다.</li></ul>
         </section>
 
         <footer class="article-nav">

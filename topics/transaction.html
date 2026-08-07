@@ -40,7 +40,7 @@
         <header class="article-hero">
           <p class="eyebrow">18 · Part 2. API 계층 구조</p>
           <h1>Transaction </h1>
-          <p>여러 DB 작업을 하나의 성공 또는 실패 단위로 묶어 데이터 일관성을 지키는 기능입니다.</p>
+          <p>여러 DB 작업을 하나의 성공 또는 <mark class="inline-risk">실패</mark> 단위로 묶어 데이터 일관성을 지키는 기능입니다.</p>
           <div class="article-meta">
             <span class="topic-badge">API</span>
             <span class="topic-badge">핵심</span>
@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>트랜잭션은 여러 변경 작업이 모두 성공하거나 모두 실패하도록 묶습니다. 수강 신청에서 정원 감소와 신청 내역 저장이 따로 성공하면 데이터가 어긋날 수 있으므로 하나의 트랜잭션이 필요합니다.</p><p>Spring에서는 @Transactional을 주로 Service 메서드에 붙입니다. 프록시 기반으로 동작하므로 같은 클래스 내부 메서드 호출에서는 트랜잭션이 새로 적용되지 않는 점을 알아야 합니다.</p><p>읽기 전용 조회에는 readOnly 옵션을 주고, 쓰기 작업에는 예외 발생 시 롤백 정책을 명확히 이해해야 합니다. 기본적으로 RuntimeException 계열은 롤백 대상입니다.</p>
+          <p><strong class="inline-korean">트랜잭션</strong>은 여러 변경 작업이 모두 성공하거나 모두 <mark class="inline-risk">실패</mark>하도록 묶습니다. 수강 신청에서 정원 감소와 신청 내역 저장이 따로 성공하면 데이터가 어긋날 수 있으므로 하나의 <strong class="inline-korean">트랜잭션</strong>이 필요합니다.</p><p>Spring에서는 <strong class="inline-token">@Transactional</strong>을 주로 <strong class="inline-term">Service</strong> 메서드에 붙입니다. 프록시 기반으로 동작하므로 같은 클래스 내부 메서드 호출에서는 <strong class="inline-korean">트랜잭션</strong>이 새로 적용되지 않는 점을 알아야 합니다.</p><p>읽기 전용 조회에는 readOnly 옵션을 주고, 쓰기 작업에는 <strong class="inline-korean">예외</strong> 발생 시 <mark class="inline-risk">롤백</mark> 정책을 <em class="inline-guidance">명확히</em> 이해해야 합니다. 기본적으로 RuntimeException 계열은 <mark class="inline-risk">롤백</mark> 대상입니다.</p>
         </section>
 
         <section class="article-section">
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>검증 포인트</strong>
-          <p>테스트, 로그, API 응답, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
         </article></div>
         </section>
 
@@ -75,15 +75,15 @@
           <div class="term-grid">
         <article>
           <strong>@Transactional</strong>
-          <p>메서드를 트랜잭션 범위로 실행합니다.</p>
+          <p>메서드를 <strong class="inline-korean">트랜잭션</strong> 범위로 실행합니다.</p>
         </article>
         <article>
           <strong>readOnly</strong>
-          <p>조회 전용 트랜잭션 최적화 의도를 나타냅니다.</p>
+          <p>조회 전용 <strong class="inline-korean">트랜잭션</strong> 최적화 의도를 나타냅니다.</p>
         </article>
         <article>
           <strong>propagation</strong>
-          <p>기존 트랜잭션 참여 또는 새 트랜잭션 생성 방식을 정합니다.</p>
+          <p>기존 <strong class="inline-korean">트랜잭션</strong> 참여 또는 새 <strong class="inline-korean">트랜잭션</strong> 생성 방식을 정합니다.</p>
         </article></div>
         </section>
 
@@ -92,15 +92,15 @@
           <div class="term-grid">
         <article>
           <strong>Service</strong>
-          <p>유스케이스 단위 트랜잭션 경계를 두기 좋습니다.</p>
+          <p>유스케이스 단위 <strong class="inline-korean">트랜잭션</strong> 경계를 두기 <em class="inline-guidance">좋습니다</em>.</p>
         </article>
         <article>
           <strong>JPA</strong>
-          <p>변경 감지와 lazy loading이 트랜잭션 범위에 영향을 받습니다.</p>
+          <p>변경 감지와 lazy loading이 <strong class="inline-korean">트랜잭션</strong> 범위에 영향을 받습니다.</p>
         </article>
         <article>
           <strong>DB Lock</strong>
-          <p>동시 수정 문제는 트랜잭션과 락 전략을 함께 봐야 합니다.</p>
+          <p>동시 수정 문제는 <strong class="inline-korean">트랜잭션</strong>과 락 전략을 함께 봐야 합니다.</p>
         </article></div>
         </section>
 
@@ -122,7 +122,7 @@ class EnrollmentService {
 
         <section class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
-          <ul class="article-list"><li>private 메서드나 같은 클래스 내부 호출에는 Spring 트랜잭션 프록시가 기대대로 적용되지 않습니다.</li><li>checked exception은 기본 롤백 대상이 아니므로 rollbackFor 설정이 필요할 수 있습니다.</li><li>트랜잭션을 너무 길게 잡으면 DB 연결과 락을 오래 점유해 처리량이 떨어집니다.</li></ul>
+          <ul class="article-list"><li>private 메서드나 <u class="inline-underline">같은 클래스 내부 호출</u>에는 Spring <strong class="inline-korean">트랜잭션</strong> 프록시가 기대대로 적용되지 않습니다.</li><li>checked exception은 기본 <mark class="inline-risk">롤백</mark> 대상이 아니므로 rollbackFor 설정이 필요할 수 있습니다.</li><li><strong class="inline-korean">트랜잭션</strong>을 너무 길게 잡으면 DB 연결과 락을 오래 점유해 처리량이 떨어집니다.</li></ul>
         </section>
 
         <footer class="article-nav">

@@ -40,7 +40,7 @@
         <header class="article-hero">
           <p class="eyebrow">09 · Part 2. API 계층 구조</p>
           <h1>Controller </h1>
-          <p>HTTP 요청을 받아 입력을 해석하고 Service를 호출한 뒤 응답 형태로 변환하는 API 진입 계층입니다.</p>
+          <p><strong class="inline-term">HTTP</strong> <strong class="inline-korean">요청</strong>을 받아 입력을 해석하고 <strong class="inline-term">Service</strong>를 호출한 뒤 <strong class="inline-korean">응답</strong> 형태로 변환하는 API 진입 계층입니다.</p>
           <div class="article-meta">
             <span class="topic-badge">API</span>
             <span class="topic-badge">핵심</span>
@@ -50,7 +50,7 @@
 
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
-          <p>Controller는 URL, HTTP 메서드, 요청 파라미터, 요청 본문을 애플리케이션 기능 호출로 연결합니다. 클라이언트와 가장 가까운 계층이므로 API 스펙의 모양이 이곳에서 드러납니다.</p><p>좋은 Controller는 얇습니다. 인증된 사용자 정보, 요청 DTO, 경로 변수 같은 입력을 모아 Service에 전달하고, 결과를 응답 DTO와 상태 코드로 바꾸는 역할에 집중합니다.</p><p>비즈니스 규칙, 트랜잭션, DB 조회 조건이 Controller에 누적되면 테스트가 어려워지고 API 변경과 정책 변경이 서로 영향을 줍니다.</p>
+          <p><strong class="inline-term">Controller</strong>는 URL, <strong class="inline-term">HTTP</strong> 메서드, <strong class="inline-korean">요청</strong> 파라미터, <strong class="inline-korean">요청</strong> 본문을 애플리케이션 기능 호출로 연결합니다. 클라이언트와 가장 가까운 계층이므로 API 스펙의 모양이 이곳에서 드러납니다.</p><p>좋은 <strong class="inline-term">Controller</strong>는 얇습니다. <strong class="inline-korean">인증</strong>된 사용자 정보, <strong class="inline-korean">요청</strong> <strong class="inline-term">DTO</strong>, 경로 변수 같은 입력을 모아 <strong class="inline-term">Service</strong>에 전달하고, 결과를 <strong class="inline-korean">응답</strong> <strong class="inline-term">DTO</strong>와 상태 코드로 바꾸는 역할에 집중합니다.</p><p>비즈니스 규칙, <strong class="inline-korean">트랜잭션</strong>, DB 조회 조건이 <strong class="inline-term">Controller</strong>에 누적되면 <strong class="inline-korean">테스트</strong>가 어려워지고 API 변경과 정책 변경이 서로 영향을 줍니다.</p>
         </section>
 
         <section class="article-section">
@@ -58,7 +58,7 @@
           <div class="insight-grid">
         <article>
           <strong>요청 매핑</strong>
-          <p>URL과 HTTP 메서드에 맞는 Controller 메서드가 선택됩니다.</p>
+          <p>URL과 <strong class="inline-term">HTTP</strong> 메서드에 맞는 <strong class="inline-term">Controller</strong> 메서드가 선택됩니다.</p>
         </article>
         <article>
           <strong>입력 변환</strong>
@@ -66,7 +66,7 @@
         </article>
         <article>
           <strong>응답 작성</strong>
-          <p>Service 결과가 DTO와 상태 코드로 반환됩니다.</p>
+          <p><strong class="inline-term">Service</strong> 결과가 <strong class="inline-term">DTO</strong>와 상태 코드로 반환됩니다.</p>
         </article></div>
         </section>
 
@@ -75,7 +75,7 @@
           <div class="term-grid">
         <article>
           <strong>@RestController</strong>
-          <p>JSON 응답을 반환하는 Controller를 만듭니다.</p>
+          <p>JSON <strong class="inline-korean">응답</strong>을 반환하는 <strong class="inline-term">Controller</strong>를 만듭니다.</p>
         </article>
         <article>
           <strong>@RequestMapping</strong>
@@ -87,7 +87,7 @@
         </article>
         <article>
           <strong>@Valid</strong>
-          <p>요청 DTO 검증을 실행합니다.</p>
+          <p><strong class="inline-korean">요청</strong> <strong class="inline-term">DTO</strong> <strong class="inline-korean">검증</strong>을 실행합니다.</p>
         </article></div>
         </section>
 
@@ -96,15 +96,15 @@
           <div class="term-grid">
         <article>
           <strong>Service</strong>
-          <p>실제 비즈니스 판단과 트랜잭션 경계를 위임합니다.</p>
+          <p>실제 비즈니스 판단과 <strong class="inline-korean">트랜잭션</strong> 경계를 위임합니다.</p>
         </article>
         <article>
           <strong>DTO</strong>
-          <p>외부 요청과 응답 구조를 표현합니다.</p>
+          <p>외부 <strong class="inline-korean">요청</strong>과 <strong class="inline-korean">응답</strong> 구조를 표현합니다.</p>
         </article>
         <article>
           <strong>ExceptionHandler</strong>
-          <p>Controller 주변에서 발생한 예외를 API 응답으로 바꿉니다.</p>
+          <p><strong class="inline-term">Controller</strong> 주변에서 발생한 <strong class="inline-korean">예외</strong>를 API <strong class="inline-korean">응답</strong>으로 바꿉니다.</p>
         </article></div>
         </section>
 
@@ -126,7 +126,7 @@ class StudentController {
 
         <section class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
-          <ul class="article-list"><li>Controller에서 repository.save를 직접 호출하기 시작하면 계층 분리가 깨집니다.</li><li>요청 검증 실패와 비즈니스 규칙 위반은 다른 오류로 다루는 것이 좋습니다.</li><li>프론트엔드가 의존하는 응답 필드는 임의로 바꾸지 말고 DTO 버전 관리 관점에서 봐야 합니다.</li></ul>
+          <ul class="article-list"><li><strong class="inline-term">Controller</strong>에서 repository.save를 직접 호출하기 시작하면 계층 분리가 깨집니다.</li><li><strong class="inline-korean">요청</strong> <strong class="inline-korean">검증</strong> <mark class="inline-risk">실패</mark>와 비즈니스 규칙 위반은 다른 오류로 다루는 것이 <em class="inline-guidance">좋습니다</em>.</li><li>프론트엔드가 의존하는 <strong class="inline-korean">응답</strong> <strong class="inline-korean">필드</strong>는 임의로 바꾸지 말고 <strong class="inline-term">DTO</strong> 버전 관리 관점에서 봐야 합니다.</li></ul>
         </section>
 
         <footer class="article-nav">
