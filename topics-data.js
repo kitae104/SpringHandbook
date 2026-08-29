@@ -1697,6 +1697,639 @@ jobs:
     ],
   }),
   topic({
+    slug: "spring-boot-core-concepts",
+    part: "part-1",
+    number: "39",
+    title: "Spring Boot 기본 개념 묶음",
+    summary: "Spring Initializr, Starter, Auto Configuration, 내장 서버, 설정 파일, Profile처럼 Boot 프로젝트를 시작할 때 반복해서 만나는 기본 요소입니다.",
+    keywords: ["Spring Initializr", "Starter", "Auto Configuration", "Convention over Configuration", "Embedded Server", "application.properties", "application.yml", "Profile"],
+    body: [
+      "Spring Boot 프로젝트를 처음 만들 때는 Spring Initializr로 기본 골격을 만들고, 필요한 starter를 선택해 의존성을 묶어서 가져옵니다. starter는 관련 라이브러리 조합을 미리 정리해 두었기 때문에 초반 설정량을 크게 줄입니다.",
+      "Auto Configuration은 클래스패스, 설정 값, 사용자가 등록한 Bean을 조건으로 필요한 설정을 자동 적용합니다. 이것이 Convention over Configuration입니다. 관례에 맞게 두면 빠르게 동작하지만, 관례에서 벗어날 때는 어떤 조건이 자동 설정을 켜고 끄는지 확인해야 합니다.",
+      "Boot는 내장 Tomcat 같은 Embedded Server를 포함해 JAR 실행만으로 웹 서버를 띄울 수 있습니다. 환경별 값은 application.properties 또는 application.yml에 두고, dev, prod 같은 Profile로 실행 환경을 나눕니다.",
+    ],
+    flow: [
+      ["프로젝트 생성", "Spring Initializr에서 Java 버전, 빌드 도구, starter 의존성을 선택합니다."],
+      ["자동 설정 적용", "Boot가 클래스패스와 설정 값을 보고 MVC, DataSource, JPA 같은 기본 Bean을 준비합니다."],
+      ["환경별 실행", "Profile과 외부 설정으로 개발, 테스트, 운영 값을 분리해 같은 JAR를 다르게 실행합니다."],
+    ],
+    annotations: [
+      ["@SpringBootApplication", "Boot 애플리케이션 시작점이며 자동 설정과 컴포넌트 스캔을 포함합니다."],
+      ["@ConfigurationProperties", "application.yml 값을 타입이 있는 설정 객체로 묶습니다."],
+      ["@Profile", "특정 Profile에서만 Bean이나 설정이 활성화되게 합니다."],
+      ["SpringApplication.run", "ApplicationContext를 만들고 내장 서버까지 시작하는 진입점입니다."],
+    ],
+    related: [
+      ["build.gradle", "starter 의존성과 Spring Boot plugin 버전을 확인합니다."],
+      ["application.yml", "서버 포트, DB 연결, 로그 레벨, 외부 API 값을 둡니다."],
+      ["application-dev.yml", "개발 환경 전용 값을 분리합니다."],
+      ["application-prod.yml", "운영 환경 전용 값을 분리하되 secret 원문은 저장소에 올리지 않습니다."],
+    ],
+    exampleTitle: "Profile별 설정 분리",
+    language: "yaml",
+    code: `# application.yml
+spring:
+  profiles:
+    active: local
+server:
+  port: 8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:handbook
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: \${DB_URL}`,
+    watch: [
+      "starter는 편의를 주지만 실제로 어떤 라이브러리가 들어오는지 의존성 트리를 확인해야 합니다.",
+      "자동 설정이 예상과 다르면 조건에 맞는 Bean이 이미 있는지, 의존성이 빠졌는지, Profile이 맞는지 봐야 합니다.",
+      "application-prod.yml에 비밀번호, 토큰, 개인 키 같은 secret을 직접 쓰면 안 됩니다.",
+      "properties와 yml은 표현 방식만 다를 뿐 같은 설정 모델로 바인딩됩니다. 팀에서 한 방식을 정해 일관되게 쓰는 편이 좋습니다.",
+    ],
+  }),
+  topic({
+    slug: "spring-annotations",
+    part: "part-1",
+    number: "40",
+    title: "주요 Spring 애너테이션",
+    summary: "Spring Boot에서 객체 등록, 계층 구분, 의존성 선택, 설정 값 바인딩에 자주 쓰는 애너테이션을 용도별로 정리합니다.",
+    keywords: ["@SpringBootApplication", "@Component", "@Controller", "@RestController", "@Service", "@Repository", "@Configuration", "@Bean", "@Autowired", "@Qualifier", "@Primary", "@Value", "@ConfigurationProperties"],
+    body: [
+      "Spring 애너테이션은 단순 표시가 아니라 컨테이너가 Bean을 찾고, 역할을 구분하고, 의존성을 연결하는 힌트입니다. @Component 계열은 스캔 대상으로 등록되고, @Configuration과 @Bean은 직접 생성해야 하는 객체를 등록합니다.",
+      "Controller, Service, Repository는 모두 Bean 등록 기능을 갖지만 계층의 의미가 다릅니다. 코드를 읽는 사람이 책임을 빠르게 파악할 수 있도록 역할에 맞는 애너테이션을 붙이는 것이 중요합니다.",
+      "의존성 후보가 여러 개일 때는 @Qualifier나 @Primary로 선택 기준을 줍니다. 설정 값은 간단한 값이면 @Value, 묶음 설정이면 @ConfigurationProperties를 사용하면 유지보수가 쉽습니다.",
+    ],
+    flow: [
+      ["스캔", "@Component 계열 클래스가 컴포넌트 스캔으로 Bean 후보가 됩니다."],
+      ["등록", "@Bean 메서드나 자동 설정이 외부 객체와 인프라 Bean을 컨테이너에 넣습니다."],
+      ["주입", "생성자 파라미터 타입과 선택 규칙을 기준으로 필요한 Bean이 연결됩니다."],
+    ],
+    annotations: [
+      ["@Component", "특정 계층 의미가 없는 일반 Bean을 등록합니다."],
+      ["@Controller", "View 기반 MVC Controller를 나타냅니다."],
+      ["@RestController", "JSON 응답을 반환하는 API Controller입니다."],
+      ["@Service", "비즈니스 로직을 담당하는 서비스 계층 Bean입니다."],
+      ["@Repository", "데이터 접근 계층이며 일부 예외 변환과 의미 구분에 도움을 줍니다."],
+      ["@Configuration", "설정 클래스이며 @Bean 메서드를 담습니다."],
+      ["@Autowired", "의존성을 자동 주입합니다. 생성자가 하나면 생략할 수 있습니다."],
+      ["@Qualifier", "같은 타입 후보 중 특정 이름이나 qualifier를 선택합니다."],
+      ["@Primary", "같은 타입 후보 중 기본 선택 Bean으로 지정합니다."],
+    ],
+    related: [
+      ["IoC Container", "애너테이션을 해석해 BeanDefinition을 만들고 객체를 생성합니다."],
+      ["ApplicationContext", "등록된 Bean을 보관하고 조회하는 중심 컨테이너입니다."],
+      ["application.yml", "@Value와 @ConfigurationProperties의 원천 설정 파일입니다."],
+      ["패키지 구조", "@SpringBootApplication 위치 아래가 기본 컴포넌트 스캔 범위입니다."],
+    ],
+    exampleTitle: "같은 타입 Bean 선택",
+    language: "java",
+    code: `public interface MessageSender {
+    void send(String message);
+}
+
+@Component
+@Primary
+class EmailSender implements MessageSender {
+    public void send(String message) {}
+}
+
+@Component
+class SmsSender implements MessageSender {
+    public void send(String message) {}
+}
+
+@Service
+class NoticeService {
+    private final MessageSender sender;
+
+    NoticeService(@Qualifier("smsSender") MessageSender sender) {
+        this.sender = sender;
+    }
+}`,
+    watch: [
+      "@Autowired 필드 주입은 테스트와 불변성 측면에서 불리하므로 생성자 주입을 권장합니다.",
+      "@Service와 @Repository를 아무 곳에나 붙이면 계층 책임이 흐려집니다.",
+      "@Value가 많아지면 설정 키가 흩어지므로 관련 값은 @ConfigurationProperties로 묶는 편이 좋습니다.",
+      "같은 타입 Bean 충돌은 애플리케이션 시작 실패로 드러나는 경우가 많습니다.",
+    ],
+  }),
+  topic({
+    slug: "layered-architecture",
+    part: "part-2",
+    number: "41",
+    title: "계층형 아키텍처",
+    summary: "Controller, Service, Repository, Domain 계층을 나눠 HTTP 처리, 비즈니스 규칙, 데이터 접근 책임을 분리하는 구조입니다.",
+    keywords: ["Controller Layer", "Service Layer", "Repository Layer", "Domain Layer", "Entity", "DTO", "VO", "DAO", "관심사의 분리", "책임 분리"],
+    body: [
+      "계층형 아키텍처는 요청 처리 코드를 한 곳에 몰아넣지 않고 관심사별로 나누는 방식입니다. Controller는 HTTP를 해석하고, Service는 유스케이스와 트랜잭션을 다루며, Repository는 저장소 접근을 담당합니다.",
+      "Domain Layer는 Entity, VO, 도메인 규칙을 담습니다. DTO는 외부 요청과 응답 모양을 담당하므로 DB 구조와 API 구조가 강하게 묶이지 않게 합니다. DAO는 저장소 접근 객체라는 넓은 개념이고, Spring Data JPA에서는 Repository가 그 역할을 많이 대체합니다.",
+      "책임 분리가 잘 되면 테스트 범위가 명확해지고 변경 영향이 줄어듭니다. 반대로 Controller가 검증, 비즈니스 규칙, DB 저장까지 모두 처리하면 작은 변경도 여러 문제로 번집니다.",
+    ],
+    flow: [
+      ["Controller Layer", "URL, Method, Header, Body를 받아 요청 DTO로 변환하고 응답 상태를 결정합니다."],
+      ["Service Layer", "비즈니스 규칙, 트랜잭션 경계, 여러 Repository 호출 순서를 조정합니다."],
+      ["Repository와 Domain", "Entity 상태를 조회하고 변경하며 DB와 도메인 규칙의 경계를 유지합니다."],
+    ],
+    annotations: [
+      ["@RestController", "API 진입점 계층을 나타냅니다."],
+      ["@Service", "유스케이스와 비즈니스 규칙을 담는 Bean입니다."],
+      ["@Repository", "저장소 접근 계층을 나타냅니다."],
+      ["@Entity", "DB 테이블과 매핑되는 도메인 객체입니다."],
+      ["@Transactional", "서비스 계층의 작업 단위를 트랜잭션으로 묶습니다."],
+    ],
+    related: [
+      ["DTO", "Request DTO와 Response DTO를 분리해 API 스펙을 안정화합니다."],
+      ["VO", "값 자체가 의미를 갖고 불변으로 다루는 객체입니다."],
+      ["DAO", "저장소 접근 객체의 일반 용어입니다. JPA Repository와 역할이 겹칠 수 있습니다."],
+      ["Separation of Concerns", "코드 변경 이유가 서로 다른 책임을 다른 계층에 둡니다."],
+    ],
+    exampleTitle: "요청이 계층을 통과하는 구조",
+    language: "java",
+    code: `@RestController
+@RequestMapping("/api/orders")
+class OrderController {
+    @PostMapping
+    ResponseEntity<OrderResponse> create(@Valid @RequestBody OrderCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.create(request));
+    }
+}
+
+@Service
+class OrderService {
+    @Transactional
+    OrderResponse create(OrderCreateRequest request) {
+        Member member = memberRepository.getReferenceById(request.memberId());
+        Order order = Order.create(member, request.items());
+        return OrderResponse.from(orderRepository.save(order));
+    }
+}`,
+    watch: [
+      "Controller에서 Entity를 바로 반환하면 API 응답이 DB 구조에 묶입니다.",
+      "Repository에 비즈니스 판단 로직이 들어가면 저장소 교체와 테스트가 어려워집니다.",
+      "Service가 너무 커지면 유스케이스 단위로 나누거나 도메인 객체에 규칙을 옮길 필요가 있습니다.",
+      "DTO, VO, Entity 이름이 비슷해도 변경 이유와 생명주기가 다릅니다.",
+    ],
+  }),
+  topic({
+    slug: "jpa-relationships",
+    part: "part-2",
+    number: "42",
+    title: "JPA 연관관계와 매핑",
+    summary: "1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.",
+    keywords: ["@OneToOne", "@OneToMany", "@ManyToOne", "@ManyToMany", "@JoinColumn", "연관관계의 주인", "Lazy Loading", "Eager Loading", "Cascade", "Orphan Removal", "N+1 Problem", "Fetch Join"],
+    body: [
+      "JPA 연관관계는 객체 참조와 DB 외래 키를 연결하는 규칙입니다. N:1 관계는 보통 다수 쪽 Entity가 외래 키를 가지므로 @ManyToOne과 @JoinColumn을 많이 사용합니다. 1:N 단방향은 외래 키 관리가 어색해질 수 있어 신중해야 합니다.",
+      "양방향 관계에서는 외래 키를 실제로 변경하는 쪽이 연관관계의 주인입니다. 주인이 아닌 쪽 mappedBy는 조회 편의를 위한 반대편 참조입니다. 객체 양쪽을 모두 맞춰 주는 편의 메서드를 두면 메모리 상태와 DB 상태의 불일치를 줄일 수 있습니다.",
+      "Fetch Type은 성능에 큰 영향을 줍니다. Lazy Loading은 필요한 시점에 조회하지만 N+1 문제가 생길 수 있고, Eager Loading은 불필요한 조인을 만들 수 있습니다. 목록 조회에서는 fetch join, EntityGraph, DTO 조회를 상황에 맞게 선택합니다.",
+    ],
+    flow: [
+      ["관계 선택", "업무 규칙을 보고 1:1, 1:N, N:1, N:M 중 실제 DB 외래 키 구조를 정합니다."],
+      ["주인 결정", "외래 키를 가진 Entity를 연관관계의 주인으로 두고 @JoinColumn을 명시합니다."],
+      ["조회 전략 조정", "Lazy Loading을 기본으로 두고 필요한 화면에서 fetch join이나 DTO 조회로 N+1을 제어합니다."],
+    ],
+    annotations: [
+      ["@Entity", "영속성 컨텍스트가 관리하는 JPA 객체입니다."],
+      ["@Table", "매핑할 테이블 이름과 제약 조건을 지정합니다."],
+      ["@Id", "Entity 식별자 필드입니다."],
+      ["@GeneratedValue", "식별자 생성 전략을 지정합니다."],
+      ["@Column", "컬럼 이름, 길이, nullable 같은 속성을 지정합니다."],
+      ["@Enumerated", "enum 저장 방식을 지정합니다. 보통 EnumType.STRING을 권장합니다."],
+      ["@Transient", "DB 컬럼으로 저장하지 않는 필드입니다."],
+      ["@ManyToOne", "다수 Entity가 하나의 Entity를 참조하는 관계입니다."],
+      ["@OneToMany", "하나의 Entity가 여러 Entity를 참조하는 관계입니다."],
+      ["@JoinColumn", "외래 키 컬럼을 지정합니다."],
+    ],
+    related: [
+      ["Persistence Context", "조회한 Entity를 같은 트랜잭션 안에서 1차 캐시와 변경 감지 대상으로 관리합니다."],
+      ["EntityManager", "Entity 저장, 조회, 삭제, flush를 수행하는 JPA 핵심 API입니다."],
+      ["Dirty Checking", "영속 상태 Entity 변경을 감지해 UPDATE SQL을 만듭니다."],
+      ["영속 상태", "비영속, 영속, 준영속, 삭제 상태에 따라 변경 감지와 SQL 실행 여부가 달라집니다."],
+    ],
+    exampleTitle: "N:1과 1:N 양방향 매핑",
+    language: "java",
+    code: `@Entity
+class Order {
+    @Id @GeneratedValue
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    public void changeMember(Member member) {
+        this.member = member;
+        member.getOrders().add(this);
+    }
+}
+
+@Entity
+class Member {
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
+}`,
+    watch: [
+      "@ManyToMany는 중간 테이블에 속성이 생기는 순간 다루기 어려워지므로 연결 Entity로 풀어내는 편이 좋습니다.",
+      "CascadeType.REMOVE와 orphanRemoval은 삭제 전파 범위가 넓어 데이터 손실 위험이 있습니다.",
+      "Lazy Loading은 트랜잭션 밖에서 접근하면 LazyInitializationException이 발생할 수 있습니다.",
+      "N+1 문제는 코드 한 줄보다 실제 SQL 로그를 보고 확인해야 합니다.",
+    ],
+  }),
+  topic({
+    slug: "repository-query",
+    part: "part-2",
+    number: "43",
+    title: "Repository와 Query",
+    summary: "Spring Data JPA의 CRUD, Query Method, JPQL, Native Query, @Query, Pageable, Sort, Specification, QueryDSL 사용 기준입니다.",
+    keywords: ["CRUD", "Query Method", "JPQL", "Native Query", "@Query", "Pagination", "Pageable", "Sort", "Specification", "QueryDSL", "JpaRepository"],
+    body: [
+      "Repository는 데이터 접근을 추상화합니다. JpaRepository를 상속하면 save, findById, findAll, delete 같은 기본 CRUD를 바로 사용할 수 있고, 메서드 이름만으로 간단한 조건 쿼리를 만들 수 있습니다.",
+      "조건이 조금 복잡해지면 @Query로 JPQL을 명시하고, DB 전용 기능이 필요하면 Native Query를 사용할 수 있습니다. 다만 Native Query는 DB 종류에 묶이므로 이식성과 테스트 비용을 고려해야 합니다.",
+      "동적 검색 조건이 많으면 Specification이나 QueryDSL을 검토합니다. 페이지 조회는 Pageable과 Sort를 받아 응답 데이터와 전체 개수를 함께 설계해야 프론트엔드에서 목록 화면을 안정적으로 만들 수 있습니다.",
+    ],
+    flow: [
+      ["기본 CRUD", "JpaRepository의 기본 메서드로 단순 저장, 조회, 삭제를 처리합니다."],
+      ["정적 조건", "Query Method나 @Query JPQL로 명확한 조회 조건을 표현합니다."],
+      ["동적 조건과 목록", "Pageable, Sort, Specification, QueryDSL로 검색과 페이징 요구사항을 처리합니다."],
+    ],
+    annotations: [
+      ["JpaRepository", "JPA 기반 Repository 기본 기능을 제공하는 인터페이스입니다."],
+      ["@Query", "메서드에 JPQL 또는 Native SQL을 직접 지정합니다."],
+      ["@Param", "@Query 안의 이름 있는 파라미터와 메서드 파라미터를 연결합니다."],
+      ["Pageable", "page, size, sort 정보를 담는 페이징 요청 객체입니다."],
+      ["Sort", "정렬 조건을 표현합니다."],
+    ],
+    related: [
+      ["JPQL", "테이블이 아니라 Entity와 필드 이름을 기준으로 작성하는 객체 지향 쿼리입니다."],
+      ["Native Query", "DB SQL을 그대로 작성합니다. DB 함수나 특수 쿼리에 유용합니다."],
+      ["Pagination", "Page, Slice, List 중 필요한 응답 형태를 선택합니다."],
+      ["QueryDSL", "타입 안전한 동적 쿼리를 코드로 조립할 때 자주 사용합니다."],
+    ],
+    exampleTitle: "Query Method와 JPQL",
+    language: "java",
+    code: `public interface CourseRepository extends JpaRepository<Course, Long> {
+    Page<Course> findByTitleContaining(String keyword, Pageable pageable);
+
+    @Query("""
+        select c
+        from Course c
+        join fetch c.teacher
+        where c.opened = true
+        order by c.createdAt desc
+        """)
+    List<Course> findOpenedCoursesWithTeacher();
+}`,
+    watch: [
+      "Query Method 이름이 너무 길어지면 읽기 어려우므로 @Query나 QueryDSL로 옮기는 편이 좋습니다.",
+      "Page는 count query가 추가로 실행됩니다. 전체 개수가 필요 없는 화면은 Slice를 고려합니다.",
+      "fetch join과 pagination을 함께 쓸 때 컬렉션 조인은 결과가 부풀 수 있어 주의해야 합니다.",
+      "Native Query는 DB별 문법 차이 때문에 테스트 환경과 운영 DB가 다르면 깨질 수 있습니다.",
+    ],
+  }),
+  topic({
+    slug: "security-authentication-structure",
+    part: "part-3",
+    number: "44",
+    title: "Spring Security 인증 구조",
+    summary: "Login 요청이 Security Filter Chain, AuthenticationManager, UserDetailsService, JWT Filter를 거쳐 인증 객체가 되는 과정을 설명합니다.",
+    keywords: ["Login", "UserDetails", "UserDetailsService", "Authentication", "AuthenticationManager", "AuthenticationProvider", "UsernamePasswordAuthenticationToken", "JWT Filter", "SecurityContextHolder"],
+    body: [
+      "Spring Security에서 인증은 사용자가 누구인지 확인하는 과정이고, 인가는 그 사용자가 무엇을 할 수 있는지 결정하는 과정입니다. 로그인 요청은 필터 체인을 통과하면서 Authentication 객체로 변환되고, AuthenticationManager가 실제 검증을 위임합니다.",
+      "일반 폼 로그인이나 아이디/비밀번호 로그인에서는 UsernamePasswordAuthenticationToken이 인증 전후 상태를 표현합니다. AuthenticationProvider는 UserDetailsService로 사용자를 조회하고 PasswordEncoder로 비밀번호를 비교합니다.",
+      "JWT 기반 API에서는 매 요청마다 Authorization Header의 Bearer Token을 JWT Filter가 읽고 검증한 뒤 SecurityContextHolder에 Authentication을 저장합니다. 이후 Controller나 Service는 Principal, Authentication, @AuthenticationPrincipal 등을 통해 로그인 사용자를 알 수 있습니다.",
+    ],
+    flow: [
+      ["요청 진입", "Security Filter Chain이 Login 요청 또는 JWT가 포함된 API 요청을 먼저 가로챕니다."],
+      ["인증 검증", "AuthenticationManager와 Provider가 사용자 조회, 비밀번호 비교, 토큰 검증을 수행합니다."],
+      ["Context 저장", "검증된 Authentication이 SecurityContextHolder에 저장되어 인가 판단에 사용됩니다."],
+    ],
+    annotations: [
+      ["SecurityFilterChain", "HTTP 보안 규칙과 필터 구성을 Bean으로 등록합니다."],
+      ["UserDetailsService", "사용자 식별자로 UserDetails를 조회하는 서비스입니다."],
+      ["PasswordEncoder", "비밀번호 해시와 비교를 담당합니다."],
+      ["BCryptPasswordEncoder", "BCrypt 알고리즘으로 비밀번호를 안전하게 해시합니다."],
+      ["AuthenticationProvider", "특정 인증 방식의 검증 로직을 담당합니다."],
+    ],
+    related: [
+      ["Principal", "현재 인증된 사용자의 대표 정보입니다."],
+      ["Role", "ROLE_ADMIN처럼 큰 권한 묶음을 표현합니다."],
+      ["Authority", "개별 권한 문자열입니다. 인가 판단의 실제 단위로 쓰입니다."],
+      ["Access Token", "짧게 살아 있는 API 접근 토큰입니다."],
+      ["Refresh Token", "Access Token 재발급에 사용하는 긴 수명의 토큰입니다."],
+    ],
+    exampleTitle: "JWT 필터에서 인증 저장",
+    language: "java",
+    code: `class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+        throws ServletException, IOException {
+        String token = resolveBearerToken(request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (token != null && jwtTokenProvider.valid(token)) {
+            Authentication authentication = jwtTokenProvider.toAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        chain.doFilter(request, response);
+    }
+}`,
+    watch: [
+      "Authentication과 Authorization을 같은 개념으로 섞으면 401과 403 응답 설계가 흔들립니다.",
+      "JWT를 localStorage에 저장하면 XSS에 노출될 수 있고, Cookie에 저장하면 CSRF 전략을 함께 봐야 합니다.",
+      "SecurityContextHolder는 요청 처리 후 정리되어야 합니다. 필터 체인 밖에서 직접 다룰 때는 특히 주의해야 합니다.",
+      "비밀번호는 BCrypt 같은 단방향 해시로 저장하고 원문 비교를 하면 안 됩니다.",
+    ],
+  }),
+  topic({
+    slug: "oop-solid",
+    part: "part-1",
+    number: "45",
+    title: "OOP와 SOLID",
+    summary: "객체, 클래스, 인터페이스, 캡슐화, 다형성, 결합도, 응집도와 SOLID 원칙을 Spring의 IoC, DI, DIP와 연결합니다.",
+    keywords: ["OOP", "객체", "클래스", "인터페이스", "상속", "다형성", "추상화", "캡슐화", "의존성", "결합도", "응집도", "SOLID", "SRP", "OCP", "LSP", "ISP", "DIP"],
+    body: [
+      "객체지향 프로그래밍은 상태와 행동을 가진 객체들이 메시지를 주고받으며 문제를 해결하는 방식입니다. 클래스는 객체를 만들기 위한 설계도이고, 인터페이스는 구현체가 지켜야 하는 사용 계약입니다.",
+      "좋은 객체지향 설계는 결합도를 낮추고 응집도를 높입니다. 캡슐화는 내부 변경을 숨기고, 추상화와 다형성은 구현체 교체를 가능하게 합니다. 이 기반 위에서 Spring의 DI가 실용적인 효과를 냅니다.",
+      "SOLID 중 Spring과 가장 자주 연결되는 원칙은 DIP입니다. 상위 정책인 Service가 구체 Repository 구현이 아니라 인터페이스에 의존하고, 실제 구현체 연결은 IoC Container가 DI로 처리합니다. 즉 DIP는 설계 원칙, DI는 구현 기법, IoC는 제어 흐름의 구조라고 볼 수 있습니다.",
+    ],
+    flow: [
+      ["DIP 설계", "상위 모듈이 구체 클래스가 아니라 인터페이스와 같은 추상화에 의존합니다."],
+      ["DI 구현", "필요한 구현체를 생성자 파라미터로 외부에서 주입받습니다."],
+      ["IoC 실행", "Spring 컨테이너가 객체 생성과 연결 제어권을 가져와 런타임에 조립합니다."],
+    ],
+    annotations: [
+      ["SRP", "클래스는 변경 이유가 하나에 가깝도록 책임을 좁힙니다."],
+      ["OCP", "기존 코드를 많이 고치지 않고 확장할 수 있게 설계합니다."],
+      ["LSP", "하위 타입은 상위 타입을 기대하는 곳에서 문제없이 대체되어야 합니다."],
+      ["ISP", "클라이언트가 쓰지 않는 메서드에 의존하지 않도록 인터페이스를 나눕니다."],
+      ["DIP", "고수준 정책과 저수준 구현이 모두 추상화에 의존하게 합니다."],
+    ],
+    related: [
+      ["Interface", "Service가 구현체를 직접 알지 않게 하는 추상화 경계입니다."],
+      ["Constructor Injection", "필수 의존성을 명확히 하고 테스트 대역을 넣기 쉽게 합니다."],
+      ["IoC Container", "DIP와 DI가 실제 애플리케이션에서 동작하도록 객체를 조립합니다."],
+      ["Mock", "인터페이스에 의존하면 테스트에서 대체 객체를 쉽게 넣을 수 있습니다."],
+    ],
+    exampleTitle: "DIP, DI, IoC가 만나는 코드",
+    language: "java",
+    code: `public interface PaymentGateway {
+    void pay(Money amount);
+}
+
+@Service
+class OrderPaymentService {
+    private final PaymentGateway paymentGateway;
+
+    OrderPaymentService(PaymentGateway paymentGateway) {
+        this.paymentGateway = paymentGateway;
+    }
+
+    void pay(Order order) {
+        paymentGateway.pay(order.totalPrice());
+    }
+}
+
+@Component
+class TossPaymentGateway implements PaymentGateway {
+    public void pay(Money amount) {}
+}`,
+    watch: [
+      "인터페이스를 무조건 만드는 것이 좋은 설계는 아닙니다. 교체 가능성이나 테스트 경계가 있을 때 효과가 큽니다.",
+      "상속은 강한 결합을 만들 수 있으므로 재사용 목적이면 조합을 먼저 고려합니다.",
+      "SRP는 파일을 작게 쪼개라는 뜻이 아니라 변경 이유를 분리하라는 뜻입니다.",
+      "DIP를 지켜도 구현체 선택 기준이 불명확하면 Bean 충돌이나 설정 복잡도가 생깁니다.",
+    ],
+  }),
+  topic({
+    slug: "bean-lifecycle",
+    part: "part-1",
+    number: "46",
+    title: "Spring Bean 생명주기",
+    summary: "Bean 생성, 의존성 주입, 초기화, 사용, 소멸 흐름과 Singleton, Prototype scope, @PostConstruct, @PreDestroy를 정리합니다.",
+    keywords: ["Bean Lifecycle", "Singleton", "Prototype", "@PostConstruct", "@PreDestroy", "Bean 생성", "Bean 초기화", "Bean 소멸", "Bean Scope"],
+    body: [
+      "Spring Bean은 컨테이너가 만들고 관리하는 객체입니다. 애플리케이션 시작 시 BeanDefinition을 기준으로 객체가 생성되고, 생성자 주입으로 의존성이 연결된 뒤 초기화 콜백이 실행됩니다.",
+      "기본 scope는 Singleton입니다. 컨테이너 안에서 하나의 Bean 인스턴스를 공유하므로 상태를 필드에 저장할 때 동시성 문제를 조심해야 합니다. Prototype은 요청할 때마다 새 객체를 만들지만 소멸 콜백 관리 방식이 다릅니다.",
+      "@PostConstruct는 의존성 주입이 끝난 뒤 초기화 작업에 사용하고, @PreDestroy는 컨테이너 종료 시 자원 정리에 사용합니다. DB 연결, 스레드 풀, 외부 클라이언트처럼 자원 생명주기가 있는 Bean은 종료 흐름까지 고려해야 합니다.",
+    ],
+    flow: [
+      ["생성", "컨테이너가 생성자와 BeanDefinition을 보고 객체 인스턴스를 만듭니다."],
+      ["초기화", "의존성 주입 후 @PostConstruct나 InitializingBean 같은 초기화 콜백을 실행합니다."],
+      ["소멸", "컨테이너 종료 시 Singleton Bean의 @PreDestroy나 destroy callback을 실행합니다."],
+    ],
+    annotations: [
+      ["@Scope", "singleton, prototype 같은 Bean scope를 지정합니다."],
+      ["@PostConstruct", "Bean 초기화 시점에 실행할 메서드를 표시합니다."],
+      ["@PreDestroy", "Bean 소멸 시점에 실행할 메서드를 표시합니다."],
+      ["@Bean(initMethod)", "Bean 등록 메서드에서 초기화 메서드 이름을 지정할 수 있습니다."],
+      ["@Bean(destroyMethod)", "Bean 종료 메서드 이름을 지정할 수 있습니다."],
+    ],
+    related: [
+      ["Singleton", "Spring 기본 scope이며 하나의 Bean 인스턴스를 공유합니다."],
+      ["Prototype", "조회할 때마다 새 Bean을 생성합니다."],
+      ["ApplicationContext", "Bean 생명주기를 관리하는 컨테이너입니다."],
+      ["Stateful Bean", "공유 Bean에 사용자별 상태를 두면 동시성 문제가 생길 수 있습니다."],
+    ],
+    exampleTitle: "초기화와 소멸 콜백",
+    language: "java",
+    code: `@Component
+class ExternalApiClient {
+    @PostConstruct
+    void connect() {
+        log.info("external api client ready");
+    }
+
+    @PreDestroy
+    void close() {
+        log.info("external api client closed");
+    }
+}
+
+@Bean(destroyMethod = "shutdown")
+ExecutorService taskExecutor() {
+    return Executors.newFixedThreadPool(4);
+}`,
+    watch: [
+      "Singleton Bean에 요청별 데이터를 필드로 저장하면 사용자 데이터가 섞일 수 있습니다.",
+      "@PostConstruct에서 외부 API를 과도하게 호출하면 애플리케이션 시작이 느려지거나 실패할 수 있습니다.",
+      "Prototype Bean은 컨테이너가 생성 이후 전체 소멸 과정을 끝까지 관리하지 않는다는 점을 알아야 합니다.",
+      "초기화 로직이 복잡하면 설정 검증과 실제 연결 작업을 분리하는 편이 좋습니다.",
+    ],
+  }),
+  topic({
+    slug: "servlet-internals",
+    part: "part-5",
+    number: "47",
+    title: "Servlet과 Spring MVC 내부 구조",
+    summary: "Servlet, Servlet Container, Tomcat, DispatcherServlet, Filter, Interceptor, Listener, ArgumentResolver가 요청 처리에서 어디에 놓이는지 설명합니다.",
+    keywords: ["Servlet", "Servlet Container", "Tomcat", "DispatcherServlet", "Filter", "Interceptor", "Listener", "Filter vs Interceptor", "ArgumentResolver"],
+    body: [
+      "Spring Boot 웹 애플리케이션은 내장 Tomcat 같은 Servlet Container 위에서 실행됩니다. 클라이언트 요청은 먼저 컨테이너에 도착하고, Filter Chain을 통과한 뒤 DispatcherServlet으로 들어갑니다.",
+      "DispatcherServlet은 Front Controller Pattern의 구현입니다. 모든 Spring MVC 요청을 먼저 받아 HandlerMapping으로 Controller를 찾고, HandlerAdapter와 ArgumentResolver를 통해 메서드 파라미터를 준비한 뒤 호출합니다.",
+      "Filter는 Servlet 영역이라 Spring MVC 앞단에서 동작하고, Interceptor는 HandlerMapping 이후 Controller 전후에 동작합니다. Listener는 컨테이너 이벤트나 세션 이벤트를 감지하는 데 쓰입니다. 위치 차이를 알아야 인증, CORS, 로그, 예외 처리 흐름을 디버깅할 수 있습니다.",
+    ],
+    flow: [
+      ["Servlet Container", "Tomcat이 HTTP 연결을 받고 request와 response 객체를 만듭니다."],
+      ["Filter Chain", "CORS, 인증 토큰, 인코딩, 요청 로그 같은 앞단 공통 처리를 수행합니다."],
+      ["DispatcherServlet", "HandlerMapping, Interceptor, ArgumentResolver를 거쳐 Controller를 호출합니다."],
+    ],
+    annotations: [
+      ["DispatcherServlet", "Spring MVC의 Front Controller입니다."],
+      ["Filter", "Servlet 요청과 응답을 감싸는 표준 확장 지점입니다."],
+      ["HandlerInterceptor", "Controller 호출 전후에 Spring MVC 맥락을 활용합니다."],
+      ["HandlerMethodArgumentResolver", "Controller 메서드 파라미터를 커스텀 방식으로 해석합니다."],
+      ["ServletContextListener", "ServletContext 시작과 종료 이벤트를 감지합니다."],
+    ],
+    related: [
+      ["Tomcat", "Spring Boot 기본 웹 starter에서 자주 쓰는 내장 Servlet Container입니다."],
+      ["Front Controller Pattern", "하나의 진입점이 공통 웹 처리를 중앙에서 담당하는 패턴입니다."],
+      ["Filter vs Interceptor", "Filter는 MVC 이전, Interceptor는 Controller 매핑 이후에 가깝습니다."],
+      ["ArgumentResolver", "@RequestParam, @PathVariable, @RequestBody, Pageable 같은 파라미터 해석과 연결됩니다."],
+    ],
+    exampleTitle: "커스텀 ArgumentResolver 등록",
+    language: "java",
+    code: `class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.hasParameterAnnotation(LoginUser.class);
+    }
+
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        return webRequest.getAttribute("loginUser", RequestAttributes.SCOPE_REQUEST);
+    }
+}
+
+@Configuration
+class WebConfig implements WebMvcConfigurer {
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginUserArgumentResolver());
+    }
+}`,
+    watch: [
+      "Filter에서 예외가 발생하면 @ControllerAdvice가 처리하지 못하는 흐름이 있을 수 있습니다.",
+      "Interceptor는 Controller가 선택된 뒤 동작하므로 정적 리소스나 preflight 요청과의 관계를 확인해야 합니다.",
+      "ArgumentResolver를 과하게 쓰면 Controller 파라미터가 어디서 만들어지는지 추적하기 어려워집니다.",
+      "Tomcat 스레드가 블로킹 작업에 오래 묶이면 전체 요청 처리량이 떨어질 수 있습니다.",
+    ],
+  }),
+  topic({
+    slug: "frontend-integration",
+    part: "part-4",
+    number: "48",
+    title: "프론트엔드 연동 개념",
+    summary: "React 같은 SPA와 Spring Boot API를 연결할 때 필요한 AJAX, Axios, Fetch API, JSON, CORS, Cookie, Session, JWT, Authorization Header를 정리합니다.",
+    keywords: ["SPA", "AJAX", "Axios", "Fetch API", "JSON", "CORS", "Same Origin Policy", "Cookie", "Session", "JWT", "LocalStorage", "Authorization Header"],
+    body: [
+      "React 같은 SPA는 화면 전환 대부분을 브라우저에서 처리하고, 필요한 데이터만 Spring Boot API에 AJAX 요청으로 가져옵니다. Fetch API나 Axios는 HTTP Method, Header, Body를 구성해 JSON으로 통신하는 클라이언트 도구입니다.",
+      "프론트엔드와 백엔드의 도메인, 포트, 프로토콜이 다르면 Same Origin Policy 때문에 브라우저가 요청을 제한합니다. 이때 서버에서 CORS 정책을 정확히 열어야 합니다. 개발 중에는 localhost 포트 차이만으로도 다른 origin이 됩니다.",
+      "인증 연동 방식은 Cookie 기반 Session과 Authorization Header의 Bearer JWT 방식으로 나눠 볼 수 있습니다. Cookie는 브라우저가 자동 전송하지만 CSRF와 SameSite 설정을 봐야 하고, JWT는 저장 위치와 만료, 재발급 흐름을 신중히 설계해야 합니다.",
+    ],
+    flow: [
+      ["브라우저 요청", "SPA가 Fetch API나 Axios로 JSON 요청을 보냅니다."],
+      ["브라우저 보안 정책", "Origin이 다르면 preflight와 CORS 응답 헤더를 확인합니다."],
+      ["인증 정보 전달", "Cookie 또는 Authorization Header로 로그인 상태를 API에 전달합니다."],
+    ],
+    annotations: [
+      ["@CrossOrigin", "간단한 CORS 허용을 Controller 단위로 지정합니다."],
+      ["CorsConfigurationSource", "전역 CORS 정책을 세밀하게 구성합니다."],
+      ["Authorization Header", "Bearer Token 같은 인증 정보를 전달하는 HTTP Header입니다."],
+      ["Content-Type", "요청 본문 형식을 application/json처럼 명시합니다."],
+      ["Set-Cookie", "서버가 브라우저에 Cookie 저장을 지시하는 응답 Header입니다."],
+    ],
+    related: [
+      ["JSON", "프론트엔드와 백엔드가 주고받는 데이터 표현 형식입니다."],
+      ["LocalStorage", "브라우저 저장소입니다. XSS 위험을 고려해야 합니다."],
+      ["Session", "서버가 로그인 상태를 보관하고 브라우저는 세션 Cookie를 보냅니다."],
+      ["JWT", "토큰 자체에 사용자 식별과 만료 정보를 담는 방식입니다."],
+      ["CORS", "허용 origin, method, header, credentials를 명확히 맞춰야 합니다."],
+    ],
+    exampleTitle: "Axios 요청과 Spring CORS 설정",
+    language: "java",
+    code: `// React
+axios.get("https://api.example.com/api/me", {
+  headers: { Authorization: \`Bearer \${accessToken}\` }
+});
+
+// Spring Boot
+@Bean
+CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("https://app.example.com"));
+    config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE"));
+    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    config.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/api/**", config);
+    return source;
+}`,
+    watch: [
+      "CORS 오류는 서버 로그에 Controller 호출 기록이 없을 수 있습니다. 브라우저 개발자 도구의 네트워크 탭을 봐야 합니다.",
+      "allowedOrigins에 *를 쓰면서 credentials를 true로 둘 수 없습니다.",
+      "JWT를 localStorage에 저장하면 XSS 공격에 노출될 수 있습니다.",
+      "프론트엔드 요청 DTO와 백엔드 Request DTO 필드명이 다르면 400 또는 null 바인딩 문제가 생깁니다.",
+    ],
+  }),
+  topic({
+    slug: "deployment-runtime",
+    part: "part-5",
+    number: "49",
+    title: "배포와 런타임",
+    summary: "Spring Boot JAR 실행부터 JVM, Java Runtime, 환경 변수, Reverse Proxy, Nginx, HTTPS, Domain, Port, Process, systemd, Docker, CI/CD까지 배포 단계의 기본 개념입니다.",
+    keywords: ["JAR 실행", "JVM", "Java Runtime", "Environment Variable", "Reverse Proxy", "Nginx", "HTTPS", "SSL/TLS", "Domain", "Port", "Process", "Service", "Linux", "systemd", "Docker", "CI/CD"],
+    body: [
+      "Spring Boot 애플리케이션은 보통 bootJar로 실행 가능한 JAR를 만들고, 서버의 Java Runtime 위에서 java -jar 명령으로 실행합니다. JVM 옵션, Profile, 환경 변수는 실행 시점에 주입해 같은 산출물을 여러 환경에서 사용할 수 있게 합니다.",
+      "운영 서버에서는 애플리케이션이 직접 80 또는 443 포트를 열기보다 Nginx 같은 Reverse Proxy가 앞에서 HTTPS를 처리하고 내부 8080 포트의 Spring Boot로 요청을 넘기는 구성이 흔합니다. Domain은 DNS로 서버를 가리키고, SSL/TLS 인증서는 HTTPS 연결을 보호합니다.",
+      "Linux에서는 프로세스를 수동으로 띄우기보다 systemd service로 등록해 재시작, 로그, 부팅 시 자동 실행을 관리합니다. Docker와 CI/CD를 사용하면 이미지 빌드, 배포, 롤백 절차를 더 일관되게 만들 수 있습니다.",
+    ],
+    flow: [
+      ["빌드", "Gradle이나 Maven이 실행 가능한 JAR 또는 Docker 이미지를 만듭니다."],
+      ["실행", "JVM이 환경 변수와 Profile을 읽고 Spring Boot 프로세스를 시작합니다."],
+      ["외부 노출", "Nginx, Domain, HTTPS가 사용자 요청을 안전하게 애플리케이션 포트로 전달합니다."],
+    ],
+    annotations: [
+      ["bootJar", "Spring Boot 실행 JAR를 만드는 Gradle 작업입니다."],
+      ["java -jar", "JVM 위에서 Boot 애플리케이션 JAR를 실행하는 명령입니다."],
+      ["SPRING_PROFILES_ACTIVE", "실행 Profile을 환경 변수로 지정할 때 자주 사용합니다."],
+      ["Nginx", "정적 파일 제공, HTTPS 종료, reverse proxy 역할을 수행할 수 있습니다."],
+      ["systemd", "Linux에서 프로세스를 service로 관리하는 표준 도구입니다."],
+    ],
+    related: [
+      ["Environment Variable", "DB URL, secret, profile처럼 환경마다 달라지는 값을 외부에서 주입합니다."],
+      ["Port", "프로세스가 요청을 받는 네트워크 번호입니다. 8080, 80, 443을 자주 만납니다."],
+      ["SSL/TLS", "HTTPS 암호화와 서버 신뢰를 담당합니다."],
+      ["Docker", "애플리케이션과 런타임을 이미지로 묶어 배포합니다."],
+      ["CI/CD", "테스트, 빌드, 배포 절차를 자동화합니다."],
+    ],
+    exampleTitle: "JAR 실행과 systemd 서비스",
+    language: "ini",
+    code: `[Unit]
+Description=Spring Boot Handbook API
+After=network.target
+
+[Service]
+User=spring
+Environment=SPRING_PROFILES_ACTIVE=prod
+Environment=DB_URL=jdbc:postgresql://db.internal:5432/handbook
+ExecStart=/usr/bin/java -jar /opt/handbook/app.jar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target`,
+    watch: [
+      "운영 secret을 Git 저장소나 JAR 내부에 포함하면 안 됩니다.",
+      "서버 방화벽, 클라우드 보안 그룹, 애플리케이션 포트 설정이 서로 맞지 않으면 외부 접속이 실패합니다.",
+      "HTTPS 인증서 만료와 갱신 자동화는 배포 후에도 계속 관리해야 합니다.",
+      "프로세스가 죽었을 때 누가 재시작하는지, 로그는 어디에 남는지 배포 전에 정해야 합니다.",
+    ],
+  }),
+  topic({
     slug: "spring-ai",
     part: "part-5",
     number: "38",
@@ -1741,6 +2374,10 @@ class ChatController {
     ],
   }),
 ];
+
+SPRING_TOPICS.forEach((item, index) => {
+  item.number = String(index + 1).padStart(2, "0");
+});
 
 if (typeof window !== "undefined") {
   window.TOPIC_PARTS = TOPIC_PARTS;

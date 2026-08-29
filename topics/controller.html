@@ -54,6 +54,26 @@
         </section>
 
         <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>요청 매핑</strong>
+          <p>URL과 <strong class="inline-term">HTTP</strong> 메서드에 맞는 <strong class="inline-term">Controller</strong> 메서드가 선택됩니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>입력 변환</strong>
+          <p>PathVariable, RequestParam, RequestBody가 자바 값으로 변환됩니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>응답 작성</strong>
+          <p><strong class="inline-term">Service</strong> 결과가 <strong class="inline-term">DTO</strong>와 상태 코드로 반환됩니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>

@@ -113,6 +113,19 @@ function renderInsights(items) {
     .join("")}</div>`;
 }
 
+function renderFlowDiagram(items) {
+  return `<div class="concept-diagram" aria-label="개념 흐름 다이어그램">${items
+    .map(
+      ([title, description], index) => `
+        <div class="diagram-node">
+          <span>${String(index + 1).padStart(2, "0")}</span>
+          <strong>${escapeHtml(title)}</strong>
+          <p>${renderInline(description)}</p>
+        </div>`,
+    )
+    .join('<i class="diagram-arrow" aria-hidden="true"></i>')}</div>`;
+}
+
 function renderLambdaExample(topic) {
   if (!topic.lambdaExample) {
     return "";
@@ -197,6 +210,11 @@ function renderTopicPage(topic, index) {
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
           ${topic.body.map((paragraph) => `<p>${renderInline(paragraph)}</p>`).join("")}
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          ${renderFlowDiagram(topic.flow)}
         </section>
 
         <section class="article-section">

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>배포와 런타임 | Spring Boot Handbook</title>
+    <meta name="description" content="Spring Boot JAR 실행부터 JVM, Java Runtime, 환경 변수, Reverse Proxy, Nginx, HTTPS, Domain, Port, Process, systemd, Docker, CI/CD까지 배포 단계의 기본 개념입니다." />
+    <meta property="og:title" content="배포와 런타임 | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring Boot JAR 실행부터 JVM, Java Runtime, 환경 변수, Reverse Proxy, Nginx, HTTPS, Domain, Port, Process, systemd, Docker, CI/CD까지 배포 단계의 기본 개념입니다." />
+    <meta name="theme-color" content="#6f4aa8" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #6f4aa8; --part-tint: #f0ecf8; --part-deep: #553782;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 5. 확장과 운영</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">48 · Part 5. 확장과 운영</p>
+          <h1>배포와 런타임 </h1>
+          <p><strong class="inline-term">Spring Boot</strong> JAR 실행부터 JVM, Java Runtime, 환경 변수, Reverse Proxy, Nginx, HTTPS, Domain, Port, Process, systemd, <strong class="inline-term">Docker</strong>, <strong class="inline-term">CI/CD</strong>까지 배포 단계의 기본 개념입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">확장</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p><strong class="inline-term">Spring Boot</strong> 애플리케이션은 보통 bootJar로 실행 가능한 JAR를 만들고, 서버의 Java Runtime 위에서 java -jar 명령으로 실행합니다. JVM 옵션, Profile, 환경 변수는 실행 시점에 주입해 같은 산출물을 여러 환경에서 사용할 수 있게 합니다.</p><p>운영 서버에서는 애플리케이션이 직접 80 또는 443 포트를 열기보다 Nginx 같은 Reverse Proxy가 앞에서 HTTPS를 처리하고 내부 8080 포트의 <strong class="inline-term">Spring Boot</strong>로 <strong class="inline-korean">요청</strong>을 넘기는 구성이 흔합니다. Domain은 DNS로 서버를 가리키고, SSL/TLS <strong class="inline-korean">인증</strong>서는 HTTPS 연결을 보호합니다.</p><p>Linux에서는 프로세스를 수동으로 띄우기보다 systemd service로 등록해 재시작, 로그, 부팅 시 자동 실행을 관리합니다. <strong class="inline-term">Docker</strong>와 <strong class="inline-term">CI/CD</strong>를 사용하면 이미지 빌드, 배포, <mark class="inline-risk">롤백</mark> 절차를 더 일관되게 만들 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>빌드</strong>
+          <p>Gradle이나 Maven이 실행 가능한 JAR 또는 <strong class="inline-term">Docker</strong> 이미지를 만듭니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>실행</strong>
+          <p>JVM이 환경 변수와 Profile을 읽고 <strong class="inline-term">Spring Boot</strong> 프로세스를 시작합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>외부 노출</strong>
+          <p>Nginx, Domain, HTTPS가 사용자 <strong class="inline-korean">요청</strong>을 안전하게 애플리케이션 포트로 전달합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>빌드</strong>
+          <p>Gradle이나 Maven이 실행 가능한 JAR 또는 <strong class="inline-term">Docker</strong> 이미지를 만듭니다.</p>
+        </article>
+        <article>
+          <strong>실행</strong>
+          <p>JVM이 환경 변수와 Profile을 읽고 <strong class="inline-term">Spring Boot</strong> 프로세스를 시작합니다.</p>
+        </article>
+        <article>
+          <strong>외부 노출</strong>
+          <p>Nginx, Domain, HTTPS가 사용자 <strong class="inline-korean">요청</strong>을 안전하게 애플리케이션 포트로 전달합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>bootJar</strong>
+          <p><strong class="inline-term">Spring Boot</strong> 실행 JAR를 만드는 Gradle 작업입니다.</p>
+        </article>
+        <article>
+          <strong>java -jar</strong>
+          <p>JVM 위에서 Boot 애플리케이션 JAR를 실행하는 명령입니다.</p>
+        </article>
+        <article>
+          <strong>SPRING_PROFILES_ACTIVE</strong>
+          <p>실행 Profile을 환경 변수로 지정할 때 자주 사용합니다.</p>
+        </article>
+        <article>
+          <strong>Nginx</strong>
+          <p>정적 파일 제공, HTTPS 종료, reverse proxy 역할을 수행할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>systemd</strong>
+          <p>Linux에서 프로세스를 service로 관리하는 표준 도구입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Environment Variable</strong>
+          <p>DB URL, secret, profile처럼 환경마다 달라지는 값을 외부에서 주입합니다.</p>
+        </article>
+        <article>
+          <strong>Port</strong>
+          <p>프로세스가 <strong class="inline-korean">요청</strong>을 받는 네트워크 번호입니다. 8080, 80, 443을 자주 만납니다.</p>
+        </article>
+        <article>
+          <strong>SSL/TLS</strong>
+          <p>HTTPS 암호화와 서버 신뢰를 담당합니다.</p>
+        </article>
+        <article>
+          <strong>Docker</strong>
+          <p>애플리케이션과 런타임을 이미지로 묶어 배포합니다.</p>
+        </article>
+        <article>
+          <strong>CI/CD</strong>
+          <p><strong class="inline-korean">테스트</strong>, 빌드, 배포 절차를 자동화합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>JAR 실행과 systemd 서비스</h2>
+          <pre><code class="language-ini">[Unit]
+Description=Spring Boot Handbook API
+After=network.target
+
+[Service]
+User=spring
+Environment=SPRING_PROFILES_ACTIVE=prod
+Environment=DB_URL=jdbc:postgresql://db.internal:5432/handbook
+ExecStart=/usr/bin/java -jar /opt/handbook/app.jar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>운영 secret을 Git 저장소나 JAR 내부에 포함하면 <mark class="inline-risk">안 됩니다</mark>.</li><li>서버 방화벽, 클라우드 <strong class="inline-korean">보안</strong> 그룹, 애플리케이션 포트 설정이 서로 맞지 않으면 외부 접속이 <mark class="inline-risk">실패</mark>합니다.</li><li>HTTPS <strong class="inline-korean">인증</strong>서 만료와 갱신 자동화는 배포 후에도 계속 관리해야 합니다.</li><li>프로세스가 죽었을 때 누가 재시작하는지, 로그는 어디에 남는지 배포 전에 <em class="inline-guidance">정해야 합니다</em>.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="frontend-integration.html">이전 · 프론트엔드 연동 개념</a>
+          <a href="spring-ai.html">다음 · Spring AI</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

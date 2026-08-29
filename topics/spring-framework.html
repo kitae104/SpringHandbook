@@ -54,6 +54,26 @@
         </section>
 
         <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>컨테이너 시작</strong>
+          <p>ApplicationContext가 설정을 읽고 <strong class="inline-term">Bean</strong> 후보를 수집합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>객체 등록</strong>
+          <p><strong class="inline-token">@Component</strong>, <strong class="inline-token">@Configuration</strong>, <strong class="inline-token">@Bean</strong>으로 정의된 객체가 BeanDefinition으로 관리됩니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>요청 처리</strong>
+          <p>웹 <strong class="inline-korean">요청</strong>, DB 접근, <strong class="inline-korean">보안</strong> 필터 같은 기능이 등록된 <strong class="inline-term">Bean</strong>들의 협력으로 실행됩니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>

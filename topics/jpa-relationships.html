@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JPA 연관관계와 매핑 | Spring Boot Handbook</title>
+    <meta name="description" content="1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다." />
+    <meta property="og:title" content="JPA 연관관계와 매핑 | Spring Boot Handbook" />
+    <meta property="og:description" content="1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다." />
+    <meta name="theme-color" content="#2867b2" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. API 계층 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">41 · Part 2. API 계층 구조</p>
+          <h1>JPA 연관관계와 매핑 </h1>
+          <p>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p><strong class="inline-term">JPA</strong> 연관관계는 객체 참조와 DB 외래 키를 연결하는 규칙입니다. N:1 관계는 보통 다수 쪽 <strong class="inline-term">Entity</strong>가 외래 키를 가지므로 <strong class="inline-token">@ManyToOne</strong>과 <strong class="inline-token">@JoinColumn</strong>을 많이 사용합니다. 1:N 단방향은 외래 키 관리가 어색해질 수 있어 신중해야 합니다.</p><p>양방향 관계에서는 외래 키를 실제로 변경하는 쪽이 연관관계의 주인입니다. 주인이 아닌 쪽 mappedBy는 조회 편의를 위한 반대편 참조입니다. 객체 양쪽을 모두 맞춰 주는 편의 메서드를 두면 메모리 상태와 DB 상태의 불일치를 줄일 수 있습니다.</p><p>Fetch Type은 성능에 큰 영향을 줍니다. Lazy Loading은 필요한 시점에 조회하지만 N+1 문제가 생길 수 있고, Eager Loading은 불필요한 조인을 만들 수 있습니다. 목록 조회에서는 fetch join, EntityGraph, <strong class="inline-term">DTO</strong> 조회를 상황에 맞게 선택합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>관계 선택</strong>
+          <p>업무 규칙을 보고 1:1, 1:N, N:1, N:M 중 실제 DB 외래 키 구조를 정합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>주인 결정</strong>
+          <p>외래 키를 가진 <strong class="inline-term">Entity</strong>를 연관관계의 주인으로 두고 <strong class="inline-token">@JoinColumn</strong>을 명시합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>조회 전략 조정</strong>
+          <p>Lazy Loading을 기본으로 두고 필요한 화면에서 fetch join이나 <strong class="inline-term">DTO</strong> 조회로 N+1을 제어합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>관계 선택</strong>
+          <p>업무 규칙을 보고 1:1, 1:N, N:1, N:M 중 실제 DB 외래 키 구조를 정합니다.</p>
+        </article>
+        <article>
+          <strong>주인 결정</strong>
+          <p>외래 키를 가진 <strong class="inline-term">Entity</strong>를 연관관계의 주인으로 두고 <strong class="inline-token">@JoinColumn</strong>을 명시합니다.</p>
+        </article>
+        <article>
+          <strong>조회 전략 조정</strong>
+          <p>Lazy Loading을 기본으로 두고 필요한 화면에서 fetch join이나 <strong class="inline-term">DTO</strong> 조회로 N+1을 제어합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Entity</strong>
+          <p>영속성 컨텍스트가 관리하는 <strong class="inline-term">JPA</strong> 객체입니다.</p>
+        </article>
+        <article>
+          <strong>@Table</strong>
+          <p>매핑할 테이블 이름과 제약 조건을 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@Id</strong>
+          <p><strong class="inline-term">Entity</strong> 식별자 <strong class="inline-korean">필드</strong>입니다.</p>
+        </article>
+        <article>
+          <strong>@GeneratedValue</strong>
+          <p>식별자 생성 전략을 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@Column</strong>
+          <p>컬럼 이름, 길이, nullable 같은 속성을 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@Enumerated</strong>
+          <p>enum 저장 방식을 지정합니다. 보통 EnumType.STRING을 <em class="inline-guidance">권장합니다</em>.</p>
+        </article>
+        <article>
+          <strong>@Transient</strong>
+          <p>DB 컬럼으로 저장하지 않는 <strong class="inline-korean">필드</strong>입니다.</p>
+        </article>
+        <article>
+          <strong>@ManyToOne</strong>
+          <p>다수 <strong class="inline-term">Entity</strong>가 하나의 <strong class="inline-term">Entity</strong>를 참조하는 관계입니다.</p>
+        </article>
+        <article>
+          <strong>@OneToMany</strong>
+          <p>하나의 <strong class="inline-term">Entity</strong>가 여러 <strong class="inline-term">Entity</strong>를 참조하는 관계입니다.</p>
+        </article>
+        <article>
+          <strong>@JoinColumn</strong>
+          <p>외래 키 컬럼을 지정합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Persistence Context</strong>
+          <p>조회한 <strong class="inline-term">Entity</strong>를 같은 <strong class="inline-korean">트랜잭션</strong> 안에서 1차 캐시와 변경 감지 대상으로 관리합니다.</p>
+        </article>
+        <article>
+          <strong>EntityManager</strong>
+          <p><strong class="inline-term">Entity</strong> 저장, 조회, 삭제, flush를 수행하는 <strong class="inline-term">JPA</strong> 핵심 API입니다.</p>
+        </article>
+        <article>
+          <strong>Dirty Checking</strong>
+          <p>영속 상태 <strong class="inline-term">Entity</strong> 변경을 감지해 UPDATE SQL을 만듭니다.</p>
+        </article>
+        <article>
+          <strong>영속 상태</strong>
+          <p>비영속, 영속, 준영속, 삭제 상태에 따라 변경 감지와 SQL 실행 여부가 달라집니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>N:1과 1:N 양방향 매핑</h2>
+          <pre><code class="language-java">@Entity
+class Order {
+    @Id @GeneratedValue
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;member_id&quot;, nullable = false)
+    private Member member;
+
+    public void changeMember(Member member) {
+        this.member = member;
+        member.getOrders().add(this);
+    }
+}
+
+@Entity
+class Member {
+    @OneToMany(mappedBy = &quot;member&quot;)
+    private List&lt;Order&gt; orders = new ArrayList&lt;&gt;();
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li><strong class="inline-token">@ManyToMany</strong>는 중간 테이블에 속성이 생기는 순간 다루기 어려워지므로 연결 <strong class="inline-term">Entity</strong>로 풀어내는 편이 <em class="inline-guidance">좋습니다</em>.</li><li>CascadeType.REMOVE와 orphanRemoval은 삭제 전파 범위가 넓어 데이터 손실 <mark class="inline-risk">위험</mark>이 있습니다.</li><li>Lazy Loading은 <strong class="inline-korean">트랜잭션</strong> 밖에서 접근하면 LazyInitializationException이 발생할 수 있습니다.</li><li>N+1 문제는 코드 한 줄보다 실제 SQL 로그를 보고 <em class="inline-guidance">확인해야 합니다</em>.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="layered-architecture.html">이전 · 계층형 아키텍처</a>
+          <a href="repository-query.html">다음 · Repository와 Query</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

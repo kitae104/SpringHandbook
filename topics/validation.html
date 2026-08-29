@@ -54,6 +54,26 @@
         </section>
 
         <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>DTO 바인딩</strong>
+          <p>JSON <strong class="inline-korean">요청</strong> 본문이 <strong class="inline-korean">요청</strong> <strong class="inline-term">DTO</strong>로 변환됩니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>Bean Validation 실행</strong>
+          <p><strong class="inline-token">@Valid</strong> 또는 <strong class="inline-token">@Validated</strong>가 붙은 지점에서 제약 조건을 검사합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>오류 응답 변환</strong>
+          <p>BindingResult나 MethodArgumentNotValidException을 <strong class="inline-korean">필드</strong>별 오류 JSON으로 바꿉니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>

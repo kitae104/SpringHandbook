@@ -93,16 +93,61 @@
                     </div>
                     <div class="hero-panel" aria-label="자료 구성 요약">
                         <div class="stat-row">
-                            <strong id="topicCount">38</strong>
+                            <strong id="topicCount">49</strong>
                             <span>학습 주제</span>
                         </div>
                         <div class="quick-links">
+                            <a href="lessons/ioc-di.html">IoC/DI 수업 랜딩</a>
                             <a href="#part-1">기초 개념</a>
                             <a href="#part-2">API 계층</a>
                             <a href="#part-3">인증과 보안</a>
                             <a href="#part-4">실무 도구</a>
                             <a href="#part-5">확장 주제</a>
                         </div>
+                    </div>
+                </section>
+
+                <section id="ioc-di-class" class="section classroom-landing">
+                    <div class="section-heading">
+                        <p class="eyebrow">Repository Based Class</p>
+                        <h2>IoC/DI 예제 저장소로 진행하는 수업 자료</h2>
+                    </div>
+                    <div class="classroom-band">
+                        <div>
+                            <strong>IOC_DI 실습 랜딩</strong>
+                            <p>
+                                <code>basic</code>, <code>interfaces</code>,
+                                <code>annotation</code> 소스를 순서대로 읽으며
+                                강결합 코드의 문제, 인터페이스 분리의 효과,
+                                Spring 컨테이너 기반 DI의 의미를 연결합니다.
+                            </p>
+                        </div>
+                        <div class="classroom-actions">
+                            <a class="primary-button" href="lessons/ioc-di.html">수업 자료 열기</a>
+                            <a
+                                class="secondary-button"
+                                href="https://github.com/kitae104/IOC_DI"
+                                target="_blank"
+                                rel="noreferrer"
+                            >예제 저장소</a>
+                        </div>
+                    </div>
+                    <div class="classroom-grid">
+                        <article>
+                            <span>01</span>
+                            <strong>직접 생성</strong>
+                            <p>판매자가 구현 클래스를 직접 만들 때 교체 비용이 어디서 생기는지 확인합니다.</p>
+                        </article>
+                        <article>
+                            <span>02</span>
+                            <strong>인터페이스 분리</strong>
+                            <p><code>CarMaker</code> 역할을 기준으로 구현체를 바꿀 수 있는 구조를 만듭니다.</p>
+                        </article>
+                        <article>
+                            <span>03</span>
+                            <strong>애너테이션 DI</strong>
+                            <p><code>@Component</code>, <code>@Service</code>, <code>@Autowired</code>로 Spring이 객체를 만들고 연결하는 흐름을 봅니다.</p>
+                        </article>
                     </div>
                 </section>
 
@@ -157,6 +202,43 @@
                                 개발용 예제가 실제 서비스에 가까운 구조로 확장됩니다.
                             </p>
                         </article>
+                    </div>
+                </section>
+
+                <section id="concept-map" class="section">
+                    <div class="section-heading">
+                        <p class="eyebrow">Concept Map</p>
+                        <h2>새로 보강한 큰 개념 묶음</h2>
+                    </div>
+                    <div class="concept-map">
+                        <a href="lessons/ioc-di.html">
+                            <strong>IoC/DI 수업 랜딩</strong>
+                            <span>예제 저장소 흐름, 실습 과제, 연결 주제</span>
+                        </a>
+                        <a href="topics/spring-boot-core-concepts.html">
+                            <strong>Boot 기본기</strong>
+                            <span>Initializr, Starter, Auto Configuration, Profile</span>
+                        </a>
+                        <a href="topics/spring-annotations.html">
+                            <strong>애너테이션</strong>
+                            <span>@Component부터 @ConfigurationProperties까지</span>
+                        </a>
+                        <a href="topics/layered-architecture.html">
+                            <strong>계층형 구조</strong>
+                            <span>Controller, Service, Repository, Domain 책임</span>
+                        </a>
+                        <a href="topics/jpa-relationships.html">
+                            <strong>JPA 연관관계</strong>
+                            <span>1:N, 연관관계 주인, Fetch, N+1</span>
+                        </a>
+                        <a href="topics/oop-solid.html">
+                            <strong>OOP와 SOLID</strong>
+                            <span>DIP, DI, IoC가 연결되는 지점</span>
+                        </a>
+                        <a href="topics/deployment-runtime.html">
+                            <strong>배포 런타임</strong>
+                            <span>JAR, JVM, Nginx, HTTPS, Docker, CI/CD</span>
+                        </a>
                     </div>
                 </section>
 

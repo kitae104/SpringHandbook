@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spring Security 인증 구조 | Spring Boot Handbook</title>
+    <meta name="description" content="Login 요청이 Security Filter Chain, AuthenticationManager, UserDetailsService, JWT Filter를 거쳐 인증 객체가 되는 과정을 설명합니다." />
+    <meta property="og:title" content="Spring Security 인증 구조 | Spring Boot Handbook" />
+    <meta property="og:description" content="Login 요청이 Security Filter Chain, AuthenticationManager, UserDetailsService, JWT Filter를 거쳐 인증 객체가 되는 과정을 설명합니다." />
+    <meta name="theme-color" content="#b4472b" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #b4472b; --part-tint: #faece7; --part-deep: #8c321d;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 3. 인증과 보안</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">43 · Part 3. 인증과 보안</p>
+          <h1>Spring Security 인증 구조 </h1>
+          <p>Login <strong class="inline-korean">요청</strong>이 Security Filter Chain, AuthenticationManager, UserDetailsService, <strong class="inline-term">JWT</strong> Filter를 거쳐 <strong class="inline-korean">인증</strong> 객체가 되는 과정을 설명합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">보안</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p><strong class="inline-term">Spring Security</strong>에서 <strong class="inline-korean">인증</strong>은 사용자가 누구인지 확인하는 과정이고, 인가는 그 사용자가 무엇을 할 수 있는지 결정하는 과정입니다. 로그인 <strong class="inline-korean">요청</strong>은 필터 체인을 통과하면서 Authentication 객체로 변환되고, AuthenticationManager가 실제 <strong class="inline-korean">검증</strong>을 위임합니다.</p><p>일반 폼 로그인이나 아이디/비밀번호 로그인에서는 UsernamePasswordAuthenticationToken이 <strong class="inline-korean">인증</strong> 전후 상태를 표현합니다. AuthenticationProvider는 UserDetailsService로 사용자를 조회하고 PasswordEncoder로 비밀번호를 비교합니다.</p><p><strong class="inline-term">JWT</strong> 기반 API에서는 매 <strong class="inline-korean">요청</strong>마다 Authorization Header의 Bearer Token을 <strong class="inline-term">JWT</strong> Filter가 읽고 <strong class="inline-korean">검증</strong>한 뒤 SecurityContextHolder에 Authentication을 저장합니다. 이후 <strong class="inline-term">Controller</strong>나 <strong class="inline-term">Service</strong>는 Principal, Authentication, <strong class="inline-token">@AuthenticationPrincipal</strong> 등을 통해 로그인 사용자를 알 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>요청 진입</strong>
+          <p>Security Filter Chain이 Login <strong class="inline-korean">요청</strong> 또는 <strong class="inline-term">JWT</strong>가 포함된 API <strong class="inline-korean">요청</strong>을 먼저 가로챕니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>인증 검증</strong>
+          <p>AuthenticationManager와 Provider가 사용자 조회, 비밀번호 비교, 토큰 <strong class="inline-korean">검증</strong>을 수행합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>Context 저장</strong>
+          <p><strong class="inline-korean">검증</strong>된 Authentication이 SecurityContextHolder에 저장되어 인가 판단에 사용됩니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>요청 진입</strong>
+          <p>Security Filter Chain이 Login <strong class="inline-korean">요청</strong> 또는 <strong class="inline-term">JWT</strong>가 포함된 API <strong class="inline-korean">요청</strong>을 먼저 가로챕니다.</p>
+        </article>
+        <article>
+          <strong>인증 검증</strong>
+          <p>AuthenticationManager와 Provider가 사용자 조회, 비밀번호 비교, 토큰 <strong class="inline-korean">검증</strong>을 수행합니다.</p>
+        </article>
+        <article>
+          <strong>Context 저장</strong>
+          <p><strong class="inline-korean">검증</strong>된 Authentication이 SecurityContextHolder에 저장되어 인가 판단에 사용됩니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>SecurityFilterChain</strong>
+          <p><strong class="inline-term">HTTP</strong> <strong class="inline-korean">보안</strong> 규칙과 필터 구성을 <strong class="inline-term">Bean</strong>으로 등록합니다.</p>
+        </article>
+        <article>
+          <strong>UserDetailsService</strong>
+          <p>사용자 식별자로 UserDetails를 조회하는 서비스입니다.</p>
+        </article>
+        <article>
+          <strong>PasswordEncoder</strong>
+          <p>비밀번호 해시와 비교를 담당합니다.</p>
+        </article>
+        <article>
+          <strong>BCryptPasswordEncoder</strong>
+          <p>BCrypt 알고리즘으로 비밀번호를 안전하게 해시합니다.</p>
+        </article>
+        <article>
+          <strong>AuthenticationProvider</strong>
+          <p>특정 <strong class="inline-korean">인증</strong> 방식의 <strong class="inline-korean">검증</strong> 로직을 담당합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Principal</strong>
+          <p>현재 <strong class="inline-korean">인증</strong>된 사용자의 대표 정보입니다.</p>
+        </article>
+        <article>
+          <strong>Role</strong>
+          <p>ROLE_ADMIN처럼 큰 <strong class="inline-korean">권한</strong> 묶음을 표현합니다.</p>
+        </article>
+        <article>
+          <strong>Authority</strong>
+          <p>개별 <strong class="inline-korean">권한</strong> 문자열입니다. 인가 판단의 실제 단위로 쓰입니다.</p>
+        </article>
+        <article>
+          <strong>Access Token</strong>
+          <p>짧게 살아 있는 API 접근 토큰입니다.</p>
+        </article>
+        <article>
+          <strong>Refresh Token</strong>
+          <p>Access Token 재발급에 사용하는 긴 수명의 토큰입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>JWT 필터에서 인증 저장</h2>
+          <pre><code class="language-java">class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+        throws ServletException, IOException {
+        String token = resolveBearerToken(request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (token != null &amp;&amp; jwtTokenProvider.valid(token)) {
+            Authentication authentication = jwtTokenProvider.toAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        chain.doFilter(request, response);
+    }
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>Authentication과 Authorization을 같은 개념으로 섞으면 401과 403 <strong class="inline-korean">응답</strong> 설계가 흔들립니다.</li><li><strong class="inline-term">JWT</strong>를 localStorage에 저장하면 XSS에 <mark class="inline-risk">노출</mark>될 수 있고, Cookie에 저장하면 CSRF 전략을 함께 봐야 합니다.</li><li>SecurityContextHolder는 <strong class="inline-korean">요청</strong> 처리 후 정리되어야 합니다. 필터 체인 밖에서 직접 다룰 때는 특히 <mark class="inline-risk">주의해야 합니다</mark>.</li><li>비밀번호는 BCrypt 같은 단방향 해시로 저장하고 원문 비교를 하면 <mark class="inline-risk">안 됩니다</mark>.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="repository-query.html">이전 · Repository와 Query</a>
+          <a href="oop-solid.html">다음 · OOP와 SOLID</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

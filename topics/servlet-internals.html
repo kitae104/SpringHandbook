@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Servlet과 Spring MVC 내부 구조 | Spring Boot Handbook</title>
+    <meta name="description" content="Servlet, Servlet Container, Tomcat, DispatcherServlet, Filter, Interceptor, Listener, ArgumentResolver가 요청 처리에서 어디에 놓이는지 설명합니다." />
+    <meta property="og:title" content="Servlet과 Spring MVC 내부 구조 | Spring Boot Handbook" />
+    <meta property="og:description" content="Servlet, Servlet Container, Tomcat, DispatcherServlet, Filter, Interceptor, Listener, ArgumentResolver가 요청 처리에서 어디에 놓이는지 설명합니다." />
+    <meta name="theme-color" content="#6f4aa8" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #6f4aa8; --part-tint: #f0ecf8; --part-deep: #553782;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 5. 확장과 운영</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">46 · Part 5. 확장과 운영</p>
+          <h1>Servlet과 Spring MVC 내부 구조 </h1>
+          <p>Servlet, Servlet Container, Tomcat, DispatcherServlet, Filter, Interceptor, Listener, ArgumentResolver가 <strong class="inline-korean">요청</strong> 처리에서 어디에 놓이는지 설명합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">확장</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p><strong class="inline-term">Spring Boot</strong> 웹 애플리케이션은 내장 Tomcat 같은 Servlet Container 위에서 실행됩니다. 클라이언트 <strong class="inline-korean">요청</strong>은 먼저 컨테이너에 도착하고, Filter Chain을 통과한 뒤 DispatcherServlet으로 들어갑니다.</p><p>DispatcherServlet은 Front <strong class="inline-term">Controller</strong> Pattern의 구현입니다. 모든 Spring <strong class="inline-term">MVC</strong> <strong class="inline-korean">요청</strong>을 먼저 받아 HandlerMapping으로 <strong class="inline-term">Controller</strong>를 찾고, HandlerAdapter와 ArgumentResolver를 통해 메서드 파라미터를 준비한 뒤 호출합니다.</p><p>Filter는 Servlet 영역이라 Spring <strong class="inline-term">MVC</strong> 앞단에서 동작하고, Interceptor는 HandlerMapping 이후 <strong class="inline-term">Controller</strong> 전후에 동작합니다. Listener는 컨테이너 이벤트나 세션 이벤트를 감지하는 데 쓰입니다. 위치 차이를 알아야 <strong class="inline-korean">인증</strong>, <strong class="inline-term">CORS</strong>, 로그, <strong class="inline-korean">예외</strong> 처리 흐름을 디버깅할 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>Servlet Container</strong>
+          <p>Tomcat이 <strong class="inline-term">HTTP</strong> 연결을 받고 request와 response 객체를 만듭니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>Filter Chain</strong>
+          <p><strong class="inline-term">CORS</strong>, <strong class="inline-korean">인증</strong> 토큰, 인코딩, <strong class="inline-korean">요청</strong> 로그 같은 앞단 공통 처리를 수행합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>DispatcherServlet</strong>
+          <p>HandlerMapping, Interceptor, ArgumentResolver를 거쳐 <strong class="inline-term">Controller</strong>를 호출합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>Servlet Container</strong>
+          <p>Tomcat이 <strong class="inline-term">HTTP</strong> 연결을 받고 request와 response 객체를 만듭니다.</p>
+        </article>
+        <article>
+          <strong>Filter Chain</strong>
+          <p><strong class="inline-term">CORS</strong>, <strong class="inline-korean">인증</strong> 토큰, 인코딩, <strong class="inline-korean">요청</strong> 로그 같은 앞단 공통 처리를 수행합니다.</p>
+        </article>
+        <article>
+          <strong>DispatcherServlet</strong>
+          <p>HandlerMapping, Interceptor, ArgumentResolver를 거쳐 <strong class="inline-term">Controller</strong>를 호출합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>DispatcherServlet</strong>
+          <p>Spring <strong class="inline-term">MVC</strong>의 Front <strong class="inline-term">Controller</strong>입니다.</p>
+        </article>
+        <article>
+          <strong>Filter</strong>
+          <p>Servlet <strong class="inline-korean">요청</strong>과 <strong class="inline-korean">응답</strong>을 감싸는 표준 확장 지점입니다.</p>
+        </article>
+        <article>
+          <strong>HandlerInterceptor</strong>
+          <p><strong class="inline-term">Controller</strong> 호출 전후에 Spring <strong class="inline-term">MVC</strong> 맥락을 활용합니다.</p>
+        </article>
+        <article>
+          <strong>HandlerMethodArgumentResolver</strong>
+          <p><strong class="inline-term">Controller</strong> 메서드 파라미터를 커스텀 방식으로 해석합니다.</p>
+        </article>
+        <article>
+          <strong>ServletContextListener</strong>
+          <p>ServletContext 시작과 종료 이벤트를 감지합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Tomcat</strong>
+          <p><strong class="inline-term">Spring Boot</strong> 기본 웹 starter에서 자주 쓰는 내장 Servlet Container입니다.</p>
+        </article>
+        <article>
+          <strong>Front Controller Pattern</strong>
+          <p>하나의 진입점이 공통 웹 처리를 중앙에서 담당하는 패턴입니다.</p>
+        </article>
+        <article>
+          <strong>Filter vs Interceptor</strong>
+          <p>Filter는 <strong class="inline-term">MVC</strong> 이전, Interceptor는 <strong class="inline-term">Controller</strong> 매핑 이후에 가깝습니다.</p>
+        </article>
+        <article>
+          <strong>ArgumentResolver</strong>
+          <p><strong class="inline-token">@RequestParam</strong>, <strong class="inline-token">@PathVariable</strong>, <strong class="inline-token">@RequestBody</strong>, Pageable 같은 파라미터 해석과 연결됩니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>커스텀 ArgumentResolver 등록</h2>
+          <pre><code class="language-java">class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.hasParameterAnnotation(LoginUser.class);
+    }
+
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        return webRequest.getAttribute(&quot;loginUser&quot;, RequestAttributes.SCOPE_REQUEST);
+    }
+}
+
+@Configuration
+class WebConfig implements WebMvcConfigurer {
+    public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; resolvers) {
+        resolvers.add(new LoginUserArgumentResolver());
+    }
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>Filter에서 <strong class="inline-korean">예외</strong>가 발생하면 <strong class="inline-token">@ControllerAdvice</strong>가 처리하지 못하는 흐름이 있을 수 있습니다.</li><li>Interceptor는 <strong class="inline-term">Controller</strong>가 선택된 뒤 동작하므로 정적 리소스나 preflight <strong class="inline-korean">요청</strong>과의 관계를 <em class="inline-guidance">확인해야 합니다</em>.</li><li>ArgumentResolver를 과하게 쓰면 <strong class="inline-term">Controller</strong> 파라미터가 어디서 만들어지는지 추적하기 어려워집니다.</li><li>Tomcat 스레드가 블로킹 작업에 오래 묶이면 전체 <strong class="inline-korean">요청</strong> 처리량이 떨어질 수 있습니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="bean-lifecycle.html">이전 · Spring Bean 생명주기</a>
+          <a href="frontend-integration.html">다음 · 프론트엔드 연동 개념</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

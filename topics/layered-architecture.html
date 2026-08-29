@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>계층형 아키텍처 | Spring Boot Handbook</title>
+    <meta name="description" content="Controller, Service, Repository, Domain 계층을 나눠 HTTP 처리, 비즈니스 규칙, 데이터 접근 책임을 분리하는 구조입니다." />
+    <meta property="og:title" content="계층형 아키텍처 | Spring Boot Handbook" />
+    <meta property="og:description" content="Controller, Service, Repository, Domain 계층을 나눠 HTTP 처리, 비즈니스 규칙, 데이터 접근 책임을 분리하는 구조입니다." />
+    <meta name="theme-color" content="#2867b2" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. API 계층 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">40 · Part 2. API 계층 구조</p>
+          <h1>계층형 아키텍처 </h1>
+          <p><strong class="inline-term">Controller</strong>, <strong class="inline-term">Service</strong>, <strong class="inline-term">Repository</strong>, Domain 계층을 나눠 <strong class="inline-term">HTTP</strong> 처리, 비즈니스 규칙, 데이터 접근 책임을 분리하는 구조입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>계층형 아키텍처는 <strong class="inline-korean">요청</strong> 처리 코드를 한 곳에 몰아넣지 않고 관심사별로 나누는 방식입니다. <strong class="inline-term">Controller</strong>는 <strong class="inline-term">HTTP</strong>를 해석하고, <strong class="inline-term">Service</strong>는 유스케이스와 <strong class="inline-korean">트랜잭션</strong>을 다루며, <strong class="inline-term">Repository</strong>는 저장소 접근을 담당합니다.</p><p>Domain Layer는 <strong class="inline-term">Entity</strong>, VO, 도메인 규칙을 담습니다. <strong class="inline-term">DTO</strong>는 외부 <strong class="inline-korean">요청</strong>과 <strong class="inline-korean">응답</strong> 모양을 담당하므로 DB 구조와 API 구조가 강하게 묶이지 않게 합니다. DAO는 저장소 접근 객체라는 넓은 개념이고, <strong class="inline-term">Spring Data JPA</strong>에서는 <strong class="inline-term">Repository</strong>가 그 역할을 많이 대체합니다.</p><p>책임 분리가 잘 되면 <strong class="inline-korean">테스트</strong> 범위가 명확해지고 변경 영향이 줄어듭니다. 반대로 <strong class="inline-term">Controller</strong>가 <strong class="inline-korean">검증</strong>, 비즈니스 규칙, DB 저장까지 모두 처리하면 작은 변경도 여러 문제로 번집니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>Controller Layer</strong>
+          <p>URL, Method, Header, Body를 받아 <strong class="inline-korean">요청</strong> <strong class="inline-term">DTO</strong>로 변환하고 <strong class="inline-korean">응답</strong> 상태를 결정합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>Service Layer</strong>
+          <p>비즈니스 규칙, <strong class="inline-korean">트랜잭션</strong> 경계, 여러 <strong class="inline-term">Repository</strong> 호출 순서를 조정합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>Repository와 Domain</strong>
+          <p><strong class="inline-term">Entity</strong> 상태를 조회하고 변경하며 DB와 도메인 규칙의 경계를 유지합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>Controller Layer</strong>
+          <p>URL, Method, Header, Body를 받아 <strong class="inline-korean">요청</strong> <strong class="inline-term">DTO</strong>로 변환하고 <strong class="inline-korean">응답</strong> 상태를 결정합니다.</p>
+        </article>
+        <article>
+          <strong>Service Layer</strong>
+          <p>비즈니스 규칙, <strong class="inline-korean">트랜잭션</strong> 경계, 여러 <strong class="inline-term">Repository</strong> 호출 순서를 조정합니다.</p>
+        </article>
+        <article>
+          <strong>Repository와 Domain</strong>
+          <p><strong class="inline-term">Entity</strong> 상태를 조회하고 변경하며 DB와 도메인 규칙의 경계를 유지합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@RestController</strong>
+          <p>API 진입점 계층을 나타냅니다.</p>
+        </article>
+        <article>
+          <strong>@Service</strong>
+          <p>유스케이스와 비즈니스 규칙을 담는 <strong class="inline-term">Bean</strong>입니다.</p>
+        </article>
+        <article>
+          <strong>@Repository</strong>
+          <p>저장소 접근 계층을 나타냅니다.</p>
+        </article>
+        <article>
+          <strong>@Entity</strong>
+          <p>DB 테이블과 매핑되는 도메인 객체입니다.</p>
+        </article>
+        <article>
+          <strong>@Transactional</strong>
+          <p>서비스 계층의 작업 단위를 <strong class="inline-korean">트랜잭션</strong>으로 묶습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>DTO</strong>
+          <p>Request <strong class="inline-term">DTO</strong>와 Response <strong class="inline-term">DTO</strong>를 분리해 API 스펙을 안정화합니다.</p>
+        </article>
+        <article>
+          <strong>VO</strong>
+          <p>값 자체가 의미를 갖고 불변으로 다루는 객체입니다.</p>
+        </article>
+        <article>
+          <strong>DAO</strong>
+          <p>저장소 접근 객체의 일반 용어입니다. <strong class="inline-term">JPA</strong> <strong class="inline-term">Repository</strong>와 역할이 겹칠 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>Separation of Concerns</strong>
+          <p>코드 변경 이유가 서로 다른 책임을 다른 계층에 둡니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>요청이 계층을 통과하는 구조</h2>
+          <pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/orders&quot;)
+class OrderController {
+    @PostMapping
+    ResponseEntity&lt;OrderResponse&gt; create(@Valid @RequestBody OrderCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.create(request));
+    }
+}
+
+@Service
+class OrderService {
+    @Transactional
+    OrderResponse create(OrderCreateRequest request) {
+        Member member = memberRepository.getReferenceById(request.memberId());
+        Order order = Order.create(member, request.items());
+        return OrderResponse.from(orderRepository.save(order));
+    }
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li><strong class="inline-term">Controller</strong>에서 <strong class="inline-term">Entity</strong>를 바로 반환하면 API <strong class="inline-korean">응답</strong>이 DB 구조에 묶입니다.</li><li><strong class="inline-term">Repository</strong>에 비즈니스 판단 로직이 들어가면 저장소 교체와 <strong class="inline-korean">테스트</strong>가 어려워집니다.</li><li><strong class="inline-term">Service</strong>가 너무 커지면 유스케이스 단위로 나누거나 도메인 객체에 규칙을 옮길 필요가 있습니다.</li><li><strong class="inline-term">DTO</strong>, VO, <strong class="inline-term">Entity</strong> 이름이 비슷해도 변경 이유와 생명주기가 다릅니다.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="spring-annotations.html">이전 · 주요 Spring 애너테이션</a>
+          <a href="jpa-relationships.html">다음 · JPA 연관관계와 매핑</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spring Boot 기본 개념 묶음 | Spring Boot Handbook</title>
+    <meta name="description" content="Spring Initializr, Starter, Auto Configuration, 내장 서버, 설정 파일, Profile처럼 Boot 프로젝트를 시작할 때 반복해서 만나는 기본 요소입니다." />
+    <meta property="og:title" content="Spring Boot 기본 개념 묶음 | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring Initializr, Starter, Auto Configuration, 내장 서버, 설정 파일, Profile처럼 Boot 프로젝트를 시작할 때 반복해서 만나는 기본 요소입니다." />
+    <meta name="theme-color" content="#1f7a5f" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #1f7a5f; --part-tint: #e8f4ef; --part-deep: #155f49;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">38 · Part 1. Spring 기초</p>
+          <h1>Spring Boot 기본 개념 묶음 </h1>
+          <p>Spring Initializr, Starter, Auto Configuration, 내장 서버, 설정 파일, Profile처럼 Boot 프로젝트를 시작할 때 반복해서 만나는 기본 요소입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">기초</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p><strong class="inline-term">Spring Boot</strong> 프로젝트를 처음 만들 때는 Spring Initializr로 기본 골격을 만들고, 필요한 starter를 선택해 의존성을 묶어서 가져옵니다. starter는 관련 라이브러리 조합을 미리 정리해 두었기 때문에 초반 설정량을 크게 줄입니다.</p><p>Auto Configuration은 클래스패스, 설정 값, 사용자가 등록한 <strong class="inline-term">Bean</strong>을 조건으로 필요한 설정을 자동 적용합니다. 이것이 Convention over Configuration입니다. 관례에 맞게 두면 빠르게 동작하지만, 관례에서 벗어날 때는 어떤 조건이 자동 설정을 켜고 끄는지 <em class="inline-guidance">확인해야 합니다</em>.</p><p>Boot는 내장 Tomcat 같은 Embedded Server를 포함해 JAR 실행만으로 웹 서버를 띄울 수 있습니다. 환경별 값은 application.properties 또는 application.yml에 두고, dev, prod 같은 Profile로 실행 환경을 나눕니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>프로젝트 생성</strong>
+          <p>Spring Initializr에서 Java 버전, 빌드 도구, starter 의존성을 선택합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>자동 설정 적용</strong>
+          <p>Boot가 클래스패스와 설정 값을 보고 <strong class="inline-term">MVC</strong>, DataSource, <strong class="inline-term">JPA</strong> 같은 기본 <strong class="inline-term">Bean</strong>을 준비합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>환경별 실행</strong>
+          <p>Profile과 외부 설정으로 개발, <strong class="inline-korean">테스트</strong>, 운영 값을 분리해 같은 JAR를 다르게 실행합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>프로젝트 생성</strong>
+          <p>Spring Initializr에서 Java 버전, 빌드 도구, starter 의존성을 선택합니다.</p>
+        </article>
+        <article>
+          <strong>자동 설정 적용</strong>
+          <p>Boot가 클래스패스와 설정 값을 보고 <strong class="inline-term">MVC</strong>, DataSource, <strong class="inline-term">JPA</strong> 같은 기본 <strong class="inline-term">Bean</strong>을 준비합니다.</p>
+        </article>
+        <article>
+          <strong>환경별 실행</strong>
+          <p>Profile과 외부 설정으로 개발, <strong class="inline-korean">테스트</strong>, 운영 값을 분리해 같은 JAR를 다르게 실행합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@SpringBootApplication</strong>
+          <p>Boot 애플리케이션 시작점이며 자동 설정과 컴포넌트 스캔을 포함합니다.</p>
+        </article>
+        <article>
+          <strong>@ConfigurationProperties</strong>
+          <p>application.yml 값을 타입이 있는 설정 객체로 묶습니다.</p>
+        </article>
+        <article>
+          <strong>@Profile</strong>
+          <p>특정 Profile에서만 <strong class="inline-term">Bean</strong>이나 설정이 활성화되게 합니다.</p>
+        </article>
+        <article>
+          <strong>SpringApplication.run</strong>
+          <p>ApplicationContext를 만들고 내장 서버까지 시작하는 진입점입니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>build.gradle</strong>
+          <p>starter 의존성과 <strong class="inline-term">Spring Boot</strong> plugin 버전을 확인합니다.</p>
+        </article>
+        <article>
+          <strong>application.yml</strong>
+          <p>서버 포트, DB 연결, 로그 레벨, 외부 API 값을 둡니다.</p>
+        </article>
+        <article>
+          <strong>application-dev.yml</strong>
+          <p>개발 환경 전용 값을 분리합니다.</p>
+        </article>
+        <article>
+          <strong>application-prod.yml</strong>
+          <p>운영 환경 전용 값을 분리하되 secret 원문은 저장소에 올리지 않습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>Profile별 설정 분리</h2>
+          <pre><code class="language-yaml"># application.yml
+spring:
+  profiles:
+    active: local
+server:
+  port: 8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:handbook
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>starter는 편의를 주지만 실제로 어떤 라이브러리가 들어오는지 의존성 트리를 <em class="inline-guidance">확인해야 합니다</em>.</li><li>자동 설정이 예상과 다르면 조건에 맞는 <strong class="inline-term">Bean</strong>이 이미 있는지, 의존성이 빠졌는지, Profile이 맞는지 봐야 합니다.</li><li>application-prod.yml에 비밀번호, 토큰, 개인 키 같은 secret을 직접 쓰면 <mark class="inline-risk">안 됩니다</mark>.</li><li>properties와 yml은 표현 방식만 다를 뿐 같은 설정 모델로 바인딩됩니다. 팀에서 한 방식을 정해 일관되게 쓰는 편이 <em class="inline-guidance">좋습니다</em>.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="ci-cd.html">이전 · CI/CD</a>
+          <a href="spring-annotations.html">다음 · 주요 Spring 애너테이션</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

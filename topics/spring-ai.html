@@ -38,7 +38,7 @@
         </nav>
 
         <header class="article-hero">
-          <p class="eyebrow">38 · Part 5. 확장과 운영</p>
+          <p class="eyebrow">49 · Part 5. 확장과 운영</p>
           <h1>Spring AI </h1>
           <p>Spring 애플리케이션 안에서 LLM 호출, 프롬프트 구성, 임베딩, 벡터 검색 같은 AI 기능을 다루기 위한 프로젝트입니다.</p>
           <div class="article-meta">
@@ -51,6 +51,26 @@
         <section class="article-section">
           <h2>왜 배워야 할까</h2>
           <p>Spring AI는 AI 모델 호출을 Spring 방식으로 애플리케이션에 통합하도록 돕습니다. <strong class="inline-term">Controller</strong>와 <strong class="inline-term">Service</strong> 구조 안에서 ChatClient를 호출하고, 필요한 설정을 application.yml과 <strong class="inline-term">Bean</strong>으로 관리할 수 있습니다.</p><p>단순 채팅 API에서 시작해 문서 기반 질의<strong class="inline-korean">응답</strong>으로 확장하려면 임베딩과 벡터 저장소 개념이 필요합니다. 문서를 작은 조각으로 나누고, 벡터로 변환한 뒤, 질문과 가까운 조각을 찾아 모델 프롬프트에 넣는 흐름입니다.</p><p>AI 기능은 항상 정확한 답을 보장하지 않습니다. 중요한 업무 로직을 모델 판단에 전부 맡기기보다, 입력 <strong class="inline-korean">검증</strong>, 근거 문서 표시, <mark class="inline-risk">실패</mark> 처리, 비용 제한을 함께 설계해야 합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>문제 인식</strong>
+          <p>이 기술이 해결하는 코드의 복잡도나 운영 문제를 먼저 확인합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>Spring 연결점</strong>
+          <p>어노테이션, 설정 파일, 빈 등록 위치가 어떤 실행 흐름에 들어가는지 봅니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>검증 포인트</strong>
+          <p><strong class="inline-korean">테스트</strong>, 로그, API <strong class="inline-korean">응답</strong>, DB 결과 중 무엇으로 동작을 확인할지 정합니다.</p>
+        </div></div>
         </section>
 
         <section class="article-section">
@@ -133,7 +153,7 @@ class ChatController {
         </section>
 
         <footer class="article-nav">
-          <a href="ci-cd.html">이전 · CI/CD</a>
+          <a href="deployment-runtime.html">이전 · 배포와 런타임</a>
           <span></span>
         </footer>
       </article>

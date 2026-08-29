@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spring Bean 생명주기 | Spring Boot Handbook</title>
+    <meta name="description" content="Bean 생성, 의존성 주입, 초기화, 사용, 소멸 흐름과 Singleton, Prototype scope, @PostConstruct, @PreDestroy를 정리합니다." />
+    <meta property="og:title" content="Spring Bean 생명주기 | Spring Boot Handbook" />
+    <meta property="og:description" content="Bean 생성, 의존성 주입, 초기화, 사용, 소멸 흐름과 Singleton, Prototype scope, @PostConstruct, @PreDestroy를 정리합니다." />
+    <meta name="theme-color" content="#1f7a5f" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #1f7a5f; --part-tint: #e8f4ef; --part-deep: #155f49;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 1. Spring 기초</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">45 · Part 1. Spring 기초</p>
+          <h1>Spring Bean 생명주기 </h1>
+          <p><strong class="inline-term">Bean</strong> 생성, 의존성 주입, 초기화, 사용, 소멸 흐름과 Singleton, Prototype scope, <strong class="inline-token">@PostConstruct</strong>, <strong class="inline-token">@PreDestroy</strong>를 정리합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">기초</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p>Spring <strong class="inline-term">Bean</strong>은 컨테이너가 만들고 관리하는 객체입니다. 애플리케이션 시작 시 BeanDefinition을 기준으로 객체가 생성되고, 생성자 주입으로 의존성이 연결된 뒤 초기화 콜백이 실행됩니다.</p><p>기본 scope는 Singleton입니다. 컨테이너 안에서 하나의 <strong class="inline-term">Bean</strong> 인스턴스를 공유하므로 상태를 <strong class="inline-korean">필드</strong>에 저장할 때 동시성 문제를 조심해야 합니다. Prototype은 <strong class="inline-korean">요청</strong>할 때마다 새 객체를 만들지만 소멸 콜백 관리 방식이 다릅니다.</p><p><strong class="inline-token">@PostConstruct</strong>는 의존성 주입이 끝난 뒤 초기화 작업에 사용하고, <strong class="inline-token">@PreDestroy</strong>는 컨테이너 종료 시 자원 정리에 사용합니다. DB 연결, 스레드 풀, 외부 클라이언트처럼 자원 생명주기가 있는 <strong class="inline-term">Bean</strong>은 종료 흐름까지 고려해야 합니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>생성</strong>
+          <p>컨테이너가 생성자와 BeanDefinition을 보고 객체 인스턴스를 만듭니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>초기화</strong>
+          <p>의존성 주입 후 <strong class="inline-token">@PostConstruct</strong>나 InitializingBean 같은 초기화 콜백을 실행합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>소멸</strong>
+          <p>컨테이너 종료 시 Singleton <strong class="inline-term">Bean</strong>의 <strong class="inline-token">@PreDestroy</strong>나 destroy callback을 실행합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>생성</strong>
+          <p>컨테이너가 생성자와 BeanDefinition을 보고 객체 인스턴스를 만듭니다.</p>
+        </article>
+        <article>
+          <strong>초기화</strong>
+          <p>의존성 주입 후 <strong class="inline-token">@PostConstruct</strong>나 InitializingBean 같은 초기화 콜백을 실행합니다.</p>
+        </article>
+        <article>
+          <strong>소멸</strong>
+          <p>컨테이너 종료 시 Singleton <strong class="inline-term">Bean</strong>의 <strong class="inline-token">@PreDestroy</strong>나 destroy callback을 실행합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@Scope</strong>
+          <p>singleton, prototype 같은 <strong class="inline-term">Bean</strong> scope를 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@PostConstruct</strong>
+          <p><strong class="inline-term">Bean</strong> 초기화 시점에 실행할 메서드를 표시합니다.</p>
+        </article>
+        <article>
+          <strong>@PreDestroy</strong>
+          <p><strong class="inline-term">Bean</strong> 소멸 시점에 실행할 메서드를 표시합니다.</p>
+        </article>
+        <article>
+          <strong>@Bean(initMethod)</strong>
+          <p><strong class="inline-term">Bean</strong> 등록 메서드에서 초기화 메서드 이름을 지정할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>@Bean(destroyMethod)</strong>
+          <p><strong class="inline-term">Bean</strong> 종료 메서드 이름을 지정할 수 있습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>Singleton</strong>
+          <p>Spring 기본 scope이며 하나의 <strong class="inline-term">Bean</strong> 인스턴스를 공유합니다.</p>
+        </article>
+        <article>
+          <strong>Prototype</strong>
+          <p>조회할 때마다 새 <strong class="inline-term">Bean</strong>을 생성합니다.</p>
+        </article>
+        <article>
+          <strong>ApplicationContext</strong>
+          <p><strong class="inline-term">Bean</strong> 생명주기를 관리하는 컨테이너입니다.</p>
+        </article>
+        <article>
+          <strong>Stateful Bean</strong>
+          <p>공유 <strong class="inline-term">Bean</strong>에 사용자별 상태를 두면 동시성 문제가 생길 수 있습니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>초기화와 소멸 콜백</h2>
+          <pre><code class="language-java">@Component
+class ExternalApiClient {
+    @PostConstruct
+    void connect() {
+        log.info(&quot;external api client ready&quot;);
+    }
+
+    @PreDestroy
+    void close() {
+        log.info(&quot;external api client closed&quot;);
+    }
+}
+
+@Bean(destroyMethod = &quot;shutdown&quot;)
+ExecutorService taskExecutor() {
+    return Executors.newFixedThreadPool(4);
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>Singleton <strong class="inline-term">Bean</strong>에 <strong class="inline-korean">요청</strong>별 데이터를 <strong class="inline-korean">필드</strong>로 저장하면 사용자 데이터가 섞일 수 있습니다.</li><li><strong class="inline-token">@PostConstruct</strong>에서 외부 API를 과도하게 호출하면 애플리케이션 시작이 느려지거나 <mark class="inline-risk">실패</mark>할 수 있습니다.</li><li>Prototype <strong class="inline-term">Bean</strong>은 컨테이너가 생성 이후 전체 소멸 과정을 끝까지 관리하지 않는다는 점을 알아야 합니다.</li><li>초기화 로직이 복잡하면 설정 <strong class="inline-korean">검증</strong>과 실제 연결 작업을 분리하는 편이 <em class="inline-guidance">좋습니다</em>.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="oop-solid.html">이전 · OOP와 SOLID</a>
+          <a href="servlet-internals.html">다음 · Servlet과 Spring MVC 내부 구조</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

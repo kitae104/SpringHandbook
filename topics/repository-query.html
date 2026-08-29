@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Repository와 Query | Spring Boot Handbook</title>
+    <meta name="description" content="Spring Data JPA의 CRUD, Query Method, JPQL, Native Query, @Query, Pageable, Sort, Specification, QueryDSL 사용 기준입니다." />
+    <meta property="og:title" content="Repository와 Query | Spring Boot Handbook" />
+    <meta property="og:description" content="Spring Data JPA의 CRUD, Query Method, JPQL, Native Query, @Query, Pageable, Sort, Specification, QueryDSL 사용 기준입니다." />
+    <meta name="theme-color" content="#2867b2" />
+    <link
+      rel="icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/axp3FoAAAAASUVORK5CYII="
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page" style="--part-color: #2867b2; --part-tint: #e9f1fb; --part-deep: #1f4f88;">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <span>Part 2. API 계층 구조</span>
+        </nav>
+
+        <header class="article-hero">
+          <p class="eyebrow">42 · Part 2. API 계층 구조</p>
+          <h1>Repository와 Query </h1>
+          <p><strong class="inline-term">Spring Data JPA</strong>의 CRUD, Query Method, JPQL, Native Query, <strong class="inline-token">@Query</strong>, Pageable, Sort, Specification, QueryDSL 사용 기준입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">API</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 8분</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>왜 배워야 할까</h2>
+          <p><strong class="inline-term">Repository</strong>는 데이터 접근을 추상화합니다. JpaRepository를 상속하면 save, findById, findAll, delete 같은 기본 CRUD를 바로 사용할 수 있고, 메서드 이름만으로 간단한 조건 쿼리를 만들 수 있습니다.</p><p>조건이 조금 복잡해지면 <strong class="inline-token">@Query</strong>로 JPQL을 명시하고, DB 전용 기능이 필요하면 Native Query를 사용할 수 있습니다. 다만 Native Query는 DB 종류에 묶이므로 이식성과 <strong class="inline-korean">테스트</strong> 비용을 고려해야 합니다.</p><p>동적 검색 조건이 많으면 Specification이나 QueryDSL을 검토합니다. 페이지 조회는 Pageable과 Sort를 받아 <strong class="inline-korean">응답</strong> 데이터와 전체 개수를 함께 설계해야 프론트엔드에서 목록 화면을 안정적으로 만들 수 있습니다.</p>
+        </section>
+
+        <section class="article-section">
+          <h2>개념 그림</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>기본 CRUD</strong>
+          <p>JpaRepository의 기본 메서드로 단순 저장, 조회, 삭제를 처리합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>정적 조건</strong>
+          <p>Query Method나 <strong class="inline-token">@Query</strong> JPQL로 명확한 조회 조건을 표현합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>동적 조건과 목록</strong>
+          <p>Pageable, Sort, Specification, QueryDSL로 검색과 페이징 요구사항을 처리합니다.</p>
+        </div></div>
+        </section>
+
+        <section class="article-section">
+          <h2>동작 흐름</h2>
+          <div class="insight-grid">
+        <article>
+          <strong>기본 CRUD</strong>
+          <p>JpaRepository의 기본 메서드로 단순 저장, 조회, 삭제를 처리합니다.</p>
+        </article>
+        <article>
+          <strong>정적 조건</strong>
+          <p>Query Method나 <strong class="inline-token">@Query</strong> JPQL로 명확한 조회 조건을 표현합니다.</p>
+        </article>
+        <article>
+          <strong>동적 조건과 목록</strong>
+          <p>Pageable, Sort, Specification, QueryDSL로 검색과 페이징 요구사항을 처리합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>관련 어노테이션과 기술</h2>
+          <div class="term-grid">
+        <article>
+          <strong>JpaRepository</strong>
+          <p><strong class="inline-term">JPA</strong> 기반 <strong class="inline-term">Repository</strong> 기본 기능을 제공하는 인터페이스입니다.</p>
+        </article>
+        <article>
+          <strong>@Query</strong>
+          <p>메서드에 JPQL 또는 Native SQL을 직접 지정합니다.</p>
+        </article>
+        <article>
+          <strong>@Param</strong>
+          <p><strong class="inline-token">@Query</strong> 안의 이름 있는 파라미터와 메서드 파라미터를 연결합니다.</p>
+        </article>
+        <article>
+          <strong>Pageable</strong>
+          <p>page, size, sort 정보를 담는 페이징 <strong class="inline-korean">요청</strong> 객체입니다.</p>
+        </article>
+        <article>
+          <strong>Sort</strong>
+          <p>정렬 조건을 표현합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>함께 확인할 파일과 설정</h2>
+          <div class="term-grid">
+        <article>
+          <strong>JPQL</strong>
+          <p>테이블이 아니라 <strong class="inline-term">Entity</strong>와 <strong class="inline-korean">필드</strong> 이름을 기준으로 작성하는 객체 지향 쿼리입니다.</p>
+        </article>
+        <article>
+          <strong>Native Query</strong>
+          <p>DB SQL을 그대로 작성합니다. DB 함수나 특수 쿼리에 유용합니다.</p>
+        </article>
+        <article>
+          <strong>Pagination</strong>
+          <p>Page, Slice, List 중 필요한 <strong class="inline-korean">응답</strong> 형태를 선택합니다.</p>
+        </article>
+        <article>
+          <strong>QueryDSL</strong>
+          <p>타입 안전한 동적 쿼리를 코드로 조립할 때 자주 사용합니다.</p>
+        </article></div>
+        </section>
+
+        <section class="article-section">
+          <h2>Query Method와 JPQL</h2>
+          <pre><code class="language-java">public interface CourseRepository extends JpaRepository&lt;Course, Long&gt; {
+    Page&lt;Course&gt; findByTitleContaining(String keyword, Pageable pageable);
+
+    @Query(&quot;&quot;&quot;
+        select c
+        from Course c
+        join fetch c.teacher
+        where c.opened = true
+        order by c.createdAt desc
+        &quot;&quot;&quot;)
+    List&lt;Course&gt; findOpenedCoursesWithTeacher();
+}</code></pre>
+          
+        </section>
+
+        <section class="article-section">
+          <h2>기술적으로 헷갈리기 쉬운 부분</h2>
+          <ul class="article-list"><li>Query Method 이름이 너무 길어지면 읽기 어려우므로 <strong class="inline-token">@Query</strong>나 QueryDSL로 옮기는 편이 <em class="inline-guidance">좋습니다</em>.</li><li>Page는 count query가 추가로 실행됩니다. 전체 개수가 필요 없는 화면은 Slice를 고려합니다.</li><li>fetch join과 pagination을 함께 쓸 때 컬렉션 조인은 결과가 부풀 수 있어 <mark class="inline-risk">주의해야 합니다</mark>.</li><li>Native Query는 DB별 문법 차이 때문에 <strong class="inline-korean">테스트</strong> 환경과 운영 DB가 다르면 <mark class="inline-risk">깨질 수 있습니다</mark>.</li></ul>
+        </section>
+
+        <footer class="article-nav">
+          <a href="jpa-relationships.html">이전 · JPA 연관관계와 매핑</a>
+          <a href="security-authentication-structure.html">다음 · Spring Security 인증 구조</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>
