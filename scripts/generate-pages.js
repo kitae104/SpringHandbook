@@ -1,9 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 const { TOPIC_PARTS, SPRING_TOPICS } = require("../topics-data");
+const { SPRING_TERMS } = require("../terms-data");
 
 const root = path.resolve(__dirname, "..");
 const outputDir = path.join(root, "topics");
+const termOutputDir = path.join(root, "terms");
 
 function escapeHtml(value) {
   return String(value)
@@ -254,11 +256,88 @@ function renderTopicPage(topic, index) {
 </html>`;
 }
 
+function renderTermPage(term) {
+  const relatedTopics = term.relatedTopics
+    .map((slug) => SPRING_TOPICS.find((topic) => topic.slug === slug))
+    .filter(Boolean);
+
+  return `<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${escapeHtml(term.name)} | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="${escapeHtml(term.summary)}" />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    ${renderHeader("../")}
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>${escapeHtml(term.name)}</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">${escapeHtml(term.category)}</p>
+          <h1>${escapeHtml(term.name)}</h1>
+          <p>${renderInline(term.summary)}</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">${escapeHtml(term.level)}</span>
+            <span class="topic-badge">${escapeHtml(term.readingTime)}</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          ${term.definition.map((paragraph) => `<p>${renderInline(paragraph)}</p>`).join("")}
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          ${renderFlowDiagram(term.mechanics)}
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          ${renderPairs(term.distinctions)}
+        </section>
+        <section class="article-section">
+          <h2>${escapeHtml(term.exampleTitle)}</h2>
+          <pre><code class="language-${escapeHtml(term.language)}">${escapeHtml(term.code)}</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          ${renderList(term.checks)}
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            ${relatedTopics.map((topic) => `<a href="../topics/${topic.slug}.html"><strong>${escapeHtml(topic.title)}</strong><span>${escapeHtml(topic.summary)}</span></a>`).join("")}
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>`;
+}
+
 fs.rmSync(outputDir, { recursive: true, force: true });
 fs.mkdirSync(outputDir, { recursive: true });
+
+fs.rmSync(termOutputDir, { recursive: true, force: true });
+fs.mkdirSync(termOutputDir, { recursive: true });
 
 SPRING_TOPICS.forEach((topic, index) => {
   fs.writeFileSync(path.join(outputDir, `${topic.slug}.html`), renderTopicPage(topic, index), "utf8");
 });
 
-console.log(`Generated ${SPRING_TOPICS.length} topic pages.`);
+SPRING_TERMS.forEach((term) => {
+  fs.writeFileSync(path.join(termOutputDir, `${term.slug}.html`), renderTermPage(term), "utf8");
+});
+
+console.log(`Generated ${SPRING_TOPICS.length} topic pages and ${SPRING_TERMS.length} term pages.`);

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@OneToMany | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="한 Entity가 여러 상대 Entity를 컬렉션으로 참조하는 일대다 연관관계를 매핑합니다." />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>@OneToMany</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">JPA 연관관계</p>
+          <h1>@OneToMany</h1>
+          <p>한 <strong class="inline-term">Entity</strong>가 여러 상대 <strong class="inline-term">Entity</strong>를 컬렉션으로 참조하는 일대다 연관관계를 매핑합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 5분</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          <p><strong class="inline-token">@OneToMany</strong>는 강좌가 여러 수강 신청을 갖는 관계처럼 컬렉션 연관관계를 표현합니다. 외래 키는 보통 다수 쪽 테이블에 있으므로 양방향 매핑에서는 mappedBy로 <strong class="inline-token">@ManyToOne</strong> <strong class="inline-korean">필드</strong>를 지정합니다.</p><p>컬렉션 변경을 자식 행의 생명주기 변경으로 연결하려면 cascade와 orphanRemoval을 요구사항에 맞게 설정합니다. 이 옵션은 서로 의미가 다르며 무조건 함께 켜는 설정이 아닙니다.</p>
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>자식이 외래 키 보유</strong>
+          <p>다수 쪽 테이블이 부모 식별자를 외래 키로 저장합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>부모 컬렉션 매핑</strong>
+          <p>부모는 mappedBy로 자식의 주인 <strong class="inline-korean">필드</strong>를 가리킵니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>조회 전략 결정</strong>
+          <p>기본 LAZY 컬렉션을 필요한 조회에서 fetch join 등으로 명시적으로 로딩합니다.</p>
+        </div></div>
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          <div class="term-grid">
+        <article>
+          <strong>mappedBy</strong>
+          <p>외래 키를 관리하는 상대 <strong class="inline-term">Entity</strong>의 <strong class="inline-korean">필드</strong> 이름입니다.</p>
+        </article>
+        <article>
+          <strong>cascade</strong>
+          <p>부모에 수행한 persist/remove 등을 자식에게 전파합니다.</p>
+        </article>
+        <article>
+          <strong>orphanRemoval</strong>
+          <p>부모 컬렉션에서 제거되어 고아가 된 자식을 삭제합니다.</p>
+        </article>
+        <article>
+          <strong>단방향 @OneToMany</strong>
+          <p>조인 테이블이나 추가 UPDATE가 생길 수 있어 SQL 구조를 <em class="inline-guidance">확인해야 합니다</em>.</p>
+        </article></div>
+        </section>
+        <section class="article-section">
+          <h2>양방향 일대다 매핑</h2>
+          <pre><code class="language-java">@OneToMany(mappedBy = &quot;course&quot;, cascade = CascadeType.PERSIST)
+private final List&lt;Enrollment&gt; enrollments = new ArrayList&lt;&gt;();
+
+public void addEnrollment(Enrollment enrollment) {
+    enrollments.add(enrollment);
+    enrollment.assignCourse(this);
+}</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          <ul class="article-list"><li><strong class="inline-token">@OneToMany</strong>의 기본 fetch는 LAZY입니다.</li><li>목록 조회에서 컬렉션을 반복 접근하면 N+1 쿼리가 발생할 수 있습니다.</li><li>CascadeType.REMOVE와 orphanRemoval은 삭제 범위를 충분히 검토한 뒤 사용합니다.</li></ul>
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            <a href="../topics/jpa-relationships.html"><strong>JPA 연관관계와 매핑</strong><span>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</span></a><a href="../topics/entity.html"><strong>Entity</strong><span>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</span></a><a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a><a href="../topics/repository-query.html"><strong>Repository와 Query</strong><span>Spring Data JPA의 CRUD, Query Method, JPQL, Native Query, @Query, Pageable, Sort, Specification, QueryDSL 사용 기준입니다.</span></a>
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ManyToOne | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="여러 Entity가 하나의 상대 Entity를 참조하는 다대일 연관관계를 매핑합니다." />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>@ManyToOne</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">JPA 연관관계</p>
+          <h1>@ManyToOne</h1>
+          <p>여러 <strong class="inline-term">Entity</strong>가 하나의 상대 <strong class="inline-term">Entity</strong>를 참조하는 다대일 연관관계를 매핑합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 5분</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          <p><strong class="inline-token">@ManyToOne</strong>은 주문 여러 개가 회원 한 명을 참조하는 것처럼 관계형 DB에서 가장 흔한 외래 키 구조를 객체 참조로 표현합니다. 외래 키를 가진 다수 쪽이 연관관계의 주인입니다.</p><p>기본 fetch가 EAGER이므로 실무에서는 필요한 시점에 조회하도록 LAZY를 명시하는 경우가 많습니다. 다만 LAZY만 선언한다고 N+1 문제가 자동 해결되는 것은 아닙니다.</p>
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>외래 키 매핑</strong>
+          <p><strong class="inline-token">@JoinColumn</strong>으로 다수 쪽 테이블의 외래 키 열을 지정합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>참조 설정</strong>
+          <p><strong class="inline-term">Entity</strong> <strong class="inline-korean">필드</strong>에 상대 <strong class="inline-term">Entity</strong> 참조를 대입하면 flush 때 외래 키 값으로 반영됩니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>지연 조회</strong>
+          <p>LAZY이면 실제 참조 접근 시 프록시 초기화를 위한 SELECT가 실행될 수 있습니다.</p>
+        </div></div>
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@ManyToOne</strong>
+          <p>다수 쪽의 단일 객체 참조이며 외래 키를 직접 관리합니다.</p>
+        </article>
+        <article>
+          <strong>@OneToMany</strong>
+          <p>하나 쪽의 컬렉션 탐색이며 보통 mappedBy를 사용합니다.</p>
+        </article>
+        <article>
+          <strong>LAZY</strong>
+          <p>참조가 필요할 때 조회하지만 <strong class="inline-korean">트랜잭션</strong> 범위와 N+1을 고려해야 합니다.</p>
+        </article>
+        <article>
+          <strong>EAGER</strong>
+          <p>즉시 로딩 계약이 불필요한 조인이나 추가 SELECT를 만들 수 있습니다.</p>
+        </article></div>
+        </section>
+        <section class="article-section">
+          <h2>수강 신청에서 강좌 참조하기</h2>
+          <pre><code class="language-java">@ManyToOne(fetch = FetchType.LAZY, optional = false)
+@JoinColumn(name = &quot;course_id&quot;, nullable = false)
+private Course course;</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          <ul class="article-list"><li><strong class="inline-token">@ManyToOne</strong>의 기본 EAGER 대신 LAZY 사용 여부를 의식적으로 결정합니다.</li><li><strong class="inline-term">Entity</strong>를 <strong class="inline-korean">응답</strong> JSON으로 직접 반환하면 프록시 초기화와 순환 참조 문제가 생길 수 있습니다.</li><li>연관관계 변경은 주인인 <strong class="inline-token">@ManyToOne</strong> <strong class="inline-korean">필드</strong>의 값을 바꿔야 DB 외래 키에 반영됩니다.</li></ul>
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            <a href="../topics/jpa-relationships.html"><strong>JPA 연관관계와 매핑</strong><span>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</span></a><a href="../topics/entity.html"><strong>Entity</strong><span>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</span></a><a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a><a href="../topics/transaction.html"><strong>Transaction</strong><span>여러 DB 작업을 하나의 성공 또는 실패 단위로 묶어 데이터 일관성을 지키는 기능입니다.</span></a>
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

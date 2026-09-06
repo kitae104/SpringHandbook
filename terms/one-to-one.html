@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@OneToOne | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="한 Entity가 상대 Entity 하나와 일대일로 연결되는 연관관계를 매핑합니다." />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>@OneToOne</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">JPA 연관관계</p>
+          <h1>@OneToOne</h1>
+          <p>한 <strong class="inline-term">Entity</strong>가 상대 <strong class="inline-term">Entity</strong> 하나와 일대일로 연결되는 연관관계를 매핑합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 5분</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          <p><strong class="inline-token">@OneToOne</strong>은 회원과 프로필처럼 양쪽 레코드가 최대 하나씩 대응하는 관계를 표현합니다. 외래 키를 가진 쪽이 보통 연관관계의 주인이며 <strong class="inline-token">@JoinColumn</strong>으로 외래 키 열을 지정합니다.</p><p>일대일 관계는 외래 키에 UNIQUE 제약이 있어야 DB에서도 관계 수가 보장됩니다. 항상 함께 조회하는지, 선택 관계인지에 따라 테이블 통합이 더 단순할 수도 있습니다.</p>
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>외래 키 배치</strong>
+          <p>접근과 생명주기를 고려해 어느 테이블이 외래 키를 가질지 결정합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>주인 매핑</strong>
+          <p>외래 키 보유 쪽에 <strong class="inline-token">@OneToOne</strong>과 <strong class="inline-token">@JoinColumn</strong>을 선언합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>반대편 연결</strong>
+          <p>양방향이면 반대편에 mappedBy를 선언해 주인을 가리킵니다.</p>
+        </div></div>
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          <div class="term-grid">
+        <article>
+          <strong>단방향</strong>
+          <p>한쪽 객체에서만 상대를 참조해 모델이 단순합니다.</p>
+        </article>
+        <article>
+          <strong>양방향</strong>
+          <p>양쪽 탐색이 가능하지만 객체 관계를 함께 동기화해야 합니다.</p>
+        </article>
+        <article>
+          <strong>공유 기본 키</strong>
+          <p><strong class="inline-token">@MapsId</strong>로 상대 식별자를 외래 키이자 자신의 기본 키로 사용할 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>@ManyToOne</strong>
+          <p>여러 행이 같은 상대를 참조할 수 있으므로 UNIQUE 제약이 없습니다.</p>
+        </article></div>
+        </section>
+        <section class="article-section">
+          <h2>회원과 프로필 일대일 매핑</h2>
+          <pre><code class="language-java">@OneToOne(fetch = FetchType.LAZY, optional = false)
+@JoinColumn(name = &quot;profile_id&quot;, unique = true)
+private Profile profile;</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          <ul class="article-list"><li>DB UNIQUE 제약 없이 애너테이션만으로 일대일을 보장한다고 가정하면 <mark class="inline-risk">안 됩니다</mark>.</li><li>일대일 지연 로딩은 연관 방향과 프록시 조건에 따라 기대대로 동작하지 않을 수 있습니다.</li><li>양방향 편의 메서드는 양쪽 참조를 함께 설<em class="inline-guidance">정해야 합니다</em>.</li></ul>
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            <a href="../topics/jpa-relationships.html"><strong>JPA 연관관계와 매핑</strong><span>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</span></a><a href="../topics/entity.html"><strong>Entity</strong><span>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</span></a><a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a>
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

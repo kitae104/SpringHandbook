@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ManyToMany | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="양쪽 Entity가 서로 여러 개와 연결되는 다대다 관계를 조인 테이블로 매핑합니다." />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>@ManyToMany</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">JPA 연관관계</p>
+          <h1>@ManyToMany</h1>
+          <p>양쪽 <strong class="inline-term">Entity</strong>가 서로 여러 개와 연결되는 다대다 관계를 조인 테이블로 매핑합니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 5분</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          <p><strong class="inline-token">@ManyToMany</strong>는 학생과 강좌처럼 양쪽이 여러 상대와 연결되는 관계를 중간 조인 테이블로 표현합니다. <strong class="inline-token">@JoinTable</strong>로 조인 테이블과 양쪽 외래 키를 지정할 수 있습니다.</p><p>실무에서는 연결 자체에 신청일, 상태, 순서 같은 속성이 생기는 경우가 많아 조인 테이블을 Enrollment 같은 독립 <strong class="inline-term">Entity</strong>로 승격하고 두 개의 <strong class="inline-token">@ManyToOne</strong>으로 풀어내는 방식을 <em class="inline-guidance">권장합니다</em>.</p>
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>조인 테이블 생성</strong>
+          <p>중간 테이블이 양쪽 <strong class="inline-term">Entity</strong>의 외래 키 조합을 저장합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>주인 선택</strong>
+          <p>한쪽에서 <strong class="inline-token">@JoinTable</strong>을 정의하고 반대편은 mappedBy로 연결합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>컬렉션 변경</strong>
+          <p>주인 컬렉션의 추가와 제거가 조인 테이블 INSERT/DELETE로 반영됩니다.</p>
+        </div></div>
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          <div class="term-grid">
+        <article>
+          <strong>직접 @ManyToMany</strong>
+          <p>연결에 별도 속성이 없고 단순할 때만 제한적으로 적합합니다.</p>
+        </article>
+        <article>
+          <strong>연결 Entity</strong>
+          <p>조인 테이블을 <strong class="inline-term">Entity</strong>로 만들면 속성, 식별자, <strong class="inline-korean">변경 이력</strong>을 자연스럽게 다룰 수 있습니다.</p>
+        </article>
+        <article>
+          <strong>Set</strong>
+          <p>중복 관계를 막는 데 유리하지만 equals/hashCode 설계가 <em class="inline-guidance">중요합니다</em>.</p>
+        </article>
+        <article>
+          <strong>List</strong>
+          <p>순서와 중복 의미를 검토해야 하며 삭제 SQL 동작도 <em class="inline-guidance">확인해야 합니다</em>.</p>
+        </article></div>
+        </section>
+        <section class="article-section">
+          <h2>연결 Entity로 풀어낸 다대다</h2>
+          <pre><code class="language-java">@Entity
+class Enrollment {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;student_id&quot;)
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;course_id&quot;)
+    private Course course;
+}</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          <ul class="article-list"><li>요구사항이 커질 가능성이 있다면 직접 <strong class="inline-token">@ManyToMany</strong>보다 연결 <strong class="inline-term">Entity</strong>를 우선 검토합니다.</li><li>CascadeType.REMOVE가 상대 <strong class="inline-term">Entity</strong> 자체를 삭제하지 않는지 특히 주의합니다.</li><li>조인 테이블에는 두 외래 키의 복합 UNIQUE 제약과 조회 인덱스를 검토합니다.</li></ul>
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            <a href="../topics/jpa-relationships.html"><strong>JPA 연관관계와 매핑</strong><span>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</span></a><a href="../topics/entity.html"><strong>Entity</strong><span>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</span></a><a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a><a href="../topics/sql.html"><strong>SQL</strong><span>관계형 DB에서 데이터를 조회하고 변경하는 언어이며 JPA를 쓰더라도 반드시 확인해야 하는 실행 결과입니다.</span></a>
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

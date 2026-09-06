@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@SpringBootApplication | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="Spring Boot 애플리케이션의 시작 설정을 선언하며 구성 등록, 자동 설정, 컴포넌트 스캔을 한 번에 활성화하는 합성 애너테이션입니다." />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>@SpringBootApplication</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">Spring 핵심 용어</p>
+          <h1>@SpringBootApplication</h1>
+          <p><strong class="inline-term">Spring Boot</strong> 애플리케이션의 시작 설정을 선언하며 구성 등록, 자동 설정, 컴포넌트 스캔을 한 번에 활성화하는 합성 애너테이션입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 5분</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          <p><strong class="inline-token">@SpringBootApplication</strong>은 보통 main 메서드가 있는 최상위 클래스에 한 번 붙입니다. 이 클래스는 SpringApplication.run에 전달되어 ApplicationContext를 만들기 위한 주 설정 소스가 됩니다.</p><p>내부적으로 <strong class="inline-token">@SpringBootConfiguration</strong>, <strong class="inline-token">@EnableAutoConfiguration</strong>, <strong class="inline-token">@ComponentScan</strong>을 결합합니다. 즉 설정 클래스로 동작하고, 클래스패스와 기존 <strong class="inline-term">Bean</strong>을 조건으로 자동 설정을 적용하며, 선언된 패키지부터 하위 패키지의 컴포넌트를 탐색합니다.</p>
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>진입점 실행</strong>
+          <p>main 메서드가 SpringApplication.run(애플리케이션클래스, args)을 호출합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>설정 분석</strong>
+          <p>Boot가 주 설정 클래스, 클래스패스, application.yml, Profile과 사용자가 등록한 <strong class="inline-term">Bean</strong>을 분석합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>Bean 구성</strong>
+          <p>컴포넌트 스캔과 조건부 자동 설정으로 BeanDefinition을 수집하고 ApplicationContext를 초기화합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>04</span>
+          <strong>애플리케이션 시작</strong>
+          <p>웹 프로젝트라면 내장 서버와 DispatcherServlet 등이 준비된 뒤 <strong class="inline-korean">요청</strong>을 받을 수 있는 상태가 됩니다.</p>
+        </div></div>
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          <div class="term-grid">
+        <article>
+          <strong>@SpringBootConfiguration</strong>
+          <p>Boot용 주 설정 클래스임을 나타내며 <strong class="inline-token">@Configuration</strong>을 포함합니다.</p>
+        </article>
+        <article>
+          <strong>@EnableAutoConfiguration</strong>
+          <p>classpath, 설정 속성, 기존 <strong class="inline-term">Bean</strong> 조건에 따라 Boot 자동 설정 후보를 적용합니다.</p>
+        </article>
+        <article>
+          <strong>@ComponentScan</strong>
+          <p>현재 패키지와 하위 패키지에서 <strong class="inline-token">@Component</strong> 계열 클래스를 찾아 <strong class="inline-term">Bean</strong> 후보로 등록합니다.</p>
+        </article>
+        <article>
+          <strong>SpringApplication.run</strong>
+          <p>애너테이션 자체가 실행하는 것이 아니라, 이 메서드가 설정 클래스를 사용해 실제 부트스트랩을 시작합니다.</p>
+        </article></div>
+        </section>
+        <section class="article-section">
+          <h2>권장 패키지 위치의 실행 클래스</h2>
+          <pre><code class="language-java">package com.example.handbook;
+
+@SpringBootApplication
+public class HandbookApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(HandbookApplication.class, args);
+    }
+}
+
+// com.example.handbook.controller
+// com.example.handbook.service
+// com.example.handbook.repository
+// 위 하위 패키지는 기본 컴포넌트 스캔 범위에 포함됩니다.</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          <ul class="article-list"><li>실행 클래스를 루트 패키지보다 아래에 두면 바깥 패키지의 <strong class="inline-term">Controller</strong>, <strong class="inline-term">Service</strong>, <strong class="inline-term">Repository</strong>가 스캔되지 않을 수 있습니다.</li><li>자동 설정은 항상 같은 <strong class="inline-term">Bean</strong>을 만드는 것이 아닙니다. 의존성, 설정 값, 기존 <strong class="inline-term">Bean</strong> 유무를 나타내는 조건에 따라 적용 결과가 달라집니다.</li><li>exclude 또는 scanBasePackages로 범위를 바꿀 수 있지만 기본 패키지 구조로 해결할 수 있는지 먼저 확인하는 편이 <em class="inline-guidance">좋습니다</em>.</li><li>여러 <strong class="inline-korean">테스트</strong> 설정에서 <strong class="inline-token">@SpringBootApplication</strong> 클래스를 추가로 만들면 주 설정 탐색이 모호해질 수 있습니다.</li></ul>
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            <a href="../topics/spring-boot.html"><strong>Spring Boot</strong><span>Spring 프로젝트를 빠르게 실행하고 운영할 수 있도록 자동 설정, 내장 서버, starter 의존성, 실행 진입점을 제공하는 도구입니다.</span></a><a href="../topics/ioc.html"><strong>IoC</strong><span>객체 생성과 연결의 제어권을 개발자 코드가 아니라 Spring 컨테이너가 갖는 구조입니다.</span></a><a href="../topics/spring-annotations.html"><strong>주요 Spring 애너테이션</strong><span>Spring Boot에서 객체 등록, 계층 구분, 의존성 선택, 설정 값 바인딩에 자주 쓰는 애너테이션을 용도별로 정리합니다.</span></a>
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

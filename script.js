@@ -6,6 +6,7 @@ const partNav = document.querySelector("#partNav");
 const topicGroups = document.querySelector("#topicGroups");
 const categoryLegend = document.querySelector("#categoryLegend");
 const topicCount = document.querySelector("#topicCount");
+const termGrid = document.querySelector("#termGrid");
 
 const savedTheme = localStorage.getItem("spring-handbook-theme");
 if (savedTheme) {
@@ -27,6 +28,10 @@ function createElement(tag, className, text) {
 
 function topicHref(topic) {
   return `topics/${topic.slug}.html`;
+}
+
+function termHref(term) {
+  return `terms/${term.slug}.html`;
 }
 
 function applyPartColor(element, part) {
@@ -113,6 +118,36 @@ function renderHome() {
   });
 }
 
+function renderTerms() {
+  if (!termGrid || !window.SPRING_TERMS) return;
+
+  window.SPRING_TERMS.forEach((term, index) => {
+    const card = document.createElement("a");
+    card.className = "topic-card topic-link-card term-link-card";
+    card.href = termHref(term);
+    card.dataset.topic = [
+      term.name,
+      term.summary,
+      term.aliases?.join(" "),
+      term.definition?.join(" "),
+      term.distinctions?.flat().join(" "),
+    ].join(" ");
+    card.innerHTML = `
+      <div class="topic-meta">
+        <span>${String(index + 1).padStart(2, "0")}</span>
+        <strong>용어</strong>
+        <small>${term.level}</small>
+      </div>
+      <div class="topic-title"><h3>${term.name}</h3></div>
+      <p>${term.summary}</p>
+      <div class="topic-tags">
+        ${term.aliases.slice(0, 3).map((name) => `<span>${name}</span>`).join("")}
+      </div>
+      <strong class="read-more">상세 설명 읽기</strong>`;
+    termGrid.append(card);
+  });
+}
+
 function filterTopics() {
   if (!searchInput || !topicGroups) return;
   const query = searchInput.value.trim().toLowerCase();
@@ -133,6 +168,14 @@ function filterTopics() {
     );
     part.style.display = visibleCards.length || !query ? "" : "none";
   });
+
+  const glossary = document.querySelector(".glossary-browser");
+  if (glossary) {
+    const visibleTerms = Array.from(glossary.querySelectorAll(".term-link-card")).filter(
+      (card) => !card.classList.contains("is-hidden"),
+    );
+    glossary.style.display = visibleTerms.length || !query ? "" : "none";
+  }
 
   if (query && visibleCount === 0) {
     const message = createElement("p", "no-results", "검색 결과가 없습니다. 어노테이션, 파일명, 기능 이름으로 다시 검색해 보세요.");
@@ -176,6 +219,7 @@ function enableCodeCopy() {
 }
 
 renderHome();
+renderTerms();
 filterTopics();
 enableCodeCopy();
 

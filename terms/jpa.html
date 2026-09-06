@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JPA | Spring Boot Handbook 용어 사전</title>
+    <meta name="description" content="Java Persistence API의 약자로, Java 객체와 관계형 데이터베이스 사이의 영속성 관리 방식을 정의한 표준 명세입니다." />
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="article-page">
+    
+    <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="Spring Boot Handbook 홈">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Spring Boot Handbook</strong>
+          <small>주제별로 찾고 깊게 읽는 Spring Boot 자료실</small>
+        </span>
+      </a>
+      <div class="header-actions article-actions">
+        <a class="secondary-button" href="../index.html#topics">전체 주제</a>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">◐</button>
+      </div>
+    </header>
+    <main id="content" class="article-shell">
+      <article class="article">
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <a href="../index.html">홈</a>
+          <a href="../index.html#glossary">수업 핵심 용어</a>
+          <span>JPA</span>
+        </nav>
+        <header class="article-hero">
+          <p class="eyebrow">Spring 핵심 용어</p>
+          <h1>JPA</h1>
+          <p>Java Persistence API의 약자로, Java 객체와 관계형 데이터베이스 사이의 영속성 관리 방식을 정의한 표준 명세입니다.</p>
+          <div class="article-meta">
+            <span class="topic-badge">용어</span>
+            <span class="topic-badge">핵심</span>
+            <span class="topic-badge">약 5분</span>
+          </div>
+        </header>
+        <section class="article-section">
+          <h2>정확한 뜻</h2>
+          <p><strong class="inline-term">JPA</strong>는 라이브러리 제품명이 아니라 ORM 동작과 API를 정의한 표준 명세입니다. 실제 동작은 Hibernate 같은 구현체가 담당하며, <strong class="inline-term">Spring Data JPA</strong>는 그 위에서 <strong class="inline-term">Repository</strong> 작성과 조회 기능을 편리하게 제공하는 Spring 프로젝트입니다.</p><p>핵심은 단순한 테이블 매핑보다 영속성 컨텍스트에 있습니다. EntityManager가 <strong class="inline-term">Entity</strong>의 생명주기를 관리하고, 같은 식별자 조회에 대한 1차 캐시, 변경 감지, 쓰기 지연 같은 기능을 <strong class="inline-korean">트랜잭션</strong> 경계 안에서 제공합니다.</p>
+        </section>
+        <section class="article-section">
+          <h2>실제로 동작하는 순서</h2>
+          <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
+        <div class="diagram-node">
+          <span>01</span>
+          <strong>매핑</strong>
+          <p><strong class="inline-token">@Entity</strong>, <strong class="inline-token">@Id</strong>, 연관관계 애너테이션으로 객체와 테이블의 대응 규칙을 선언합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>02</span>
+          <strong>조회와 관리</strong>
+          <p>조회한 <strong class="inline-term">Entity</strong>가 영속성 컨텍스트의 관리 상태가 되며 동일성, 1차 캐시, 지연 로딩의 영향을 받습니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>03</span>
+          <strong>상태 변경</strong>
+          <p><strong class="inline-korean">트랜잭션</strong> 안에서 영속 <strong class="inline-term">Entity</strong>의 값을 바꾸면 변경 감지가 수정 내용을 추적합니다.</p>
+        </div><i class="diagram-arrow" aria-hidden="true"></i>
+        <div class="diagram-node">
+          <span>04</span>
+          <strong>flush와 SQL</strong>
+          <p>flush 시점에 변경 내용을 SQL로 만들어 DB에 전달하고, <strong class="inline-korean">트랜잭션</strong> commit이 최종 반영 여부를 결정합니다.</p>
+        </div></div>
+        </section>
+        <section class="article-section">
+          <h2>비슷한 용어와 구분하기</h2>
+          <div class="term-grid">
+        <article>
+          <strong>JPA</strong>
+          <p>ORM과 영속성 관리의 표준 인터페이스 및 규칙입니다. 현재 표준 명칭은 Jakarta Persistence입니다.</p>
+        </article>
+        <article>
+          <strong>Hibernate</strong>
+          <p><strong class="inline-term">JPA</strong> 명세를 구현하는 대표적인 ORM 프레임워크입니다. SQL 생성과 실제 영속성 동작을 담당합니다.</p>
+        </article>
+        <article>
+          <strong>Spring Data JPA</strong>
+          <p><strong class="inline-term">JPA</strong>를 기반으로 JpaRepository, 쿼리 메서드, 페이징 같은 상위 편의 기능을 제공합니다.</p>
+        </article>
+        <article>
+          <strong>JDBC</strong>
+          <p>SQL과 ResultSet을 직접 다루는 저수준 API입니다. <strong class="inline-term">JPA</strong> 구현체도 최종적으로 JDBC를 통해 DB와 통신합니다.</p>
+        </article></div>
+        </section>
+        <section class="article-section">
+          <h2>트랜잭션 안에서 동작하는 변경 감지</h2>
+          <pre><code class="language-java">@Service
+@RequiredArgsConstructor
+class CourseService {
+    private final CourseRepository courseRepository;
+
+    @Transactional
+    public void rename(Long courseId, String newTitle) {
+        Course course = courseRepository.findById(courseId)
+            .orElseThrow();
+
+        course.changeTitle(newTitle);
+        // 영속 상태 Entity이므로 보통 save()를 다시 호출하지 않아도
+        // commit 전 flush에서 UPDATE SQL이 생성됩니다.
+    }
+}</code></pre>
+        </section>
+        <section class="article-section">
+          <h2>수업에서 확인할 포인트</h2>
+          <ul class="article-list"><li><strong class="inline-term">JPA</strong>를 사용해도 생성되는 SQL, 인덱스, 실행 계획을 이해하고 <em class="inline-guidance">확인해야 합니다</em>.</li><li>지연 로딩 프록시를 <strong class="inline-korean">트랜잭션</strong> 밖에서 접근하면 LazyInitializationException이 발생할 수 있습니다.</li><li>N+1 문제는 연관관계가 있다는 이유만으로 해결되지 않습니다. fetch join, EntityGraph, <strong class="inline-term">DTO</strong> 조회 등을 조회 목적에 맞게 선택합니다.</li><li>벌크 update/delete는 영속성 컨텍스트를 거치지 않으므로 실행 뒤 clear 여부와 관리 중인 <strong class="inline-term">Entity</strong>의 불일치를 점검해야 합니다.</li></ul>
+        </section>
+        <section class="article-section">
+          <h2>함께 읽을 주제</h2>
+          <div class="linked-topic-grid">
+            <a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a><a href="../topics/entity.html"><strong>Entity</strong><span>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</span></a><a href="../topics/transaction.html"><strong>Transaction</strong><span>여러 DB 작업을 하나의 성공 또는 실패 단위로 묶어 데이터 일관성을 지키는 기능입니다.</span></a><a href="../topics/repository-query.html"><strong>Repository와 Query</strong><span>Spring Data JPA의 CRUD, Query Method, JPQL, Native Query, @Query, Pageable, Sort, Specification, QueryDSL 사용 기준입니다.</span></a>
+          </div>
+        </section>
+        <footer class="article-nav">
+          <a href="../index.html#glossary">용어 목록으로</a>
+        </footer>
+      </article>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

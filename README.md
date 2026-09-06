@@ -6,8 +6,10 @@
 
 - `index.html`: 주제 목록, 검색, 학습 흐름
 - `topics-data.js`: 주제별 설명, 어노테이션, 관련 설정, 예제 코드 데이터
-- `scripts/generate-pages.js`: `topics-data.js`를 읽어 주제별 HTML 페이지 생성
+- `terms-data.js`: 수업 용어별 정의, 동작 흐름, 비교, 예제, 확인 포인트 데이터
+- `scripts/generate-pages.js`: 데이터 파일을 읽어 주제별·용어별 HTML 페이지 생성
 - `topics/`: 생성된 주제별 블로그형 HTML 페이지
+- `terms/`: 생성된 수업 용어별 상세 HTML 페이지
 - `styles.css`: 반응형 레이아웃, 가독성 중심 디자인, 요청 흐름 애니메이션
 - `script.js`: 홈 주제 렌더링, 검색, 코드 복사, 읽은 위치 표시, 테마 전환
 - `.github/workflows/pages.yml`: GitHub Pages 자동 배포
@@ -23,6 +25,13 @@ npm run build
 ```
 
 3. 변경 내용을 커밋하고 push하면 GitHub Pages에 자동 배포됩니다.
+
+## 새 용어 추가
+
+1. `terms-data.js`의 `SPRING_TERMS` 배열에 기존 `term({ ... })` 항목을 복사해 추가합니다.
+2. `slug`, `name`, `summary`, `definition`, `mechanics`, `distinctions`, 코드 예제, `checks`, `relatedTopics`를 작성합니다.
+3. `relatedTopics`에는 `topics-data.js`에 존재하는 주제의 `slug`를 입력합니다.
+4. `npm run build`를 실행하면 홈의 용어 카드와 `terms/` 상세 페이지가 연결됩니다.
 
 ## 로컬 실행
 
