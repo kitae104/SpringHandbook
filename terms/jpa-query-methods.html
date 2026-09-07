@@ -31,7 +31,7 @@
           <a href="../index.html#glossary">수업 핵심 용어</a>
           <span>JPA 쿼리 메소드</span>
         </nav>
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">Spring Data JPA</p>
           <h1>JPA 쿼리 메소드</h1>
           <p><strong class="inline-term">Repository</strong> 메소드 이름, <strong class="inline-token">@Query</strong>, Pageable 등을 이용해 조회 조건과 반환 형태를 선언하는 <strong class="inline-term">Spring Data JPA</strong> 기능입니다.</p>
@@ -41,11 +41,11 @@
             <span class="topic-badge">약 5분</span>
           </div>
         </header>
-        <section class="article-section">
+        <section id="definition" class="article-section">
           <h2>정확한 뜻</h2>
           <p>쿼리 메소드는 정확히는 <strong class="inline-term">JPA</strong> 표준 자체가 아니라 <strong class="inline-term">Spring Data JPA</strong>가 제공하는 <strong class="inline-term">Repository</strong> 기능입니다. findByTitleContaining처럼 정해진 이름 규칙을 분석해 JPQL과 SQL을 생성합니다.</p><p>간단한 고정 조건은 메소드 이름으로 표현하고, 이름이 지나치게 길거나 조인·집계가 필요하면 <strong class="inline-token">@Query</strong>, Specification, QueryDSL 또는 별도 <strong class="inline-term">Repository</strong> 구현을 선택합니다.</p>
         </section>
-        <section class="article-section">
+        <section id="mechanics" class="article-section">
           <h2>실제로 동작하는 순서</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -69,7 +69,7 @@
           <p>Hibernate가 생성한 실제 SQL과 실행 계획을 확인해 성능을 <strong class="inline-korean">검증</strong>합니다.</p>
         </div></div>
         </section>
-        <section class="article-section">
+        <section id="distinctions" class="article-section">
           <h2>비슷한 용어와 구분하기</h2>
           <div class="term-grid">
         <article>
@@ -97,7 +97,7 @@
           <p>0개 이상 결과를 반환하며 결과가 없으면 빈 목록입니다.</p>
         </article></div>
         </section>
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>이름 기반 조회와 페이징</h2>
           <pre><code class="language-java">public interface CourseRepository extends JpaRepository&lt;Course, Long&gt; {
     Optional&lt;Course&gt; findBySlug(String slug);
@@ -112,11 +112,11 @@
     boolean existsBySlug(String slug);
 }</code></pre>
         </section>
-        <section class="article-section">
+        <section id="checks" class="article-section">
           <h2>수업에서 확인할 포인트</h2>
           <ul class="article-list"><li><strong class="inline-term">Entity</strong> <strong class="inline-korean">필드</strong>명이 바뀌면 메소드 이름도 함께 수정해야 하며 잘못된 경로는 시작 시 오류가 날 수 있습니다.</li><li>And와 Or를 섞은 긴 이름은 우선순위가 읽기 어려우므로 <strong class="inline-token">@Query</strong>나 다른 조회 도구를 검토합니다.</li><li>연관관계 조건은 암시적 join과 N+1을 만들 수 있으므로 실제 SQL을 확인합니다.</li><li>deleteBy 메소드는 영향 범위와 <strong class="inline-korean">트랜잭션</strong>을 확인하고, 대량 작업은 벌크 쿼리를 별도로 고려합니다.</li><li>Page가 생성하는 count 쿼리가 복잡한 조회에서 병목이 되지 않는지 확인합니다.</li></ul>
         </section>
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 읽을 주제</h2>
           <div class="linked-topic-grid">
             <a href="../topics/repository-query.html"><strong>Repository와 Query</strong><span>Spring Data JPA의 CRUD, Query Method, JPQL, Native Query, @Query, Pageable, Sort, Specification, QueryDSL 사용 기준입니다.</span></a><a href="../topics/repository.html"><strong>Repository</strong><span>도메인 객체를 조회하고 저장하는 데이터 접근 계층이며, JPA에서는 인터페이스만으로 기본 쿼리를 만들 수 있습니다.</span></a><a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a><a href="../topics/pagination.html"><strong>Pagination</strong><span>많은 데이터를 한 번에 반환하지 않고 페이지 단위로 나눠 조회하는 API 설계 방식입니다.</span></a>

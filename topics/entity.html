@@ -37,7 +37,7 @@
           <span>Part 2. API 계층 구조</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">13 · Part 2. API 계층 구조</p>
           <h1>Entity </h1>
           <p>DB 테이블과 매핑되는 도메인 객체이며 <strong class="inline-term">JPA</strong>가 영속성 컨텍스트에서 상태 변화를 추적합니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-term">Entity</strong>는 단순한 테이블 모양 클래스가 아닙니다. <strong class="inline-term">JPA</strong>가 식별자와 <strong class="inline-korean">필드</strong> 상태를 추적하고, <strong class="inline-korean">트랜잭션</strong> 커밋 시점에 변경 내용을 DB에 반영합니다.</p><p>좋은 <strong class="inline-term">Entity</strong>는 상태 변경 규칙을 메서드로 표현합니다. 외부에서 setter로 아무 값이나 바꾸는 구조보다 enroll, publish, changeTitle 같은 의미 있는 메서드가 안정적입니다.</p><p>연관관계, 지연 로딩, equals와 hashCode, 기본 생성자 같은 <strong class="inline-term">JPA</strong> 제약을 이해해야 예상하지 못한 쿼리와 상태 변경 문제를 줄일 수 있습니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -111,7 +111,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -128,7 +128,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>규칙을 가진 Entity</h2>
           <pre><code class="language-java">@Entity
 public class Course {
@@ -153,7 +153,7 @@ public class Course {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>무분별한 setter는 도메인 규칙을 우회하게 만듭니다.</li><li>양방향 연관관계는 편리하지만 주인 개념과 동기화 메서드를 모르면 버그가 생기기 쉽습니다.</li><li><strong class="inline-term">Entity</strong>를 JSON으로 직접 반환하면 지연 로딩과 순환 참조 문제가 발생할 수 있습니다.</li></ul>
         </section>

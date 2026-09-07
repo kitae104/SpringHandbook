@@ -31,7 +31,7 @@
           <a href="../index.html#glossary">수업 핵심 용어</a>
           <span>@ManyToMany</span>
         </nav>
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">JPA 연관관계</p>
           <h1>@ManyToMany</h1>
           <p>양쪽 <strong class="inline-term">Entity</strong>가 서로 여러 개와 연결되는 다대다 관계를 조인 테이블로 매핑합니다.</p>
@@ -41,11 +41,11 @@
             <span class="topic-badge">약 5분</span>
           </div>
         </header>
-        <section class="article-section">
+        <section id="definition" class="article-section">
           <h2>정확한 뜻</h2>
           <p><strong class="inline-token">@ManyToMany</strong>는 학생과 강좌처럼 양쪽이 여러 상대와 연결되는 관계를 중간 조인 테이블로 표현합니다. <strong class="inline-token">@JoinTable</strong>로 조인 테이블과 양쪽 외래 키를 지정할 수 있습니다.</p><p>실무에서는 연결 자체에 신청일, 상태, 순서 같은 속성이 생기는 경우가 많아 조인 테이블을 Enrollment 같은 독립 <strong class="inline-term">Entity</strong>로 승격하고 두 개의 <strong class="inline-token">@ManyToOne</strong>으로 풀어내는 방식을 <em class="inline-guidance">권장합니다</em>.</p>
         </section>
-        <section class="article-section">
+        <section id="mechanics" class="article-section">
           <h2>실제로 동작하는 순서</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -64,7 +64,7 @@
           <p>주인 컬렉션의 추가와 제거가 조인 테이블 INSERT/DELETE로 반영됩니다.</p>
         </div></div>
         </section>
-        <section class="article-section">
+        <section id="distinctions" class="article-section">
           <h2>비슷한 용어와 구분하기</h2>
           <div class="term-grid">
         <article>
@@ -84,7 +84,7 @@
           <p>순서와 중복 의미를 검토해야 하며 삭제 SQL 동작도 <em class="inline-guidance">확인해야 합니다</em>.</p>
         </article></div>
         </section>
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>연결 Entity로 풀어낸 다대다</h2>
           <pre><code class="language-java">@Entity
 class Enrollment {
@@ -97,11 +97,11 @@ class Enrollment {
     private Course course;
 }</code></pre>
         </section>
-        <section class="article-section">
+        <section id="checks" class="article-section">
           <h2>수업에서 확인할 포인트</h2>
           <ul class="article-list"><li>요구사항이 커질 가능성이 있다면 직접 <strong class="inline-token">@ManyToMany</strong>보다 연결 <strong class="inline-term">Entity</strong>를 우선 검토합니다.</li><li>CascadeType.REMOVE가 상대 <strong class="inline-term">Entity</strong> 자체를 삭제하지 않는지 특히 주의합니다.</li><li>조인 테이블에는 두 외래 키의 복합 UNIQUE 제약과 조회 인덱스를 검토합니다.</li></ul>
         </section>
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 읽을 주제</h2>
           <div class="linked-topic-grid">
             <a href="../topics/jpa-relationships.html"><strong>JPA 연관관계와 매핑</strong><span>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</span></a><a href="../topics/entity.html"><strong>Entity</strong><span>DB 테이블과 매핑되는 도메인 객체이며 JPA가 영속성 컨텍스트에서 상태 변화를 추적합니다.</span></a><a href="../topics/jpa.html"><strong>JPA</strong><span>자바 객체와 관계형 DB 테이블을 매핑하고 영속성 컨텍스트를 통해 변경 감지, 지연 로딩, 트랜잭션 동작을 제공합니다.</span></a><a href="../topics/sql.html"><strong>SQL</strong><span>관계형 DB에서 데이터를 조회하고 변경하는 언어이며 JPA를 쓰더라도 반드시 확인해야 하는 실행 결과입니다.</span></a>

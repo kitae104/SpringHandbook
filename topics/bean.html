@@ -37,7 +37,7 @@
           <span>Part 1. Spring 기초</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">08 · Part 1. Spring 기초</p>
           <h1>Bean </h1>
           <p>Spring 컨테이너가 생성, 보관, 주입, 생명주기 관리를 담당하는 객체입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-term">Bean</strong>은 Spring이 관리하는 객체입니다. <strong class="inline-term">Controller</strong>, <strong class="inline-term">Service</strong>, <strong class="inline-term">Repository</strong> 같은 주요 구성 요소는 <strong class="inline-term">Bean</strong>으로 등록되어 서로 주입되고 <strong class="inline-korean">요청</strong> 처리에 참여합니다.</p><p>직접 작성한 클래스는 <strong class="inline-token">@Component</strong> 계열 어노테이션으로 등록하고, 외부 라이브러리 객체는 <strong class="inline-token">@Configuration</strong> 클래스의 <strong class="inline-token">@Bean</strong> 메서드로 등록하는 방식이 일반적입니다.</p><p><strong class="inline-term">Bean</strong>의 범위, 이름, 생성 시점, 초기화와 종료 콜백을 이해하면 설정 문제를 더 정확하게 추적할 수 있습니다. 대부분의 웹 애플리케이션 <strong class="inline-term">Bean</strong>은 singleton scope로 하나만 만들어져 공유됩니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -111,7 +111,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -128,7 +128,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>외부 라이브러리 객체 Bean 등록</h2>
           <pre><code class="language-java">@Configuration
 class SecurityConfig {
@@ -140,7 +140,7 @@ class SecurityConfig {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>new로 직접 만든 객체는 Spring <strong class="inline-term">Bean</strong>이 아니므로 DI와 생명주기 관리를 받지 않습니다.</li><li>singleton <strong class="inline-term">Bean</strong>에 <strong class="inline-korean">요청</strong>별 상태를 <strong class="inline-korean">필드</strong>로 저장하면 동시성 문제가 생길 수 있습니다.</li><li>같은 타입 <strong class="inline-term">Bean</strong>이 여러 개면 주입 대상이 모호해져 애플리케이션 시작이 <mark class="inline-risk">실패</mark>할 수 있습니다.</li></ul>
         </section>

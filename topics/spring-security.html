@@ -37,7 +37,7 @@
           <span>Part 3. 인증과 보안</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">19 · Part 3. 인증과 보안</p>
           <h1>Spring Security </h1>
           <p><strong class="inline-korean">인증</strong>, 인가, <strong class="inline-korean">보안</strong> 필터 체인, CSRF, 세션 정책을 제공하는 Spring의 <strong class="inline-korean">보안</strong> 프레임워크입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-term">Spring Security</strong>는 <strong class="inline-korean">요청</strong>이 <strong class="inline-term">Controller</strong>에 도달하기 전에 필터 체인에서 <strong class="inline-korean">인증</strong>과 <strong class="inline-korean">권한</strong>을 확인합니다. 사용자가 누구인지 확인하는 <strong class="inline-korean">인증</strong>과, 어떤 기능을 사용할 수 있는지 판단하는 인가를 분리해서 생각해야 합니다.</p><p><strong class="inline-term">REST API</strong>에서는 form login과 서버 세션을 끄고 <strong class="inline-term">JWT</strong> 같은 토큰 기반 <strong class="inline-korean">인증</strong>을 붙이는 경우가 많습니다. 이때도 핵심은 SecurityContext에 <strong class="inline-korean">인증</strong>된 사용자 정보를 넣고 <strong class="inline-korean">권한</strong> 규칙을 적용하는 것입니다.</p><p><strong class="inline-korean">보안</strong> 설정은 동작하지 않을 때 디버깅이 어렵기 때문에 URL 매칭 순서, 필터 위치, <strong class="inline-korean">인증</strong> <mark class="inline-risk">실패</mark>와 <strong class="inline-korean">권한</strong> <mark class="inline-risk">실패</mark> <strong class="inline-korean">응답</strong>을 <em class="inline-guidance">명확히</em> 관리해야 합니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -111,7 +111,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -128,7 +128,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>REST API 보안 설정</h2>
           <pre><code class="language-java">@Bean
 SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
@@ -156,7 +156,7 @@ http.authorizeHttpRequests(auth -&gt; auth
           </div>
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>401은 <strong class="inline-korean">인증</strong>이 안 된 상태, 403은 <strong class="inline-korean">인증</strong>은 됐지만 <strong class="inline-korean">권한</strong>이 부족한 상태로 <em class="inline-guidance">구분해야 합니다</em>.</li><li>URL 매칭 순서가 넓은 규칙부터 나오면 뒤의 세부 규칙이 적용되지 않을 수 있습니다.</li><li>비밀번호 저장에는 반드시 단방향 해시를 사용하고 평문 로그를 남기면 <mark class="inline-risk">안 됩니다</mark>.</li></ul>
         </section>

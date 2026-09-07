@@ -40,14 +40,21 @@
                 </span>
             </a>
             <div class="header-actions">
+                <div class="search-shell">
                 <label class="search">
                     <span aria-hidden="true">검색</span>
                     <input
                         id="topicSearch"
                         type="search"
                         placeholder="예: JWT, @Transactional, application.yml"
+                        autocomplete="off"
+                        aria-label="전체 자료 검색"
+                        aria-controls="searchResults"
+                        aria-expanded="false"
                     />
                 </label>
+                <div id="searchResults" class="search-results" role="listbox" aria-label="검색 결과" hidden></div>
+                </div>
                 <button
                     id="themeToggle"
                     class="icon-button"

@@ -37,7 +37,7 @@
           <span>Part 5. 확장과 운영</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">34 · Part 5. 확장과 운영</p>
           <h1>Filter와 Interceptor </h1>
           <p><strong class="inline-korean">요청</strong>이 <strong class="inline-term">Controller</strong>에 도달하기 전후에 공통 처리를 넣는 웹 계층 확장 지점입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p>Filter는 Servlet 스펙 영역에서 동작하며 Spring <strong class="inline-term">MVC</strong>에 들어가기 전 <strong class="inline-korean">요청</strong>을 처리합니다. <strong class="inline-korean">인증</strong> 토큰 파싱, <strong class="inline-term">CORS</strong>, 인코딩, <strong class="inline-korean">요청</strong> 로그 같은 작업에 쓰입니다.</p><p>Interceptor는 Spring <strong class="inline-term">MVC</strong>의 HandlerMapping 이후, <strong class="inline-term">Controller</strong> 호출 전후에 동작합니다. 로그인 사용자 확인, <strong class="inline-korean">권한</strong> 검사, <strong class="inline-korean">요청</strong> 처리 시간 기록처럼 handler 정보를 활용하는 작업에 적합합니다.</p><p>둘 다 공통 처리 지점이지만 실행 위치가 다릅니다. Security 필터 체인, DispatcherServlet, HandlerInterceptor의 순서를 머릿속에 그릴 수 있어야 디버깅이 쉬워집니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -111,7 +111,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -128,7 +128,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>요청 로그 Filter</h2>
           <pre><code class="language-java">@Component
 class RequestLogFilter extends OncePerRequestFilter {
@@ -147,7 +147,7 @@ class RequestLogFilter extends OncePerRequestFilter {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>Filter에서 request body를 읽으면 <strong class="inline-term">Controller</strong>에서 다시 읽지 못하는 문제가 생길 수 있습니다.</li><li>Interceptor는 Spring <strong class="inline-term">MVC</strong> 밖에서 처리되는 정적 리소스나 일부 오류 흐름에는 적용 방식이 다를 수 있습니다.</li><li>Security 필터 순서를 잘못 잡으면 <strong class="inline-korean">인증</strong> 정보가 필요한 시점에 아직 설정되지 않을 수 있습니다.</li></ul>
         </section>

@@ -7,6 +7,7 @@ const topicGroups = document.querySelector("#topicGroups");
 const categoryLegend = document.querySelector("#categoryLegend");
 const topicCount = document.querySelector("#topicCount");
 const termGrid = document.querySelector("#termGrid");
+const searchResults = document.querySelector("#searchResults");
 
 const savedTheme = localStorage.getItem("spring-handbook-theme");
 if (savedTheme) {
@@ -148,9 +149,79 @@ function renderTerms() {
   });
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? "").toLocaleLowerCase("ko-KR");
+}
+
+function topicSearchEntries(topic) {
+  const base = topicHref(topic);
+  return [
+    ["개요", [topic.title, topic.summary, ...(topic.keywords || [])], "overview"],
+    ["왜 배워야 할까", topic.body, "why"],
+    ["개념과 동작 흐름", topic.flow?.flat(), "concept-flow"],
+    ["관련 어노테이션과 기술", topic.annotations?.flat(), "annotations"],
+    ["함께 확인할 파일과 설정", topic.related?.flat(), "related"],
+    [topic.exampleTitle, [topic.exampleTitle, topic.code, topic.lambdaDescription, topic.lambdaExample], "example"],
+    ["헷갈리기 쉬운 부분", topic.watch, "watch"],
+  ].map(([location, text, hash]) => ({ title: topic.title, kind: "주제", location, text, href: `${base}?q={query}#${hash}` }));
+}
+
+function termSearchEntries(term) {
+  const base = termHref(term);
+  return [
+    ["개요", [term.name, term.summary, ...(term.aliases || [])], "overview"],
+    ["정확한 뜻", term.definition, "definition"],
+    ["실제로 동작하는 순서", term.mechanics?.flat(), "mechanics"],
+    ["비슷한 용어와 구분하기", term.distinctions?.flat(), "distinctions"],
+    [term.exampleTitle, [term.exampleTitle, term.code], "example"],
+    ["수업에서 확인할 포인트", term.checks, "checks"],
+  ].map(([location, text, hash]) => ({ title: term.name, kind: "용어", location, text, href: `${base}?q={query}#${hash}` }));
+}
+
+function buildSearchIndex() {
+  return [...(window.SPRING_TOPICS || []).flatMap(topicSearchEntries), ...(window.SPRING_TERMS || []).flatMap(termSearchEntries)];
+}
+
+function excerptFor(entry, query) {
+  const source = (entry.text || []).filter(Boolean).join(" · ").replace(/\s+/g, " ");
+  const index = normalizeSearchText(source).indexOf(normalizeSearchText(query));
+  if (index < 0) return source.slice(0, 110);
+  const start = Math.max(0, index - 35);
+  const end = Math.min(source.length, index + query.length + 75);
+  return `${start ? "…" : ""}${source.slice(start, end)}${end < source.length ? "…" : ""}`;
+}
+
+function renderSearchResults(query) {
+  if (!searchResults || !searchInput) return;
+  const trimmed = query.trim();
+  const normalized = normalizeSearchText(trimmed);
+  searchResults.replaceChildren();
+  if (!normalized) {
+    searchResults.hidden = true;
+    searchInput.setAttribute("aria-expanded", "false");
+    return;
+  }
+
+  const matches = buildSearchIndex().filter((entry) => normalizeSearchText((entry.text || []).filter(Boolean).join(" ")).includes(normalized));
+  searchResults.append(createElement("div", "search-results-summary", `${matches.length}개 위치를 찾았습니다.`));
+  matches.forEach((entry, index) => {
+    const link = document.createElement("a");
+    link.className = "search-result-item";
+    link.href = entry.href.replace("{query}", encodeURIComponent(trimmed));
+    link.setAttribute("role", "option");
+    link.innerHTML = `<span><small>${entry.kind}</small><strong>${entry.title}</strong><em>${entry.location}</em></span><p>${excerptFor(entry, trimmed)}</p>`;
+    if (index === 0) link.dataset.firstResult = "true";
+    searchResults.append(link);
+  });
+  if (!matches.length) searchResults.append(createElement("p", "search-results-empty", "일치하는 본문 위치가 없습니다."));
+  searchResults.hidden = false;
+  searchInput.setAttribute("aria-expanded", "true");
+}
+
 function filterTopics() {
   if (!searchInput || !topicGroups) return;
   const query = searchInput.value.trim().toLowerCase();
+  renderSearchResults(searchInput.value);
   const cards = Array.from(document.querySelectorAll(".topic-link-card"));
   let visibleCount = 0;
 
@@ -181,6 +252,57 @@ function filterTopics() {
     const message = createElement("p", "no-results", "검색 결과가 없습니다. 어노테이션, 파일명, 기능 이름으로 다시 검색해 보세요.");
     topicGroups.after(message);
   }
+}
+
+function highlightArticleSearch() {
+  const article = document.querySelector(".article");
+  if (!article) return;
+  const query = new URLSearchParams(window.location.search).get("q")?.trim();
+  if (!query) return;
+  const normalized = normalizeSearchText(query);
+  const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.nodeValue || !normalizeSearchText(node.nodeValue).includes(normalized)) return NodeFilter.FILTER_REJECT;
+      return node.parentElement?.closest("pre, script, style") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+    },
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  nodes.forEach((node) => {
+    const fragment = document.createDocumentFragment();
+    const pattern = new RegExp(escaped, "gi");
+    let cursor = 0;
+    node.nodeValue.replace(pattern, (match, offset) => {
+      fragment.append(node.nodeValue.slice(cursor, offset));
+      fragment.append(createElement("mark", "search-hit", match));
+      cursor = offset + match.length;
+      return match;
+    });
+    fragment.append(node.nodeValue.slice(cursor));
+    node.replaceWith(fragment);
+  });
+
+  const hits = Array.from(article.querySelectorAll(".search-hit"));
+  if (!hits.length) return;
+  let current = 0;
+  const navigator = createElement("div", "search-hit-navigator");
+  navigator.innerHTML = `<strong>“${query}”</strong><span></span><button type="button" data-direction="previous">이전</button><button type="button" data-direction="next">다음</button><a href="../index.html">새 검색</a>`;
+  const counter = navigator.querySelector("span");
+  const moveTo = (index) => {
+    hits[current].classList.remove("is-current");
+    current = (index + hits.length) % hits.length;
+    hits[current].classList.add("is-current");
+    counter.textContent = `${current + 1} / ${hits.length}`;
+    hits[current].scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+  navigator.addEventListener("click", (event) => {
+    if (event.target.dataset.direction === "previous") moveTo(current - 1);
+    if (event.target.dataset.direction === "next") moveTo(current + 1);
+  });
+  document.body.append(navigator);
+  hits[0].classList.add("is-current");
+  counter.textContent = `1 / ${hits.length}`;
 }
 
 function updateProgress() {
@@ -224,6 +346,20 @@ filterTopics();
 enableCodeCopy();
 
 searchInput?.addEventListener("input", filterTopics);
+searchInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    const first = searchResults?.querySelector("[data-first-result]");
+    if (first) { event.preventDefault(); first.click(); }
+  }
+  if (event.key === "Escape") { searchInput.value = ""; filterTopics(); }
+});
+document.addEventListener("click", (event) => {
+  if (searchResults && !event.target.closest(".search-shell")) {
+    searchResults.hidden = true;
+    searchInput?.setAttribute("aria-expanded", "false");
+  }
+});
 window.addEventListener("scroll", updateProgress, { passive: true });
 window.addEventListener("resize", updateProgress);
 updateProgress();
+highlightArticleSearch();

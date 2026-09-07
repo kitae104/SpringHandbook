@@ -326,6 +326,34 @@ function renderTermPage(term) {
 </html>`;
 }
 
+function addSearchAnchors(html, anchors) {
+  let result = html.replace('<header class="article-hero">', '<header id="overview" class="article-hero">');
+  anchors.forEach(([heading, id]) => {
+    result = result.replace(
+      `<section class="article-section">\n          <h2>${heading}</h2>`,
+      `<section id="${id}" class="article-section">\n          <h2>${heading}</h2>`,
+    );
+  });
+  return result;
+}
+
+const topicSearchAnchors = [
+  ["왜 배워야 할까", "why"],
+  ["개념 그림", "concept-flow"],
+  ["동작 흐름", "operation-flow"],
+  ["관련 어노테이션과 기술", "annotations"],
+  ["함께 확인할 파일과 설정", "related"],
+  ["기술적으로 헷갈리기 쉬운 부분", "watch"],
+];
+
+const termSearchAnchors = [
+  ["정확한 뜻", "definition"],
+  ["실제로 동작하는 순서", "mechanics"],
+  ["비슷한 용어와 구분하기", "distinctions"],
+  ["수업에서 확인할 포인트", "checks"],
+  ["함께 읽을 주제", "related"],
+];
+
 fs.rmSync(outputDir, { recursive: true, force: true });
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -333,11 +361,21 @@ fs.rmSync(termOutputDir, { recursive: true, force: true });
 fs.mkdirSync(termOutputDir, { recursive: true });
 
 SPRING_TOPICS.forEach((topic, index) => {
-  fs.writeFileSync(path.join(outputDir, `${topic.slug}.html`), renderTopicPage(topic, index), "utf8");
+  let html = addSearchAnchors(renderTopicPage(topic, index), topicSearchAnchors);
+  html = html.replace(
+    `<section class="article-section">\n          <h2>${escapeHtml(topic.exampleTitle)}</h2>`,
+    `<section id="example" class="article-section">\n          <h2>${escapeHtml(topic.exampleTitle)}</h2>`,
+  );
+  fs.writeFileSync(path.join(outputDir, `${topic.slug}.html`), html, "utf8");
 });
 
 SPRING_TERMS.forEach((term) => {
-  fs.writeFileSync(path.join(termOutputDir, `${term.slug}.html`), renderTermPage(term), "utf8");
+  let html = addSearchAnchors(renderTermPage(term), termSearchAnchors);
+  html = html.replace(
+    `<section class="article-section">\n          <h2>${escapeHtml(term.exampleTitle)}</h2>`,
+    `<section id="example" class="article-section">\n          <h2>${escapeHtml(term.exampleTitle)}</h2>`,
+  );
+  fs.writeFileSync(path.join(termOutputDir, `${term.slug}.html`), html, "utf8");
 });
 
 console.log(`Generated ${SPRING_TOPICS.length} topic pages and ${SPRING_TERMS.length} term pages.`);

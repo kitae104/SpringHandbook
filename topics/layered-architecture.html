@@ -37,7 +37,7 @@
           <span>Part 2. API 계층 구조</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">40 · Part 2. API 계층 구조</p>
           <h1>계층형 아키텍처 </h1>
           <p><strong class="inline-term">Controller</strong>, <strong class="inline-term">Service</strong>, <strong class="inline-term">Repository</strong>, Domain 계층을 나눠 <strong class="inline-term">HTTP</strong> 처리, 비즈니스 규칙, 데이터 접근 책임을 분리하는 구조입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p>계층형 아키텍처는 <strong class="inline-korean">요청</strong> 처리 코드를 한 곳에 몰아넣지 않고 관심사별로 나누는 방식입니다. <strong class="inline-term">Controller</strong>는 <strong class="inline-term">HTTP</strong>를 해석하고, <strong class="inline-term">Service</strong>는 유스케이스와 <strong class="inline-korean">트랜잭션</strong>을 다루며, <strong class="inline-term">Repository</strong>는 저장소 접근을 담당합니다.</p><p>Domain Layer는 <strong class="inline-term">Entity</strong>, VO, 도메인 규칙을 담습니다. <strong class="inline-term">DTO</strong>는 외부 <strong class="inline-korean">요청</strong>과 <strong class="inline-korean">응답</strong> 모양을 담당하므로 DB 구조와 API 구조가 강하게 묶이지 않게 합니다. DAO는 저장소 접근 객체라는 넓은 개념이고, <strong class="inline-term">Spring Data JPA</strong>에서는 <strong class="inline-term">Repository</strong>가 그 역할을 많이 대체합니다.</p><p>책임 분리가 잘 되면 <strong class="inline-korean">테스트</strong> 범위가 명확해지고 변경 영향이 줄어듭니다. 반대로 <strong class="inline-term">Controller</strong>가 <strong class="inline-korean">검증</strong>, 비즈니스 규칙, DB 저장까지 모두 처리하면 작은 변경도 여러 문제로 번집니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -115,7 +115,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -136,7 +136,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>요청이 계층을 통과하는 구조</h2>
           <pre><code class="language-java">@RestController
 @RequestMapping(&quot;/api/orders&quot;)
@@ -159,7 +159,7 @@ class OrderService {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li><strong class="inline-term">Controller</strong>에서 <strong class="inline-term">Entity</strong>를 바로 반환하면 API <strong class="inline-korean">응답</strong>이 DB 구조에 묶입니다.</li><li><strong class="inline-term">Repository</strong>에 비즈니스 판단 로직이 들어가면 저장소 교체와 <strong class="inline-korean">테스트</strong>가 어려워집니다.</li><li><strong class="inline-term">Service</strong>가 너무 커지면 유스케이스 단위로 나누거나 도메인 객체에 규칙을 옮길 필요가 있습니다.</li><li><strong class="inline-term">DTO</strong>, VO, <strong class="inline-term">Entity</strong> 이름이 비슷해도 변경 이유와 생명주기가 다릅니다.</li></ul>
         </section>

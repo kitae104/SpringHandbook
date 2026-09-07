@@ -37,7 +37,7 @@
           <span>Part 4. 실무 개발</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">31 · Part 4. 실무 개발</p>
           <h1>Testing </h1>
           <p>단위 <strong class="inline-korean">테스트</strong>, 슬라이스 <strong class="inline-korean">테스트</strong>, 통합 <strong class="inline-korean">테스트</strong>로 <strong class="inline-term">Spring Boot</strong> 코드의 동작을 자동으로 <strong class="inline-korean">검증</strong>하는 방법입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p>테스팅은 코드가 지금 의도대로 동작하는지 확인하는 안전망입니다. 수동으로 Postman을 눌러 보는 것만으로는 변경이 누적될 때 기존 기능이 깨졌는지 빠르게 알기 어렵습니다.</p><p><strong class="inline-term">Spring Boot</strong> <strong class="inline-korean">테스트</strong>는 목적에 따라 무게를 나눠야 합니다. 순수 자바 로직은 단위 <strong class="inline-korean">테스트</strong>로 빠르게 확인하고, <strong class="inline-term">Controller</strong>는 <strong class="inline-token">@WebMvcTest</strong>와 <strong class="inline-term">MockMvc</strong>로 <strong class="inline-korean">요청</strong>과 <strong class="inline-korean">응답</strong>을 <strong class="inline-korean">검증</strong>하며, <strong class="inline-term">Repository</strong>는 <strong class="inline-token">@DataJpaTest</strong>로 쿼리와 매핑을 확인합니다.</p><p><strong class="inline-token">@SpringBootTest</strong>는 실제 애플리케이션 컨텍스트를 넓게 로딩하므로 가장 강력하지만 <mark class="inline-risk">느립니다</mark>. 모든 <strong class="inline-korean">테스트</strong>를 통합 <strong class="inline-korean">테스트</strong>로 만들기보다 <mark class="inline-risk">실패</mark> 원인을 좁게 찾을 수 있는 <u class="inline-underline">테스트 피라미드</u>를 <em class="inline-guidance">유지하는 편이 좋습니다</em>.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -115,7 +115,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -136,7 +136,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>Controller Validation 테스트</h2>
           <pre><code class="language-java">@WebMvcTest(MemberController.class)
 class MemberControllerTest {
@@ -157,7 +157,7 @@ class MemberControllerTest {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li><strong class="inline-korean">테스트</strong>가 구현 세부 사항에 너무 묶이면 리팩터링할 때 실제 동작은 그대로인데 <strong class="inline-korean">테스트</strong>만 대량으로 깨집니다.</li><li><strong class="inline-token">@SpringBootTest</strong>를 남발하면 <strong class="inline-korean">테스트</strong> 시간이 길어져 CI에서 자주 실행하기 어려워집니다.</li><li>mock이 지나치게 많으면 실제 <strong class="inline-term">Bean</strong> 조립, <strong class="inline-term">JPA</strong> 매핑, <strong class="inline-korean">트랜잭션</strong> 문제를 놓칠 수 있습니다.</li><li><strong class="inline-korean">테스트</strong> 데이터는 각 <strong class="inline-korean">테스트</strong>가 독립적으로 만들고 정리해야 실행 순서에 의존하지 않습니다.</li></ul>
         </section>

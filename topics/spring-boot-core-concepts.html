@@ -37,7 +37,7 @@
           <span>Part 1. Spring 기초</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">38 · Part 1. Spring 기초</p>
           <h1>Spring Boot 기본 개념 묶음 </h1>
           <p>Spring Initializr, Starter, Auto Configuration, 내장 서버, 설정 파일, Profile처럼 Boot 프로젝트를 시작할 때 반복해서 만나는 기본 요소입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-term">Spring Boot</strong> 프로젝트를 처음 만들 때는 Spring Initializr로 기본 골격을 만들고, 필요한 starter를 선택해 의존성을 묶어서 가져옵니다. starter는 관련 라이브러리 조합을 미리 정리해 두었기 때문에 초반 설정량을 크게 줄입니다.</p><p>Auto Configuration은 클래스패스, 설정 값, 사용자가 등록한 <strong class="inline-term">Bean</strong>을 조건으로 필요한 설정을 자동 적용합니다. 이것이 Convention over Configuration입니다. 관례에 맞게 두면 빠르게 동작하지만, 관례에서 벗어날 때는 어떤 조건이 자동 설정을 켜고 끄는지 <em class="inline-guidance">확인해야 합니다</em>.</p><p>Boot는 내장 Tomcat 같은 Embedded Server를 포함해 JAR 실행만으로 웹 서버를 띄울 수 있습니다. 환경별 값은 application.properties 또는 application.yml에 두고, dev, prod 같은 Profile로 실행 환경을 나눕니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -111,7 +111,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -132,7 +132,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>Profile별 설정 분리</h2>
           <pre><code class="language-yaml"># application.yml
 spring:
@@ -159,7 +159,7 @@ spring:
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>starter는 편의를 주지만 실제로 어떤 라이브러리가 들어오는지 의존성 트리를 <em class="inline-guidance">확인해야 합니다</em>.</li><li>자동 설정이 예상과 다르면 조건에 맞는 <strong class="inline-term">Bean</strong>이 이미 있는지, 의존성이 빠졌는지, Profile이 맞는지 봐야 합니다.</li><li>application-prod.yml에 비밀번호, 토큰, 개인 키 같은 secret을 직접 쓰면 <mark class="inline-risk">안 됩니다</mark>.</li><li>properties와 yml은 표현 방식만 다를 뿐 같은 설정 모델로 바인딩됩니다. 팀에서 한 방식을 정해 일관되게 쓰는 편이 <em class="inline-guidance">좋습니다</em>.</li></ul>
         </section>

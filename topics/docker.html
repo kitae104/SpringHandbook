@@ -37,7 +37,7 @@
           <span>Part 5. 확장과 운영</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">36 · Part 5. 확장과 운영</p>
           <h1>Docker </h1>
           <p>애플리케이션과 실행 환경을 이미지로 묶어 어디서나 비슷하게 실행할 수 있게 하는 컨테이너 도구입니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-term">Docker</strong>는 로컬, <strong class="inline-korean">테스트</strong>, 운영 환경 차이를 줄이는 데 도움이 됩니다. Java 버전, OS 패키지, 실행 명령을 Dockerfile에 명시하면 같은 이미지를 여러 환경에서 실행할 수 있습니다.</p><p><strong class="inline-term">Spring Boot</strong> 앱은 보통 jar를 빌드한 뒤 JRE 이미지 위에서 실행합니다. 이미지 크기와 <strong class="inline-korean">보안</strong> 업데이트를 고려해 빌드 단계와 실행 단계를 나누는 multi-stage build를 자주 사용합니다.</p><p>DB, <strong class="inline-term">Redis</strong> 같은 의존 서비스는 docker compose로 함께 띄우면 팀원이 동일한 개발 환경을 빠르게 구성할 수 있습니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -111,7 +111,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -128,7 +128,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>Spring Boot multi-stage Dockerfile</h2>
           <pre><code class="language-dockerfile">FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
@@ -145,7 +145,7 @@ ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]</code></pre
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>이미지에 application-prod.yml이나 secret 파일을 직접 넣으면 <mark class="inline-risk">안 됩니다</mark>.</li><li>컨테이너 내부 localhost는 호스트 머신의 localhost와 다릅니다.</li><li>빌드 캐시를 고려하지 않은 Dockerfile은 CI 시간을 크게 늘릴 수 있습니다.</li></ul>
         </section>

@@ -1829,3 +1829,94 @@ span code {
         transition-duration: 0.01ms !important;
     }
 }
+.search-shell {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.search-shell .search {
+    width: 100%;
+}
+
+.search-results {
+    position: absolute;
+    z-index: 50;
+    top: calc(100% + 0.55rem);
+    right: 0;
+    width: min(42rem, calc(100vw - 2rem));
+    max-height: min(70vh, 38rem);
+    overflow-y: auto;
+    padding: 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.search-results[hidden] { display: none; }
+
+.search-results-summary,
+.search-results-empty {
+    padding: 0.65rem 0.75rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.search-result-item {
+    display: block;
+    padding: 0.75rem;
+    border-radius: calc(var(--radius) - 0.3rem);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.search-result-item:hover,
+.search-result-item:focus-visible {
+    background: var(--surface-soft);
+    outline: none;
+}
+
+.search-result-item span { display: flex; align-items: center; gap: 0.5rem; }
+.search-result-item small,
+.search-result-item em { color: var(--muted); font-size: 0.78rem; font-style: normal; }
+.search-result-item p { margin: 0.35rem 0 0; color: var(--muted); font-size: 0.85rem; line-height: 1.45; }
+
+.search-hit {
+    padding: 0.08em 0.14em;
+    border-radius: 0.2em;
+    background: #ffe08a;
+    color: #2a2100;
+}
+
+.search-hit.is-current { outline: 3px solid #e26a2c; background: #ffc857; }
+
+.search-hit-navigator {
+    position: fixed;
+    z-index: 60;
+    right: 1rem;
+    bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.search-hit-navigator button,
+.search-hit-navigator a {
+    padding: 0.42rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 0.45rem;
+    background: var(--surface-soft);
+    color: var(--text);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .search-hit-navigator { right: 0.5rem; bottom: 0.5rem; left: 0.5rem; flex-wrap: wrap; }
+}

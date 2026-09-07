@@ -37,7 +37,7 @@
           <span>Part 2. API 계층 구조</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">17 · Part 2. API 계층 구조</p>
           <h1>Exception </h1>
           <p>예상 가능한 <mark class="inline-risk">실패</mark>를 <strong class="inline-term">HTTP</strong> 상태 코드와 <em class="inline-guidance">일관된</em> JSON <strong class="inline-korean">응답</strong>으로 변환해 API 사용자가 문제를 이해하게 합니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-korean">예외</strong> 처리는 서버 오류를 숨기는 작업이 아니라 <mark class="inline-risk">실패</mark>를 계약으로 만드는 작업입니다. 없는 리소스, <strong class="inline-korean">권한</strong> 부족, <strong class="inline-korean">검증</strong> <mark class="inline-risk">실패</mark>, 중복 데이터 같은 상황은 각각 다른 상태 코드와 메시지를 가져야 합니다.</p><p><strong class="inline-token">@RestControllerAdvice</strong>를 사용하면 여러 <strong class="inline-term">Controller</strong>에서 발생한 <strong class="inline-korean">예외</strong>를 한 곳에서 처리할 수 있습니다. 이렇게 하면 API <u class="inline-underline">오류 응답</u> 모양을 통일하고 중복 코드를 줄일 수 있습니다.</p><p>로그에는 개발자가 원인을 추적할 정보가 필요하지만, <strong class="inline-korean">응답</strong>에는 사용자에게 보여도 되는 정보만 담아야 합니다. 내부 스택 트레이스나 SQL 오류를 그대로 <mark class="inline-risk">노출</mark>하면 <mark class="inline-risk">보안 문제</mark>가 됩니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -107,7 +107,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -124,7 +124,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>전역 예외 응답</h2>
           <pre><code class="language-java">@RestControllerAdvice
 class ApiExceptionHandler {
@@ -140,7 +140,7 @@ public record ErrorResponse(String code, String message) {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li>모든 <strong class="inline-korean">예외</strong>를 500으로 처리하면 클라이언트가 복구 가능한 <mark class="inline-risk">실패</mark>와 서버 <mark class="inline-risk">장애</mark>를 구분할 수 없습니다.</li><li><strong class="inline-term">Exception</strong> 메시지에 <mark class="inline-risk">민감</mark>한 내부 정보를 담으면 <strong class="inline-korean">응답</strong>으로 <mark class="inline-risk">노출</mark>될 수 있습니다.</li><li><u class="inline-underline">전역 예외 처리</u>에서 너무 넓은 <strong class="inline-term">Exception</strong>을 먼저 잡으면 세부 <strong class="inline-korean">예외</strong> 처리가 실행되지 않을 수 있습니다.</li></ul>
         </section>

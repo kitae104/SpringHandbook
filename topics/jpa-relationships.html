@@ -37,7 +37,7 @@
           <span>Part 2. API 계층 구조</span>
         </nav>
 
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">41 · Part 2. API 계층 구조</p>
           <h1>JPA 연관관계와 매핑 </h1>
           <p>1:1, 1:N, N:1, N:M 관계와 연관관계의 주인, Fetch Type, Cascade, Orphan Removal, N+1 문제를 정리합니다.</p>
@@ -48,12 +48,12 @@
           </div>
         </header>
 
-        <section class="article-section">
+        <section id="why" class="article-section">
           <h2>왜 배워야 할까</h2>
           <p><strong class="inline-term">JPA</strong> 연관관계는 객체 참조와 DB 외래 키를 연결하는 규칙입니다. N:1 관계는 보통 다수 쪽 <strong class="inline-term">Entity</strong>가 외래 키를 가지므로 <strong class="inline-token">@ManyToOne</strong>과 <strong class="inline-token">@JoinColumn</strong>을 많이 사용합니다. 1:N 단방향은 외래 키 관리가 어색해질 수 있어 신중해야 합니다.</p><p>양방향 관계에서는 외래 키를 실제로 변경하는 쪽이 연관관계의 주인입니다. 주인이 아닌 쪽 mappedBy는 조회 편의를 위한 반대편 참조입니다. 객체 양쪽을 모두 맞춰 주는 편의 메서드를 두면 메모리 상태와 DB 상태의 불일치를 줄일 수 있습니다.</p><p>Fetch Type은 성능에 큰 영향을 줍니다. Lazy Loading은 필요한 시점에 조회하지만 N+1 문제가 생길 수 있고, Eager Loading은 불필요한 조인을 만들 수 있습니다. 목록 조회에서는 fetch join, EntityGraph, <strong class="inline-term">DTO</strong> 조회를 상황에 맞게 선택합니다.</p>
         </section>
 
-        <section class="article-section">
+        <section id="concept-flow" class="article-section">
           <h2>개념 그림</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -73,7 +73,7 @@
         </div></div>
         </section>
 
-        <section class="article-section">
+        <section id="operation-flow" class="article-section">
           <h2>동작 흐름</h2>
           <div class="insight-grid">
         <article>
@@ -90,7 +90,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="annotations" class="article-section">
           <h2>관련 어노테이션과 기술</h2>
           <div class="term-grid">
         <article>
@@ -135,7 +135,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 확인할 파일과 설정</h2>
           <div class="term-grid">
         <article>
@@ -156,7 +156,7 @@
         </article></div>
         </section>
 
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>N:1과 1:N 양방향 매핑</h2>
           <pre><code class="language-java">@Entity
 class Order {
@@ -181,7 +181,7 @@ class Member {
           
         </section>
 
-        <section class="article-section">
+        <section id="watch" class="article-section">
           <h2>기술적으로 헷갈리기 쉬운 부분</h2>
           <ul class="article-list"><li><strong class="inline-token">@ManyToMany</strong>는 중간 테이블에 속성이 생기는 순간 다루기 어려워지므로 연결 <strong class="inline-term">Entity</strong>로 풀어내는 편이 <em class="inline-guidance">좋습니다</em>.</li><li>CascadeType.REMOVE와 orphanRemoval은 삭제 전파 범위가 넓어 데이터 손실 <mark class="inline-risk">위험</mark>이 있습니다.</li><li>Lazy Loading은 <strong class="inline-korean">트랜잭션</strong> 밖에서 접근하면 LazyInitializationException이 발생할 수 있습니다.</li><li>N+1 문제는 코드 한 줄보다 실제 SQL 로그를 보고 <em class="inline-guidance">확인해야 합니다</em>.</li></ul>
         </section>

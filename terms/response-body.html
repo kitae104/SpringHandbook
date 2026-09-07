@@ -31,7 +31,7 @@
           <a href="../index.html#glossary">수업 핵심 용어</a>
           <span>@ResponseBody</span>
         </nav>
-        <header class="article-hero">
+        <header id="overview" class="article-hero">
           <p class="eyebrow">Spring 핵심 용어</p>
           <h1>@ResponseBody</h1>
           <p><strong class="inline-term">Controller</strong> 메서드의 반환값을 View 이름으로 해석하지 않고 <strong class="inline-term">HTTP</strong> <strong class="inline-korean">응답</strong> 본문에 직접 쓰도록 지시하는 Spring <strong class="inline-term">MVC</strong> 애너테이션입니다.</p>
@@ -41,11 +41,11 @@
             <span class="topic-badge">약 5분</span>
           </div>
         </header>
-        <section class="article-section">
+        <section id="definition" class="article-section">
           <h2>정확한 뜻</h2>
           <p><strong class="inline-token">@ResponseBody</strong>는 메서드가 반환한 Java 객체나 문자열을 <strong class="inline-term">HTTP</strong> <strong class="inline-korean">응답</strong>의 body로 직렬화하라는 뜻입니다. <strong class="inline-token">@Controller</strong> 클래스의 메서드나 클래스 자체에 붙일 수 있으며, <strong class="inline-token">@RestController</strong>에는 <strong class="inline-token">@Controller</strong>와 <strong class="inline-token">@ResponseBody</strong>의 기능이 함께 들어 있습니다.</p><p>반환값이 객체라면 Spring <strong class="inline-term">MVC</strong>의 HttpMessageConverter가 <strong class="inline-korean">요청</strong>의 Accept 헤더와 서버 설정을 보고 표현 형식을 결정합니다. 일반적인 <strong class="inline-term">Spring Boot</strong> 웹 프로젝트에서는 Jackson이 객체를 JSON으로 변환하고 Content-Type을 application/json으로 설정합니다.</p>
         </section>
-        <section class="article-section">
+        <section id="mechanics" class="article-section">
           <h2>실제로 동작하는 순서</h2>
           <div class="concept-diagram" aria-label="개념 흐름 다이어그램">
         <div class="diagram-node">
@@ -64,7 +64,7 @@
           <p>HttpMessageConverter가 반환값을 JSON 등의 형식으로 바꾸고 <strong class="inline-term">HTTP</strong> <strong class="inline-korean">응답</strong> 본문에 기록합니다.</p>
         </div></div>
         </section>
-        <section class="article-section">
+        <section id="distinctions" class="article-section">
           <h2>비슷한 용어와 구분하기</h2>
           <div class="term-grid">
         <article>
@@ -84,7 +84,7 @@
           <p><strong class="inline-korean">응답</strong> 본문뿐 아니라 상태 코드와 헤더도 함께 명시합니다. <strong class="inline-token">@ResponseBody</strong> 처리 흐름을 사용합니다.</p>
         </article></div>
         </section>
-        <section class="article-section">
+        <section id="example" class="article-section">
           <h2>@Controller에서 JSON 응답 반환하기</h2>
           <pre><code class="language-java">@Controller
 @RequestMapping(&quot;/api/courses&quot;)
@@ -99,11 +99,11 @@ class CourseController {
 
 record CourseResponse(Long id, String title) {}</code></pre>
         </section>
-        <section class="article-section">
+        <section id="checks" class="article-section">
           <h2>수업에서 확인할 포인트</h2>
           <ul class="article-list"><li><strong class="inline-token">@ResponseBody</strong>가 없으면 <strong class="inline-token">@Controller</strong>의 문자열 반환값은 보통 View 이름으로 해석됩니다.</li><li><strong class="inline-term">Entity</strong>를 그대로 반환하면 지연 로딩, 순환 참조, <mark class="inline-risk">민감</mark> <strong class="inline-korean">필드</strong> <mark class="inline-risk">노출</mark> 문제가 생길 수 있으므로 <strong class="inline-korean">응답</strong> <strong class="inline-term">DTO</strong>를 사용하는 편이 안전합니다.</li><li>직렬화할 수 없는 타입이나 getter 구조가 있으면 <strong class="inline-korean">응답</strong> 생성 단계에서 HttpMessageNotWritableException이 발생할 수 있습니다.</li><li><strong class="inline-term">HTTP</strong> 상태와 헤더를 제어해야 한다면 ResponseEntity 또는 <strong class="inline-token">@ResponseStatus</strong>를 함께 검토합니다.</li></ul>
         </section>
-        <section class="article-section">
+        <section id="related" class="article-section">
           <h2>함께 읽을 주제</h2>
           <div class="linked-topic-grid">
             <a href="../topics/controller.html"><strong>Controller</strong><span>HTTP 요청을 받아 입력을 해석하고 Service를 호출한 뒤 응답 형태로 변환하는 API 진입 계층입니다.</span></a><a href="../topics/rest-api.html"><strong>REST API</strong><span>자원을 URL로 표현하고 HTTP 메서드로 행동을 구분하는 API 설계 스타일입니다.</span></a><a href="../topics/dto.html"><strong>DTO</strong><span>API 요청과 응답 데이터를 표현하는 객체로, 외부 계약과 내부 Entity 구조를 분리합니다.</span></a>
